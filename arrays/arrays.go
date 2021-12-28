@@ -31,7 +31,6 @@ type EQL[E any] func(E, E) bool
 //		return strings.Compare(e1.Name, e2.Name)
 //	})
 func Sort[E any](data []E, cmp CMP[E]) {
-
 	sortobject := sortable[E]{data: data, cmp: cmp}
 	sort.Sort(sortobject)
 }
@@ -120,9 +119,7 @@ func BinarySearch[E any](data []E, key E, cmp CMP[E]) int {
 // BinarySearch Searches the specified array for the specified value using the
 // binary search algorithm. return index of the search key
 func BinarySearchOrdered[E constraints.Ordered](data []E, key E) int {
-	return BinarySearch(data, key, func(e1, e2 E) int {
-		return CompareTo(e1, e2)
-	})
+	return BinarySearch(data, key, CompareTo[E])
 }
 
 // Contains Returns <tt>true</tt> if this array contains the specified element.
@@ -142,9 +139,7 @@ func Contains[E any](data []E, key E, equal EQL[E]) bool {
 
 // Contains Returns <tt>true</tt> if this array contains the specified element.
 func ContainsOrdered[E constraints.Ordered](data []E, key E) bool {
-	return Contains(data, key, func(e1, e2 E) bool {
-		return Equals(e1, e2)
-	})
+	return Contains(data, key, Equals[E])
 }
 
 // Min Returns the minimum element and position of the given array
@@ -191,9 +186,7 @@ func Max[E any](data []E, cmp CMP[E]) (E, int) {
 
 // MaxOrdered Returns the maximum element and position of the given array
 func MaxOrdered[E constraints.Ordered](data []E) (E, int) {
-	return Max(data, func(e1, e2 E) int {
-		return CompareTo(e1, e2)
-	})
+	return Max(data, CompareTo[E])
 }
 
 // ReplaceAll Replaces all occurrences of one specified value in a array with another
@@ -211,9 +204,7 @@ func ReplaceAll[E any](data []E, oldVal, newVal E, euqal EQL[E]) {
 
 // ReplaceOrderedAll Replaces all occurrences of one specified value in a array with another
 func ReplaceOrderedAll[E constraints.Ordered](data []E, oldVal, newVal E) {
-	ReplaceAll(data, oldVal, newVal, func(e1, e2 E) bool {
-		return Equals(e1, e2)
-	})
+	ReplaceAll(data, oldVal, newVal, Equals[E])
 }
 
 // EqualWith to theck all elements of the two array are same
@@ -233,9 +224,7 @@ func EqualWith[E any](data, other []E, euqal EQL[E]) bool {
 
 // EqualWithOrdered to theck all elements of the two array are same
 func EqualWithOrdered[E constraints.Ordered](data, other []E) bool {
-	return EqualWith(data, other, func(e1, e2 E) bool {
-		return Equals(e1, e2)
-	})
+	return EqualWith(data, other, Equals[E])
 
 }
 
@@ -265,9 +254,7 @@ func IndexOfSubArray[E any](data, sub []E, euqal EQL[E]) int {
 // IndexOfSubOrderedArray the starting position of the first occurrence of the specified
 //  target array within the specified source array
 func IndexOfSubOrderedArray[E constraints.Ordered](data, sub []E) int {
-	return IndexOfSubArray(data, sub, func(e1, e2 E) bool {
-		return Equals(e1, e2)
-	})
+	return IndexOfSubArray(data, sub, Equals[E])
 }
 
 // LastIndexOfSubArray the last starting position of the first occurrence of the specified
@@ -298,9 +285,7 @@ func LastIndexOfSubArray[E any](data, sub []E, euqal EQL[E]) int {
 // LastIndexOfSubArray the last starting position of the first occurrence of the specified
 //  target array within the specified source array
 func LastIndexOfSubOrderedArray[E constraints.Ordered](data, sub []E) int {
-	return LastIndexOfSubArray(data, sub, func(e1, e2 E) bool {
-		return Equals(e1, e2)
-	})
+	return LastIndexOfSubArray(data, sub, Equals[E])
 }
 
 // Disjoint Returns true if the two specified collections have no
@@ -323,9 +308,7 @@ func Disjoint[E any](data []E, other []E, euqal EQL[E]) bool {
 // Disjoint Returns true if the two specified collections have no
 // elements in common.
 func DisjointOrdered[E constraints.Ordered](data []E, other []E) bool {
-	return Disjoint(data, other, func(e1, e2 E) bool {
-		return Equals(e1, e2)
-	})
+	return Disjoint(data, other, Equals[E])
 }
 
 // Rotate Rotates the elements in the specified array by the specified distance.
