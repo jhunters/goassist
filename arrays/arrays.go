@@ -15,7 +15,11 @@ const (
 	SHUFFLE_THRESHOLD = 5
 )
 
-type CMP[E constraints.Ordered] func(E, E) int
+// compare function
+type CMP[E any] func(E, E) int
+
+// equal function
+type EQL[E any] func(E, E) bool
 
 // Sort sort array object, sort order type is decided by cmp function.
 // example code:
@@ -26,7 +30,7 @@ type CMP[E constraints.Ordered] func(E, E) int
 //	Sort(students, func(e1, e2 Student) int {
 //		return strings.Compare(e1.Name, e2.Name)
 //	})
-func Sort[E any](data []E, cmp func(E, E) int) {
+func Sort[E any](data []E, cmp CMP[E]) {
 
 	sortobject := sortable[E]{data: data, cmp: cmp}
 	sort.Sort(sortobject)
@@ -50,7 +54,7 @@ func SortOrdered[E constraints.Ordered](data []E, asc bool) {
 
 type sortable[E any] struct {
 	data []E
-	cmp  func(E, E) int
+	cmp  CMP[E]
 }
 
 func (s sortable[E]) Len() int      { return len(s.data) }
@@ -91,7 +95,7 @@ func Reverse[E any](data []E) {
 // BinarySearch Searches the specified array for the specified value using the
 // binary search algorithm. return index of the search key
 // note that target array must be ordered
-func BinarySearch[E any](data []E, key E, cmp func(e1, e2 E) int) int {
+func BinarySearch[E any](data []E, key E, cmp CMP[E]) int {
 	low := 0
 	high := len(data) - 1
 
@@ -122,7 +126,7 @@ func BinarySearchOrdered[E constraints.Ordered](data []E, key E) int {
 }
 
 // Contains Returns <tt>true</tt> if this array contains the specified element.
-func Contains[E any](data []E, key E, equal func(e1, e2 E) bool) bool {
+func Contains[E any](data []E, key E, equal EQL[E]) bool {
 	size := len(data)
 	if size == 0 {
 		return false
@@ -144,7 +148,7 @@ func ContainsOrdered[E constraints.Ordered](data []E, key E) bool {
 }
 
 // Min Returns the minimum element and position of the given array
-func Min[E any](data []E, cmp func(e1, e2 E) int) (E, int) {
+func Min[E any](data []E, cmp CMP[E]) (E, int) {
 	size := len(data)
 	if size == 1 {
 		return data[0], 0
@@ -169,7 +173,7 @@ func MinOrdered[E constraints.Ordered](data []E) (E, int) {
 }
 
 // Max Returns the maximum element and position of the given array
-func Max[E any](data []E, cmp func(e1, e2 E) int) (E, int) {
+func Max[E any](data []E, cmp CMP[E]) (E, int) {
 	size := len(data)
 	if size == 1 {
 		return data[0], 0
@@ -193,7 +197,7 @@ func MaxOrdered[E constraints.Ordered](data []E) (E, int) {
 }
 
 // ReplaceAll Replaces all occurrences of one specified value in a array with another
-func ReplaceAll[E any](data []E, oldVal, newVal E, euqal func(e1, e2 E) bool) {
+func ReplaceAll[E any](data []E, oldVal, newVal E, euqal EQL[E]) {
 	if data == nil {
 		return
 	}
@@ -213,7 +217,7 @@ func ReplaceOrderedAll[E constraints.Ordered](data []E, oldVal, newVal E) {
 }
 
 // EqualWith to theck all elements of the two array are same
-func EqualWith[E any](data, other []E, euqal func(e1, e2 E) bool) bool {
+func EqualWith[E any](data, other []E, euqal EQL[E]) bool {
 	s1, s2 := len(data), len(other)
 	if s1 != s2 {
 		return false
@@ -237,7 +241,7 @@ func EqualWithOrdered[E constraints.Ordered](data, other []E) bool {
 
 // IndexOfSubArrayReturns the starting position of the first occurrence of the specified
 //  target array within the specified source array
-func IndexOfSubArray[E any](data, sub []E, euqal func(e1, e2 E) bool) int {
+func IndexOfSubArray[E any](data, sub []E, euqal EQL[E]) int {
 	s1, s2 := len(data), len(sub)
 	if s2 == 0 {
 		return -1
@@ -268,7 +272,7 @@ func IndexOfSubOrderedArray[E constraints.Ordered](data, sub []E) int {
 
 // LastIndexOfSubArray the last starting position of the first occurrence of the specified
 //  target array within the specified source array
-func LastIndexOfSubArray[E any](data, sub []E, euqal func(e1, e2 E) bool) int {
+func LastIndexOfSubArray[E any](data, sub []E, euqal EQL[E]) int {
 	s1, s2 := len(data), len(sub)
 	if s2 == 0 {
 		return -1
@@ -301,7 +305,7 @@ func LastIndexOfSubOrderedArray[E constraints.Ordered](data, sub []E) int {
 
 // Disjoint Returns true if the two specified collections have no
 // elements in common.
-func Disjoint[E any](data []E, other []E, euqal func(e1, e2 E) bool) bool {
+func Disjoint[E any](data []E, other []E, euqal EQL[E]) bool {
 	s1, s2 := len(data), len(other)
 	if s1 == 0 || s2 == 0 {
 		return true
