@@ -599,13 +599,3 @@ func TestUnionOrdered(t *testing.T) {
 		So(result, ShouldResemble, expected)
 	})
 }
-
-func TestAddAll(t *testing.T) {
-	Convey("Test AddAll", t, func() {
-		result := arrays.AddAll(strArray, strArray2)
-		So(len(result), ShouldEqual, 10) // hello world matthew xml xml xml xiemalin
-
-		expected := append(strArray, strArray2...)
-		So(result, ShouldResemble, expected)
-	})
-}
