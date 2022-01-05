@@ -9,17 +9,27 @@ import (
 	"constraints"
 	"math/rand"
 	"sort"
+
+	"github.com/jhunters/goassist/maps"
 )
 
 const (
 	SHUFFLE_THRESHOLD = 5
 )
 
-// compare function
-type CMP[E any] func(E, E) int
+type (
+	// compare function
+	CMP[E any] func(E, E) int
 
-// equal function
-type EQL[E any] func(E, E) bool
+	// equal function
+	EQL[E any] func(E, E) bool
+
+	Null struct{}
+)
+
+var (
+	Empty Null
+)
 
 // Sort sort array object, sort order type is decided by cmp function.
 // example code:
@@ -78,6 +88,16 @@ func ShuffleRandom[E any](data []E, r *rand.Rand) {
 		data[i], data[j] = data[j], data[i]
 	}
 
+}
+
+// Subtract returns a new array containing data - other.
+func Subtract[E any](data, other []E, equal EQL[E]) []E {
+	ret := Clone(data)
+
+	for _, e := range other {
+		RemoveAll(ret, e, equal)
+	}
+	return ret
 }
 
 // Reverse Reverses the order of the elements in the specified
@@ -140,6 +160,42 @@ func Contains[E any](data []E, key E, equal EQL[E]) bool {
 // Contains Returns <tt>true</tt> if this array contains the specified element.
 func ContainsOrdered[E constraints.Ordered](data []E, key E) bool {
 	return Contains(data, key, Equals[E])
+}
+
+// Remove Removes the first same element value of the key from this array
+func Remove[E any](data []E, key E, equal EQL[E]) bool {
+	return removeContional(data, key, equal, false)
+}
+
+// Remove Removes the all same element value of the key from this array
+func RemoveAll[E any](data []E, key E, equal EQL[E]) bool {
+	return removeContional(data, key, equal, true)
+}
+
+func removeContional[E any](data []E, key E, equal EQL[E], all bool) bool {
+	size := len(data)
+	if size == 0 {
+		return false
+	}
+	for i := 0; i < size; i++ {
+		if equal(data[i], key) {
+			data = remove(data, i)
+			if !all {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func remove[E any](data []E, i int) []E {
+	if i < len(data)-1 {
+		// 复制后面的值到当前i的坐标，此时i坐标值已经被覆盖
+		copy(data[i:], data[i+1:])
+	}
+	// 去掉最后坐标的值
+	return data[:len(data)-1]
 }
 
 // Min Returns the minimum element and position of the given array
@@ -332,6 +388,89 @@ func Rotate[E any](data []E, distance int) {
 	Reverse(data[mid:size])
 	Reverse(data)
 
+}
+
+func max[E constraints.Ordered](a, b E) E {
+	if a >= b {
+		return a
+	}
+	return b
+}
+
+func min[E constraints.Ordered](a, b E) E {
+	if a <= b {
+		return a
+	}
+	return b
+}
+
+func getFreq[E constraints.Ordered](key E, mapa map[E]int) int {
+	v, exist := mapa[key]
+	if !exist {
+		return 0
+	}
+	return v
+}
+
+// private static final int getFreq(final Object obj, final Map freqMap) {
+// 	Integer count = (Integer) freqMap.get(obj);
+// 	if (count != null) {
+// 		return count.intValue();
+// 	}
+// 	return 0;
+// }
+
+func IntersectionOrdered[E constraints.Ordered](data, other []E) []E {
+	ret := make([]E, 0)
+
+	mapa := getCardinalityMap(data)
+	mapb := getCardinalityMap(other)
+
+	merged := maps.AddAll(mapa, mapb)
+	for k := range merged {
+		i := 0
+		for m := min(int(getFreq(k, mapa)), int(getFreq(k, mapb))); i < m; i++ {
+			ret = append(ret, k)
+		}
+	}
+
+	return ret
+}
+
+// public static Collection intersection(final Collection a, final Collection b) {
+// 	ArrayList list = new ArrayList();
+// 	Map mapa = getCardinalityMap(a);
+// 	Map mapb = getCardinalityMap(b);
+// 	Set elts = new HashSet(a);
+// 	elts.addAll(b);
+// 	Iterator it = elts.iterator();
+// 	while(it.hasNext()) {
+// 		Object obj = it.next();
+// 		for(int i=0,m=Math.min(getFreq(obj,mapa),getFreq(obj,mapb));i<m;i++) {
+// 			list.add(obj);
+// 		}
+// 	}
+// 	return list;
+// }
+
+// intersection
+// union
+// disjunction 交集的补集（析取）
+// substract 差集（扣除）
+
+func getCardinalityMap[E constraints.Ordered](data []E) map[E]int {
+
+	ret := make(map[E]int)
+	for _, e := range data {
+		_, exist := ret[e]
+		if exist {
+			ret[e] = ret[e] + 1
+		} else {
+			ret[e] = 1
+		}
+
+	}
+	return ret
 }
 
 // CompareTo Compares this object with the specified object for order.  Returns a

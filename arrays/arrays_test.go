@@ -23,6 +23,8 @@ var (
 
 	strArray = []string{"xml", "matthew", "xiemalin", "xml"}
 
+	strArray2 = []string{"xml", "hello", "world", "xml", "xiemalin"}
+
 	sortedIntArray = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 )
 
@@ -63,6 +65,17 @@ func TestSort(t *testing.T) {
 		})
 		So(strArray[0], ShouldEqual, "xml")
 	})
+}
+
+func ExampleSort() {
+	// order by person's age
+	persons = []Person{{"xml", 100}, {"matthew", 90}, {"xiemalin", 99}}
+	arrays.Sort(persons, func(e1, e2 Person) int {
+		return int(e1.Age) - int(e2.Age)
+	})
+	fmt.Println(persons)
+	//output:
+	//[{xml 100} {xiemalin 99} {matthew 90}]
 }
 
 func TestSortOrdered(t *testing.T) {
@@ -161,6 +174,18 @@ func TestBinarySearch(t *testing.T) {
 		})
 
 	})
+}
+
+func ExampleBinarySearch() {
+	sortedPersons = []Person{{"xml", 90}, {"matthew", 91}, {"xiemalin", 92}, {"xiemalin2", 93}, {"xiemalin3", 94}, {"xiemalin4", 95}, {"xiemalin5", 96}}
+	key := Person{"matthew", 90}
+	offset := arrays.BinarySearch(sortedPersons, key, func(e1, e2 Person) int {
+		return arrays.CompareTo(e1.Age, e2.Age)
+	})
+
+	fmt.Println(offset, sortedPersons[offset].Age)
+	//output:
+	//0 90
 }
 
 func TestBinarySearchOrdered(t *testing.T) {
@@ -548,5 +573,12 @@ func TestEqualWithOrdered(t *testing.T) {
 
 		equals = arrays.EqualWithOrdered(strArray, strArray)
 		So(equals, ShouldBeTrue)
+	})
+}
+
+func TestIntersectionOrdered(t *testing.T) {
+	Convey("Test IntersectionOrdered", t, func() {
+		result := arrays.IntersectionOrdered(strArray, strArray2)
+		So(len(result), ShouldEqual, 3) // xml xml xiemalin
 	})
 }
