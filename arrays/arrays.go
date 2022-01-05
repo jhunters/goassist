@@ -32,15 +32,6 @@ var (
 	Empty Null
 )
 
-// AddAll Adds all elements in the iteration to the given array. just like append.
-func AddAll[E any](data, other []E) []E {
-	size1, size2 := len(data), len(other)
-	ret := make([]E, size1+size2)
-	copy(ret[:size1], data)
-	copy(ret[size1:], other)
-	return ret
-}
-
 // Sort sort array object, sort order type is decided by cmp function.
 // example code:
 // type Student struct {
