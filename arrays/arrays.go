@@ -11,6 +11,7 @@ import (
 	"sort"
 
 	"github.com/jhunters/goassist/maps"
+	"github.com/jhunters/goassist/maths"
 )
 
 const (
@@ -30,6 +31,15 @@ type (
 var (
 	Empty Null
 )
+
+// AddAll Adds all elements in the iteration to the given array. just like append.
+func AddAll[E any](data, other []E) []E {
+	size1, size2 := len(data), len(other)
+	ret := make([]E, size1+size2)
+	copy(ret[:size1], data)
+	copy(ret[size1:], other)
+	return ret
+}
 
 // Sort sort array object, sort order type is decided by cmp function.
 // example code:
@@ -390,20 +400,6 @@ func Rotate[E any](data []E, distance int) {
 
 }
 
-func max[E constraints.Ordered](a, b E) E {
-	if a >= b {
-		return a
-	}
-	return b
-}
-
-func min[E constraints.Ordered](a, b E) E {
-	if a <= b {
-		return a
-	}
-	return b
-}
-
 func getFreq[E constraints.Ordered](key E, mapa map[E]int) int {
 	v, exist := mapa[key]
 	if !exist {
@@ -412,13 +408,27 @@ func getFreq[E constraints.Ordered](key E, mapa map[E]int) int {
 	return v
 }
 
-// private static final int getFreq(final Object obj, final Map freqMap) {
-// 	Integer count = (Integer) freqMap.get(obj);
-// 	if (count != null) {
-// 		return count.intValue();
-// 	}
-// 	return 0;
-// }
+// intersection
+// union
+// disjunction 交集的补集（析取）
+// substract 差集（扣除）
+
+func UnionOrdered[E constraints.Ordered](data, other []E) []E {
+	ret := make([]E, 0)
+
+	mapa := getCardinalityMap(data)
+	mapb := getCardinalityMap(other)
+
+	merged := maps.AddAll(mapa, mapb)
+	for k := range merged {
+		i := 0
+		for m := maths.Max(int(getFreq(k, mapa)), int(getFreq(k, mapb))); i < m; i++ {
+			ret = append(ret, k)
+		}
+	}
+
+	return ret
+}
 
 func IntersectionOrdered[E constraints.Ordered](data, other []E) []E {
 	ret := make([]E, 0)
@@ -429,34 +439,13 @@ func IntersectionOrdered[E constraints.Ordered](data, other []E) []E {
 	merged := maps.AddAll(mapa, mapb)
 	for k := range merged {
 		i := 0
-		for m := min(int(getFreq(k, mapa)), int(getFreq(k, mapb))); i < m; i++ {
+		for m := maths.Min(int(getFreq(k, mapa)), int(getFreq(k, mapb))); i < m; i++ {
 			ret = append(ret, k)
 		}
 	}
 
 	return ret
 }
-
-// public static Collection intersection(final Collection a, final Collection b) {
-// 	ArrayList list = new ArrayList();
-// 	Map mapa = getCardinalityMap(a);
-// 	Map mapb = getCardinalityMap(b);
-// 	Set elts = new HashSet(a);
-// 	elts.addAll(b);
-// 	Iterator it = elts.iterator();
-// 	while(it.hasNext()) {
-// 		Object obj = it.next();
-// 		for(int i=0,m=Math.min(getFreq(obj,mapa),getFreq(obj,mapb));i<m;i++) {
-// 			list.add(obj);
-// 		}
-// 	}
-// 	return list;
-// }
-
-// intersection
-// union
-// disjunction 交集的补集（析取）
-// substract 差集（扣除）
 
 func getCardinalityMap[E constraints.Ordered](data []E) map[E]int {
 

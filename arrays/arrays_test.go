@@ -23,7 +23,7 @@ var (
 
 	strArray = []string{"xml", "matthew", "xiemalin", "xml"}
 
-	strArray2 = []string{"xml", "hello", "world", "xml", "xiemalin"}
+	strArray2 = []string{"xml", "hello", "world", "xml", "xiemalin", "xml"}
 
 	sortedIntArray = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 )
@@ -519,6 +519,7 @@ func TestDisJoint(t *testing.T) {
 			return e1.Equal(e2)
 		})
 		So(hasNoSame, ShouldBeTrue)
+
 	})
 }
 
@@ -580,5 +581,31 @@ func TestIntersectionOrdered(t *testing.T) {
 	Convey("Test IntersectionOrdered", t, func() {
 		result := arrays.IntersectionOrdered(strArray, strArray2)
 		So(len(result), ShouldEqual, 3) // xml xml xiemalin
+
+		arrays.SortOrdered(result, true)
+		expected := []string{"xiemalin", "xml", "xml"}
+		So(result, ShouldResemble, expected)
+	})
+}
+
+func TestUnionOrdered(t *testing.T) {
+	Convey("Test UnionOrdered", t, func() {
+		result := arrays.UnionOrdered(strArray, strArray2)
+		So(len(result), ShouldEqual, 7) // hello world matthew xml xml xml xiemalin
+
+		arrays.SortOrdered(result, true)
+
+		expected := []string{"hello", "matthew", "world", "xiemalin", "xml", "xml", "xml"}
+		So(result, ShouldResemble, expected)
+	})
+}
+
+func TestAddAll(t *testing.T) {
+	Convey("Test AddAll", t, func() {
+		result := arrays.AddAll(strArray, strArray2)
+		So(len(result), ShouldEqual, 10) // hello world matthew xml xml xml xiemalin
+
+		expected := append(strArray, strArray2...)
+		So(result, ShouldResemble, expected)
 	})
 }
