@@ -91,16 +91,6 @@ func ShuffleRandom[E any](data []E, r *rand.Rand) {
 
 }
 
-// Subtract returns a new array containing data - other.
-func Subtract[E any](data, other []E, equal EQL[E]) []E {
-	ret := Clone(data)
-
-	for _, e := range other {
-		RemoveAll(ret, e, equal)
-	}
-	return ret
-}
-
 // Reverse Reverses the order of the elements in the specified
 func Reverse[E any](data []E) {
 	size := len(data)
@@ -164,30 +154,39 @@ func ContainsOrdered[E constraints.Ordered](data []E, key E) bool {
 }
 
 // Remove Removes the first same element value of the key from this array
-func Remove[E any](data []E, key E, equal EQL[E]) bool {
+func Remove[E any](data []E, key E, equal EQL[E]) ([]E, bool) {
 	return removeContional(data, key, equal, false)
 }
 
+func RemoveOrdered[E constraints.Ordered](data []E, key E) ([]E, bool) {
+	return removeContional(data, key, Equals[E], false)
+}
+
 // Remove Removes the all same element value of the key from this array
-func RemoveAll[E any](data []E, key E, equal EQL[E]) bool {
+func RemoveAll[E any](data []E, key E, equal EQL[E]) ([]E, bool) {
 	return removeContional(data, key, equal, true)
 }
 
-func removeContional[E any](data []E, key E, equal EQL[E], all bool) bool {
+// Remove Removes the all same element value of the key from this array
+func RemoveAllOrdered[E constraints.Ordered](data []E, key E) ([]E, bool) {
+	return removeContional(data, key, Equals[E], true)
+}
+
+func removeContional[E any](data []E, key E, equal EQL[E], all bool) ([]E, bool) {
 	size := len(data)
 	if size == 0 {
-		return false
+		return data, false
 	}
 	for i := 0; i < size; i++ {
 		if equal(data[i], key) {
 			data = remove(data, i)
 			if !all {
-				return true
+				return data, true
 			}
 		}
 	}
 
-	return false
+	return data, false
 }
 
 func remove[E any](data []E, i int) []E {
@@ -399,11 +398,8 @@ func getFreq[E constraints.Ordered](key E, mapa map[E]int) int {
 	return v
 }
 
-// intersection
-// union
-// disjunction 交集的补集（析取）
-// substract 差集（扣除）
-
+//  UnionOrdered returns a array containing the union
+//  of the given array.
 func UnionOrdered[E constraints.Ordered](data, other []E) []E {
 	ret := make([]E, 0)
 
@@ -421,6 +417,8 @@ func UnionOrdered[E constraints.Ordered](data, other []E) []E {
 	return ret
 }
 
+//  IntersectionOrdered returns a array containing the intersection
+//  of the given array.
 func IntersectionOrdered[E constraints.Ordered](data, other []E) []E {
 	ret := make([]E, 0)
 
@@ -433,6 +431,46 @@ func IntersectionOrdered[E constraints.Ordered](data, other []E) []E {
 		for m := maths.Min(int(getFreq(k, mapa)), int(getFreq(k, mapb))); i < m; i++ {
 			ret = append(ret, k)
 		}
+	}
+
+	return ret
+}
+
+//  DisjunctionOrdered returns a array containing the exclusive disjunction
+//  (symmetric difference) of the given array
+func DisjunctionOrdered[E constraints.Ordered](data, other []E) []E {
+	ret := make([]E, 0)
+
+	mapa := getCardinalityMap(data)
+	mapb := getCardinalityMap(other)
+
+	merged := maps.AddAll(mapa, mapb)
+	for k := range merged {
+		i := 0
+		m := maths.Max(int(getFreq(k, mapa)), int(getFreq(k, mapb))) - maths.Min(int(getFreq(k, mapa)), int(getFreq(k, mapb)))
+		for ; i < m; i++ {
+			ret = append(ret, k)
+		}
+	}
+
+	return ret
+}
+
+// Subtract returns a new array containing data - other.
+func Subtract[E any](data, other []E, equal EQL[E]) []E {
+	ret := Clone(data)
+
+	for _, e := range other {
+		ret, _ = Remove(ret, e, equal)
+	}
+	return ret
+}
+
+// SubtractOrdered returns a new array containing data - other.
+func SubtractOrdered[E constraints.Ordered](data, other []E) []E {
+	ret := Clone(data)
+	for _, v := range other {
+		ret, _ = RemoveOrdered(ret, v)
 	}
 
 	return ret

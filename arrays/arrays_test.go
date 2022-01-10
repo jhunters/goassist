@@ -597,5 +597,32 @@ func TestUnionOrdered(t *testing.T) {
 
 		expected := []string{"hello", "matthew", "world", "xiemalin", "xml", "xml", "xml"}
 		So(result, ShouldResemble, expected)
+
+	})
+}
+
+func TestDisjunctionOrdered(t *testing.T) {
+	Convey("Test DisjunctionOrdered", t, func() {
+		result := arrays.DisjunctionOrdered(strArray, strArray2)
+		So(len(result), ShouldEqual, 4) // hello world matthew xml xml xml xiemalin
+
+		arrays.SortOrdered(result, true)
+
+		expected := []string{"hello", "matthew", "world", "xml"}
+		So(result, ShouldResemble, expected)
+
+	})
+}
+
+func TestSubtractOrdered(t *testing.T) {
+	Convey("Test SubtractOrdered", t, func() {
+		result := arrays.SubtractOrdered(strArray, strArray2)
+		So(len(result), ShouldEqual, 1) // hello world matthew xml xml xml xiemalin
+
+		arrays.SortOrdered(result, true)
+
+		expected := []string{"matthew"}
+		So(result, ShouldResemble, expected)
+
 	})
 }
