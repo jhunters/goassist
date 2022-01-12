@@ -73,14 +73,14 @@ func (s sortable[E]) Less(i, j int) bool {
 	return s.cmp(s.data[i], s.data[j]) >= 0
 }
 
-// Shuffle Randomly permutes the specified list using a default source of
+// Shuffle randomly permutes the specified list using a default source of
 // randomness.
 func Shuffle[E any](data []E) {
 	r := rand.New(rand.NewSource(int64(len(data))))
 	ShuffleRandom(data, r)
 }
 
-// ShuffleRandom Randomly permute the specified array using the specified source of
+// ShuffleRandom randomly permute the specified array using the specified source of
 //  randomness.
 func ShuffleRandom[E any](data []E, r *rand.Rand) {
 	size := len(data)
@@ -91,7 +91,7 @@ func ShuffleRandom[E any](data []E, r *rand.Rand) {
 
 }
 
-// Reverse Reverses the order of the elements in the specified
+// Reverse reverses the order of the elements in the specified
 func Reverse[E any](data []E) {
 	size := len(data)
 	mid := size >> 1
@@ -102,7 +102,7 @@ func Reverse[E any](data []E) {
 	}
 }
 
-// BinarySearch Searches the specified array for the specified value using the
+// BinarySearch searches the specified array for the specified value using the
 // binary search algorithm. return index of the search key
 // note that target array must be ordered
 func BinarySearch[E any](data []E, key E, cmp CMP[E]) int {
@@ -127,13 +127,13 @@ func BinarySearch[E any](data []E, key E, cmp CMP[E]) int {
 
 }
 
-// BinarySearch Searches the specified array for the specified value using the
+// BinarySearch searches the specified array for the specified value using the
 // binary search algorithm. return index of the search key
 func BinarySearchOrdered[E constraints.Ordered](data []E, key E) int {
 	return BinarySearch(data, key, CompareTo[E])
 }
 
-// Contains Returns <tt>true</tt> if this array contains the specified element.
+// Contains returns <tt>true</tt> if this array contains the specified element.
 func Contains[E any](data []E, key E, equal EQL[E]) bool {
 	size := len(data)
 	if size == 0 {
@@ -148,21 +148,42 @@ func Contains[E any](data []E, key E, equal EQL[E]) bool {
 	return false
 }
 
-// Contains Returns <tt>true</tt> if this array contains the specified element.
+// Contains returns <tt>true</tt> if this array contains the specified element.
 func ContainsOrdered[E constraints.Ordered](data []E, key E) bool {
 	return Contains(data, key, Equals[E])
 }
 
-// Remove Removes the first same element value of the key from this array
+// ContainsAny returns if any elements from other exist in this array
+func ContainsAny[E any](data, other []E, equal EQL[E]) bool {
+	size := len(other)
+	if size == 0 {
+		return false
+	}
+	for i := 0; i < size; i++ {
+		if Contains(data, other[i], equal) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// ContainsAny returns if any elements from other exist in this array
+func ContainsAnyOrdered[E constraints.Ordered](data, other []E) bool {
+	return ContainsAny(data, other, Equals[E])
+}
+
+// Remove removes the first same element value of the key from this array
 func Remove[E any](data []E, key E, equal EQL[E]) ([]E, bool) {
 	return removeContional(data, key, equal, false)
 }
 
+// RemoveOrdered  removes the first same element value of the key from this array
 func RemoveOrdered[E constraints.Ordered](data []E, key E) ([]E, bool) {
 	return removeContional(data, key, Equals[E], false)
 }
 
-// Remove Removes the all same element value of the key from this array
+// Remove removes the all same element value of the key from this array
 func RemoveAll[E any](data []E, key E, equal EQL[E]) ([]E, bool) {
 	return removeContional(data, key, equal, true)
 }
@@ -190,11 +211,14 @@ func removeContional[E any](data []E, key E, equal EQL[E], all bool) ([]E, bool)
 }
 
 func remove[E any](data []E, i int) []E {
-	if i < len(data)-1 {
-		// 复制后面的值到当前i的坐标，此时i坐标值已经被覆盖
+	size := len(data)
+	if i >= size || i < 0 { // out of index, do nothing
+		return data
+	}
+
+	if i < size-1 {
 		copy(data[i:], data[i+1:])
 	}
-	// 去掉最后坐标的值
 	return data[:len(data)-1]
 }
 
