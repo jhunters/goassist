@@ -26,6 +26,9 @@ type (
 	EQL[E any] func(E, E) bool
 
 	Null struct{}
+
+	// Evaluate use the specified parameter to perform a test that returns true or false.
+	Evaluate[E any] func(E) bool
 )
 
 var (
@@ -306,6 +309,18 @@ func EqualWith[E any](data, other []E, euqal EQL[E]) bool {
 func EqualWithOrdered[E constraints.Ordered](data, other []E) bool {
 	return EqualWith(data, other, Equals[E])
 
+}
+
+// Filter to filter target array by specified tester.
+func Filter[E any](data []E, evaluate Evaluate[E]) []E {
+	ret := make([]E, 0)
+	for _, v := range data {
+		if !evaluate(v) {
+			ret = append(ret, v)
+		}
+	}
+
+	return ret
 }
 
 // IndexOfSubArrayReturns the starting position of the first occurrence of the specified

@@ -14,6 +14,12 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
+const (
+	N1 = "xml"
+	N2 = "matthew"
+	N3 = "xiemalin"
+)
+
 var (
 	persons = []Person{{"xml", 100}, {"matthew", 90}, {"xiemalin", 99}}
 
@@ -623,6 +629,42 @@ func TestSubtractOrdered(t *testing.T) {
 
 		expected := []string{"matthew"}
 		So(result, ShouldResemble, expected)
+
+	})
+}
+
+func TestFilter(t *testing.T) {
+	Convey("Test Filter", t, func() {
+
+		Convey("Test Filter struct type", func() {
+
+			result := arrays.Filter(persons, func(person Person) bool {
+				return person.Age < 100
+			})
+
+			So(len(result), ShouldEqual, 1) // hello world matthew xml xml xml xiemalin
+			So(result[0].Name, ShouldEqual, N1)
+		})
+
+		Convey("Test Filter struct type without match filter condition", func() {
+
+			result := arrays.Filter(persons, func(person Person) bool {
+				return person.Age > 100
+			})
+
+			So(len(result), ShouldEqual, 3) // hello world matthew xml xml xml xiemalin
+			So(result[0].Name, ShouldEqual, N1)
+		})
+
+		Convey("Test Filter ordered type", func() {
+
+			result := arrays.Filter(strArray, func(s string) bool {
+				return s != N1
+			})
+
+			So(len(result), ShouldEqual, 2) // hello world matthew xml xml xml xiemalin
+			So(result[0], ShouldEqual, N1)
+		})
 
 	})
 }
