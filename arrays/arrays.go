@@ -496,7 +496,7 @@ func DisjunctionOrdered[E constraints.Ordered](data, other []E) []E {
 }
 
 // Subtract returns a new array containing data - other.
-func Subtract[E any](data, other []E, equal EQL[E]) []E {
+func Substract[E any](data, other []E, equal EQL[E]) []E {
 	ret := Clone(data)
 
 	for _, e := range other {
@@ -506,7 +506,7 @@ func Subtract[E any](data, other []E, equal EQL[E]) []E {
 }
 
 // SubtractOrdered returns a new array containing data - other.
-func SubtractOrdered[E constraints.Ordered](data, other []E) []E {
+func SubstractOrdered[E constraints.Ordered](data, other []E) []E {
 	ret := Clone(data)
 	for _, v := range other {
 		ret, _ = RemoveOrdered(ret, v)

@@ -622,7 +622,7 @@ func TestDisjunctionOrdered(t *testing.T) {
 
 func TestSubtractOrdered(t *testing.T) {
 	Convey("Test SubtractOrdered", t, func() {
-		result := arrays.SubtractOrdered(strArray, strArray2)
+		result := arrays.SubstractOrdered(strArray, strArray2)
 		So(len(result), ShouldEqual, 1) // hello world matthew xml xml xml xiemalin
 
 		arrays.SortOrdered(result, true)
