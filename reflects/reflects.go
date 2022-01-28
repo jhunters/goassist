@@ -35,7 +35,7 @@ func TypeOf(t interface{}) (reflect.Type, bool) {
 	return v, isPtr
 }
 
-// GetMethods returns suitable methods of typ
+// GetMethods returns suitable methods of type
 func GetMethods(typ reflect.Type) map[string]*reflect.Method {
 	methods := make(map[string]*reflect.Method)
 	for m := 0; m < typ.NumMethod(); m++ {
@@ -72,7 +72,7 @@ func CallMethod(rcvr interface{}, method *reflect.Method, params ...interface{})
 func CallMethodName(rcvr interface{}, methodName string, params ...interface{}) ([]reflect.Value, error) {
 
 	typ := reflect.TypeOf(rcvr)
-
+	fmt.Println(typ.NumMethod())
 	for m := 0; m < typ.NumMethod(); m++ {
 		method := typ.Method(m)
 		mname := method.Name
