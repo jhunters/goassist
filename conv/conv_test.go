@@ -73,6 +73,9 @@ func TestFormatInt(t *testing.T) {
 		format = conv.FormatInt(smartUnit64, 2)
 		So(format, ShouldEqual, strconv.FormatUint(smartUnit64, 2))
 
+		var sint int8 = 10
+		format = conv.FormatInt(sint, 10)
+		So(format, ShouldEqual, strconv.FormatInt(int64(sint), 10))
 	})
 }
 
