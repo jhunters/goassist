@@ -46,6 +46,7 @@ func (s *Student) ChangeName(name string) {
 
 func (s Student) ChangeName2(name string) {
 	s.Name = name
+	fmt.Println("print at ChangeName2", s.Name)
 }
 
 func (s *Student) Greet(greeting I) string {
@@ -57,13 +58,13 @@ func (s *Student) GreetWithOption(greeting I, option string) string {
 }
 
 func TestCase(t *testing.T) {
-	// s := Student{"matthew"}
-	// s.ChangeName2("xml")
-	// fmt.Println(s.GetName()) // print  matthew   value ref way just copy a  new struct object
+	s := Student{"matthew"}
+	s.ChangeName2("xml")
+	fmt.Println(s.GetName()) // print  matthew   value ref way just copy a  new struct object
 
-	// s2 := &Student{"matthew"}
-	// s2.ChangeName2("xml")
-	// fmt.Println(s2.GetName()) // print  xml   ptr ref way
+	s2 := &Student{"matthew"}
+	s2.ChangeName("xml")
+	fmt.Println(s2.GetName()) // print  xml   ptr ref way
 
 	// ptr := unsafe.Pointer(s2)
 	// fmt.Println(ptr)
@@ -78,7 +79,7 @@ func TestCase(t *testing.T) {
 	arr2 := (*[0x7FFFFFFF]int)(unsafe.Pointer(&arr[0])) // 把cap大小设置了0x7FFFFFFF， 表示可以越界读到更多内容
 	fmt.Println(arr2[:2])
 
-	fmt.Println(0x7FFFFFFF)
+	fmt.Println(0x7FFFFFFF, len(arr2))
 }
 
 func TestValueOf(t *testing.T) {

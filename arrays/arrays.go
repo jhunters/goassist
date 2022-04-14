@@ -6,10 +6,10 @@
 package arrays
 
 import (
-	"constraints"
 	"math/rand"
 	"sort"
 
+	"github.com/jhunters/goassist/generic"
 	"github.com/jhunters/goassist/maps"
 	"github.com/jhunters/goassist/maths"
 )
@@ -49,12 +49,12 @@ func Sort[E any](data []E, cmp CMP[E]) {
 	sort.Sort(sortobject)
 }
 
-// Sort sort array object by order type. for more details pls visit constraints.Ordered.
+// Sort sort array object by order type. for more details pls visit generic.Ordered.
 // asc if true means by ascending order
 // example code:
 // strArray := []string{"xml", "matthew"， "matt", "xiemalin"}
 // SortOrdered(strArray, true)
-func SortOrdered[E constraints.Ordered](data []E, asc bool) {
+func SortOrdered[E generic.Ordered](data []E, asc bool) {
 	sortobject := sortable[E]{data: data, cmp: func(e1, e2 E) int {
 		ord := -1
 		if !asc {
@@ -132,7 +132,7 @@ func BinarySearch[E any](data []E, key E, cmp CMP[E]) int {
 
 // BinarySearch searches the specified array for the specified value using the
 // binary search algorithm. return index of the search key
-func BinarySearchOrdered[E constraints.Ordered](data []E, key E) int {
+func BinarySearchOrdered[E generic.Ordered](data []E, key E) int {
 	return BinarySearch(data, key, CompareTo[E])
 }
 
@@ -152,7 +152,7 @@ func Contains[E any](data []E, key E, equal EQL[E]) bool {
 }
 
 // Contains returns <tt>true</tt> if this array contains the specified element.
-func ContainsOrdered[E constraints.Ordered](data []E, key E) bool {
+func ContainsOrdered[E generic.Ordered](data []E, key E) bool {
 	return Contains(data, key, Equals[E])
 }
 
@@ -172,7 +172,7 @@ func ContainsAny[E any](data, other []E, equal EQL[E]) bool {
 }
 
 // ContainsAny returns if any elements from other exist in this array
-func ContainsAnyOrdered[E constraints.Ordered](data, other []E) bool {
+func ContainsAnyOrdered[E generic.Ordered](data, other []E) bool {
 	return ContainsAny(data, other, Equals[E])
 }
 
@@ -182,7 +182,7 @@ func Remove[E any](data []E, key E, equal EQL[E]) ([]E, bool) {
 }
 
 // RemoveOrdered  removes the first same element value of the key from this array
-func RemoveOrdered[E constraints.Ordered](data []E, key E) ([]E, bool) {
+func RemoveOrdered[E generic.Ordered](data []E, key E) ([]E, bool) {
 	return removeContional(data, key, Equals[E], false)
 }
 
@@ -192,7 +192,7 @@ func RemoveAll[E any](data []E, key E, equal EQL[E]) ([]E, bool) {
 }
 
 // Remove Removes the all same element value of the key from this array
-func RemoveAllOrdered[E constraints.Ordered](data []E, key E) ([]E, bool) {
+func RemoveAllOrdered[E generic.Ordered](data []E, key E) ([]E, bool) {
 	return removeContional(data, key, Equals[E], true)
 }
 
@@ -244,7 +244,7 @@ func Min[E any](data []E, cmp CMP[E]) (E, int) {
 }
 
 // MinOrdered Returns the minimum element and position of the given array
-func MinOrdered[E constraints.Ordered](data []E) (E, int) {
+func MinOrdered[E generic.Ordered](data []E) (E, int) {
 	return Min(data, func(e1, e2 E) int {
 		return CompareTo(e1, e2)
 	})
@@ -268,7 +268,7 @@ func Max[E any](data []E, cmp CMP[E]) (E, int) {
 }
 
 // MaxOrdered Returns the maximum element and position of the given array
-func MaxOrdered[E constraints.Ordered](data []E) (E, int) {
+func MaxOrdered[E generic.Ordered](data []E) (E, int) {
 	return Max(data, CompareTo[E])
 }
 
@@ -286,7 +286,7 @@ func ReplaceAll[E any](data []E, oldVal, newVal E, euqal EQL[E]) {
 }
 
 // ReplaceOrderedAll Replaces all occurrences of one specified value in a array with another
-func ReplaceOrderedAll[E constraints.Ordered](data []E, oldVal, newVal E) {
+func ReplaceOrderedAll[E generic.Ordered](data []E, oldVal, newVal E) {
 	ReplaceAll(data, oldVal, newVal, Equals[E])
 }
 
@@ -306,7 +306,7 @@ func EqualWith[E any](data, other []E, euqal EQL[E]) bool {
 }
 
 // EqualWithOrdered to theck all elements of the two array are same
-func EqualWithOrdered[E constraints.Ordered](data, other []E) bool {
+func EqualWithOrdered[E generic.Ordered](data, other []E) bool {
 	return EqualWith(data, other, Equals[E])
 
 }
@@ -348,7 +348,7 @@ func IndexOfSubArray[E any](data, sub []E, euqal EQL[E]) int {
 
 // IndexOfSubOrderedArray the starting position of the first occurrence of the specified
 //  target array within the specified source array
-func IndexOfSubOrderedArray[E constraints.Ordered](data, sub []E) int {
+func IndexOfSubOrderedArray[E generic.Ordered](data, sub []E) int {
 	return IndexOfSubArray(data, sub, Equals[E])
 }
 
@@ -379,7 +379,7 @@ func LastIndexOfSubArray[E any](data, sub []E, euqal EQL[E]) int {
 
 // LastIndexOfSubArray the last starting position of the first occurrence of the specified
 //  target array within the specified source array
-func LastIndexOfSubOrderedArray[E constraints.Ordered](data, sub []E) int {
+func LastIndexOfSubOrderedArray[E generic.Ordered](data, sub []E) int {
 	return LastIndexOfSubArray(data, sub, Equals[E])
 }
 
@@ -402,7 +402,7 @@ func Disjoint[E any](data []E, other []E, euqal EQL[E]) bool {
 
 // Disjoint Returns true if the two specified collections have no
 // elements in common.
-func DisjointOrdered[E constraints.Ordered](data []E, other []E) bool {
+func DisjointOrdered[E generic.Ordered](data []E, other []E) bool {
 	return Disjoint(data, other, Equals[E])
 }
 
@@ -429,7 +429,7 @@ func Rotate[E any](data []E, distance int) {
 
 }
 
-func getFreq[E constraints.Ordered](key E, mapa map[E]int) int {
+func getFreq[E generic.Ordered](key E, mapa map[E]int) int {
 	v, exist := mapa[key]
 	if !exist {
 		return 0
@@ -439,7 +439,7 @@ func getFreq[E constraints.Ordered](key E, mapa map[E]int) int {
 
 //  UnionOrdered returns a array containing the union
 //  of the given array.
-func UnionOrdered[E constraints.Ordered](data, other []E) []E {
+func UnionOrdered[E generic.Ordered](data, other []E) []E {
 	ret := make([]E, 0)
 
 	mapa := getCardinalityMap(data)
@@ -458,7 +458,7 @@ func UnionOrdered[E constraints.Ordered](data, other []E) []E {
 
 //  IntersectionOrdered returns a array containing the intersection
 //  of the given array.
-func IntersectionOrdered[E constraints.Ordered](data, other []E) []E {
+func IntersectionOrdered[E generic.Ordered](data, other []E) []E {
 	ret := make([]E, 0)
 
 	mapa := getCardinalityMap(data)
@@ -477,7 +477,7 @@ func IntersectionOrdered[E constraints.Ordered](data, other []E) []E {
 
 //  DisjunctionOrdered returns a array containing the exclusive disjunction
 //  (symmetric difference) of the given array
-func DisjunctionOrdered[E constraints.Ordered](data, other []E) []E {
+func DisjunctionOrdered[E generic.Ordered](data, other []E) []E {
 	ret := make([]E, 0)
 
 	mapa := getCardinalityMap(data)
@@ -506,7 +506,7 @@ func Substract[E any](data, other []E, equal EQL[E]) []E {
 }
 
 // SubtractOrdered returns a new array containing data - other.
-func SubstractOrdered[E constraints.Ordered](data, other []E) []E {
+func SubstractOrdered[E generic.Ordered](data, other []E) []E {
 	ret := Clone(data)
 	for _, v := range other {
 		ret, _ = RemoveOrdered(ret, v)
@@ -515,7 +515,7 @@ func SubstractOrdered[E constraints.Ordered](data, other []E) []E {
 	return ret
 }
 
-func getCardinalityMap[E constraints.Ordered](data []E) map[E]int {
+func getCardinalityMap[E generic.Ordered](data []E) map[E]int {
 
 	ret := make(map[E]int)
 	for _, e := range data {
@@ -533,7 +533,7 @@ func getCardinalityMap[E constraints.Ordered](data []E) map[E]int {
 // CompareTo Compares this object with the specified object for order.  Returns a
 //    negative integer, zero, or a positive integer as this object is less
 //     than, equal to, or greater than the specified object.
-func CompareTo[E constraints.Ordered](e1, e2 E) int {
+func CompareTo[E generic.Ordered](e1, e2 E) int {
 	if e1 > e2 {
 		return 1
 	} else if e1 < e2 {
@@ -551,7 +551,7 @@ func Clone[E any](data []E) []E {
 }
 
 // Equals to compare two value is equal
-func Equals[E constraints.Ordered](e1, e2 E) bool {
+func Equals[E generic.Ordered](e1, e2 E) bool {
 	return e1 == e2
 }
 

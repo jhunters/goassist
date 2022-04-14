@@ -5,10 +5,10 @@
  */
 package maps
 
-import "constraints"
+import "github.com/jhunters/goassist/generic"
 
 // Clone copy all key and value to a new map
-func Clone[E constraints.Ordered, V any](mapa map[E]V) map[E]V {
+func Clone[E generic.Ordered, V any](mapa map[E]V) map[E]V {
 	size := len(mapa)
 	ret := make(map[E]V, size)
 	for k, v := range mapa {
@@ -18,7 +18,7 @@ func Clone[E constraints.Ordered, V any](mapa map[E]V) map[E]V {
 }
 
 // AddAll merge the target mapb into mapa
-func AddAll[E constraints.Ordered, V any](mapa, mapb map[E]V) map[E]V {
+func AddAll[E generic.Ordered, V any](mapa, mapb map[E]V) map[E]V {
 	ret := Clone(mapa)
 	for k, v := range mapb {
 		_, exist := ret[k]
