@@ -108,17 +108,17 @@ func TestTypeOf(t *testing.T) {
 	})
 }
 
-func TestCallMethod(t *testing.T) {
+func TestCallMethodByName(t *testing.T) {
 	s := &Student{"matthew"}
 	Convey("TestCallMethod with no parameter", t, func() {
-		result, err := reflects.CallMethodName(s, "GetName") // 问题， 反射下  地址引用方式，可以调用值引用方式的方法，但返过来，不行
+		result, err := reflects.CallMethodByName(s, "GetName") // 问题， 反射下  地址引用方式，可以调用值引用方式的方法，但返过来，不行
 		So(err, ShouldBeNil)
 
 		So(result[0].Interface(), ShouldEqual, s.GetName())
 	})
 
 	Convey("TestCallMethod with no such method name", t, func() {
-		result, err := reflects.CallMethodName(s, "NoSuchMethod")
+		result, err := reflects.CallMethodByName(s, "NoSuchMethod")
 		So(err, ShouldNotBeNil)
 
 		So(result, ShouldBeNil)
@@ -127,7 +127,7 @@ func TestCallMethod(t *testing.T) {
 	Convey("TestCallMethod with one parameter", t, func() {
 
 		var i I = &Value{"Hello"}
-		result, err := reflects.CallMethodName(s, "Greet", i)
+		result, err := reflects.CallMethodByName(s, "Greet", i)
 		So(err, ShouldBeNil)
 
 		So(result[0].Interface(), ShouldEqual, s.Greet(i))
@@ -135,7 +135,7 @@ func TestCallMethod(t *testing.T) {
 
 	Convey("TestCallMethod with two parameters", t, func() {
 		var i I = &Value{"Hello"}
-		result, err := reflects.CallMethodName(s, "GreetWithOption", i, "name")
+		result, err := reflects.CallMethodByName(s, "GreetWithOption", i, "name")
 		So(err, ShouldBeNil)
 
 		So(result[0].Interface(), ShouldEqual, s.GreetWithOption(i, "name"))

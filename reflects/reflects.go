@@ -8,6 +8,7 @@ package reflects
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -69,7 +70,7 @@ func CallMethod(rcvr interface{}, method *reflect.Method, params ...interface{})
 }
 
 // CallMethodName
-func CallMethodName(rcvr interface{}, methodName string, params ...interface{}) ([]reflect.Value, error) {
+func CallMethodByName(rcvr interface{}, methodName string, params ...interface{}) ([]reflect.Value, error) {
 
 	typ := reflect.TypeOf(rcvr)
 	fmt.Println(typ.NumMethod())
@@ -83,4 +84,69 @@ func CallMethodName(rcvr interface{}, methodName string, params ...interface{}) 
 	}
 
 	return nil, fmt.Errorf("method name '%s' not found", methodName)
+}
+
+// SetSimpleValue set value to target obj and field name. return true if set success
+// not supports array, slice, struct and map type
+func SetSimpleValue(rcvr interface{}, fieldName string, value string) bool {
+	v := reflect.ValueOf(rcvr)
+	t := reflect.TypeOf(rcvr)
+
+	if f, ok := t.FieldByName(fieldName); ok {
+		fvalue := v.FieldByIndex(f.Index)
+
+		if !fvalue.CanSet() {
+			return false
+		}
+
+		switch fvalue.Kind() {
+		case reflect.Int32:
+			v, _ := strconv.Atoi(value)
+			fvalue.Set(reflect.ValueOf(int32(v)))
+		case reflect.Int16:
+			v, _ := strconv.Atoi(value)
+			fvalue.Set(reflect.ValueOf(int16(v)))
+		case reflect.Int8:
+			v, _ := strconv.Atoi(value)
+			fvalue.Set(reflect.ValueOf(int8(v)))
+		case reflect.Int64:
+			v, _ := strconv.Atoi(value)
+			fvalue.Set(reflect.ValueOf(int64(v)))
+		case reflect.Int:
+			v, _ := strconv.Atoi(value)
+			fvalue.Set(reflect.ValueOf(int(v)))
+		case reflect.Uint8:
+			v, _ := strconv.Atoi(value)
+			fvalue.Set(reflect.ValueOf(uint8(v)))
+		case reflect.Uint:
+			v, _ := strconv.Atoi(value)
+			fvalue.Set(reflect.ValueOf(uint(v)))
+		case reflect.Uint16:
+			v, _ := strconv.Atoi(value)
+			fvalue.Set(reflect.ValueOf(uint16(v)))
+		case reflect.Uint32:
+			v, _ := strconv.Atoi(value)
+			fvalue.Set(reflect.ValueOf(uint32(v)))
+		case reflect.Uint64:
+			v, _ := strconv.Atoi(value)
+			fvalue.Set(reflect.ValueOf(uint64(v)))
+		case reflect.Float32:
+			v, _ := strconv.ParseFloat(value, 32)
+			fvalue.Set(reflect.ValueOf(float32(v)))
+		case reflect.Float64:
+			v, _ := strconv.ParseFloat(value, 64)
+			fvalue.Set(reflect.ValueOf(v))
+		case reflect.String:
+			fvalue.SetString(value)
+		case reflect.Bool:
+			if strings.Compare(value, "1") == 0 || strings.Compare(strings.ToLower(value), "true") == 0 {
+				fvalue.SetBool(true)
+			} else {
+				fvalue.SetBool(false)
+			}
+		}
+		return true
+	}
+
+	return false
 }
