@@ -18,14 +18,14 @@ type Simple struct {
 	other2 bool
 }
 
-func TestConvertStructToArray(t *testing.T) {
+func TestStructMappingToArray(t *testing.T) {
 
 	Convey("test struct convert to array", t, func() {
 
 		s := Simple{age: 100}
 		size := unsafe.Sizeof(s)
 
-		ret := unsafes.ConvertStructToArray(s)
+		ret := unsafes.StructMappingToArray(s)
 		So(len(ret), ShouldEqual, size)
 		buff := bytes.NewBuffer(ret)
 		var age int64
@@ -35,14 +35,14 @@ func TestConvertStructToArray(t *testing.T) {
 	})
 }
 
-func TestConvertArrayToStruct(t *testing.T) {
+func TestArrayMappingToStruct(t *testing.T) {
 	convey.Convey("test convert array to struct ", t, func() {
 
 		s := Simple{age: 100}
 		size := unsafe.Sizeof(s)
 
 		arr := make([]byte, size)
-		result := unsafes.ConvertArrayToStruct[Simple](arr)
+		result := unsafes.ArrayMappingToStruct[Simple](arr)
 
 		binary.LittleEndian.PutUint64(arr, 1000)
 		So(1000, ShouldEqual, result.age)
