@@ -73,6 +73,16 @@ func TestSort(t *testing.T) {
 	})
 }
 
+func BenchmarkSort(b *testing.B) {
+	persons := arrays.Clone(persons)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		arrays.Sort(persons, func(e1, e2 Person) int {
+			return int(e1.Age) - int(e2.Age)
+		})
+	}
+}
+
 func ExampleSort() {
 	// order by person's age
 	persons = []Person{{"xml", 100}, {"matthew", 90}, {"xiemalin", 99}}

@@ -52,7 +52,7 @@ func SafeAddUnsigned[E generic.Unsigned](a, b E) (E, error) {
 		return ret, nil
 	}
 
-	if ret == 0 {
+	if ret < a || ret < b {
 		return ret, fmt.Errorf("%v plus %v occures overflow.", a, b)
 	}
 	return ret, nil
@@ -66,6 +66,15 @@ func SafeSubstract[E generic.Signed](a, b E) (E, error) {
 		return ret, nil
 	}
 
+	return ret, fmt.Errorf("%v substract %v occures overflow.", a, b)
+}
+
+// SafeSubstractUnsigned to proccess substract action if overflow return error
+func SafeSubstractUnsigned[E generic.Unsigned](a, b E) (E, error) {
+	ret := a - b
+	if a >= b {
+		return ret, nil
+	}
 	return ret, fmt.Errorf("%v substract %v occures overflow.", a, b)
 }
 

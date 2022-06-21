@@ -52,9 +52,38 @@ func GetMethods(typ reflect.Type) map[string]*reflect.Method {
 	return methods
 }
 
-// CallMethod
-func CallMethod(rcvr interface{}, method *reflect.Method, params ...interface{}) ([]reflect.Value, error) {
+// CallMethodByName 根据方法名，入参数，反射调用对应方法
+func CallMethodByName(rcvr interface{}, methodName string, params ...interface{}) ([]reflect.Value, error) {
 
+	typ := reflect.TypeOf(rcvr)
+
+	kind := typ.Kind()
+	if kind == reflect.Pointer { // 处理指针类型
+		kind = typ.Elem().Kind()
+	}
+
+	if kind != reflect.Struct && kind != reflect.Interface {
+		return nil, fmt.Errorf("param 'rcvr' should be struct or interface type.")
+	}
+
+	// 根据名称查找方法
+	for m := 0; m < typ.NumMethod(); m++ {
+		method := typ.Method(m)
+		mname := method.Name
+
+		if strings.EqualFold(mname, methodName) {
+			return callMethod(rcvr, &method, params...)
+		}
+	}
+
+	// 如果方法未找到，返回nil
+	return nil, fmt.Errorf("method name '%s' not found", methodName)
+}
+
+// CallMethod 根据方法反射类型，入参数，反射调用对应方法
+func callMethod(rcvr interface{}, method *reflect.Method, params ...interface{}) ([]reflect.Value, error) {
+
+	// 封装入参
 	paramSize := len(params) + 1
 	paramValues := make([]reflect.Value, paramSize)
 	paramValues[0] = reflect.ValueOf(rcvr)
@@ -64,26 +93,10 @@ func CallMethod(rcvr interface{}, method *reflect.Method, params ...interface{})
 		i++
 	}
 
+	// 调用 反射的Call方法，进行调用
 	returnValues := method.Func.Call(paramValues)
 
 	return returnValues, nil
-}
-
-// CallMethodName
-func CallMethodByName(rcvr interface{}, methodName string, params ...interface{}) ([]reflect.Value, error) {
-
-	typ := reflect.TypeOf(rcvr)
-	fmt.Println(typ.NumMethod())
-	for m := 0; m < typ.NumMethod(); m++ {
-		method := typ.Method(m)
-		mname := method.Name
-
-		if strings.EqualFold(mname, methodName) {
-			return CallMethod(rcvr, &method, params...)
-		}
-	}
-
-	return nil, fmt.Errorf("method name '%s' not found", methodName)
 }
 
 // SetSimpleValue set value to target obj and field name. return true if set success

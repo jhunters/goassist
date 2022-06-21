@@ -18,7 +18,7 @@ import (
 
 type callbackFn func(filename, path string, data []byte)
 
-func listFiles(dir, path string, callback callbackFn) error {
+func listFiles(dir string, callback callbackFn) error {
 
 	fi, err := os.Stat(dir)
 	if err != nil {
@@ -27,7 +27,7 @@ func listFiles(dir, path string, callback callbackFn) error {
 
 	if !fi.IsDir() {
 		data, _ := ioutil.ReadFile(dir)
-		callback(fi.Name(), path, data)
+		callback(fi.Name(), dir, data)
 		return nil
 	}
 
@@ -41,12 +41,12 @@ func listFiles(dir, path string, callback callbackFn) error {
 
 	for _, f := range directry {
 		if f.IsDir() {
-			listFiles(dir+"/"+f.Name(), path+"/"+f.Name(), callback)
+			listFiles(dir+"/"+f.Name(), callback)
 			continue
 		}
 
 		data, _ := ioutil.ReadFile(dir + "/" + f.Name())
-		callback(f.Name(), path, data)
+		callback(f.Name(), dir, data)
 	}
 	return nil
 }
@@ -91,7 +91,7 @@ func ZipAll(dir, zipfile, password string) error {
 	zipw := zip.NewWriter(buf)
 	defer zipw.Close()
 
-	listFiles(dir, "", func(filename, path string, data []byte) {
+	listFiles(dir, func(filename, path string, data []byte) {
 
 		w, err := zipw.Encrypt(path+"/"+filename, password, zip.StandardEncryption)
 

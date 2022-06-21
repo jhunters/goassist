@@ -25,7 +25,7 @@ func TestStructMappingToArray(t *testing.T) {
 		s := Simple{age: 100}
 		size := unsafe.Sizeof(s)
 
-		ret := unsafes.StructMappingToArray(s)
+		ret := unsafes.MappingToArray(s)
 		So(len(ret), ShouldEqual, size)
 		buff := bytes.NewBuffer(ret)
 		var age int64
@@ -42,7 +42,7 @@ func TestArrayMappingToStruct(t *testing.T) {
 		size := unsafe.Sizeof(s)
 
 		arr := make([]byte, size)
-		result := unsafes.ArrayMappingToStruct[Simple](arr)
+		result := unsafes.ArrayMapping[Simple](arr)
 
 		binary.LittleEndian.PutUint64(arr, 1000)
 		So(1000, ShouldEqual, result.age)

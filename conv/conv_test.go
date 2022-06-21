@@ -87,3 +87,11 @@ func TestAtoi(t *testing.T) {
 	v, err := strconv.Atoi("-100")
 	fmt.Println(v, err)
 }
+
+func TestToPrt(t *testing.T) {
+	Convey("TestToPrt", t, func() {
+		iPtr := conv.ToPtr(100)
+		So(*iPtr, ShouldEqual, 100)
+	})
+
+}
