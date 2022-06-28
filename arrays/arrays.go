@@ -7,7 +7,6 @@ package arrays
 
 import (
 	"math/rand"
-	"reflect"
 	"sort"
 
 	"github.com/jhunters/goassist/generic"
@@ -563,9 +562,4 @@ func CreateAndFill[E any](size int, defaultElementValue E) []E {
 		ret[i] = defaultElementValue
 	}
 	return ret
-}
-
-func IsByteType(v any) bool {
-	typ := reflect.TypeOf(v)
-	return typ.Kind() == reflect.Uint8
 }
