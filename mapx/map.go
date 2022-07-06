@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2022-01-05 13:01:14
  */
-package maps
+package mapx
 
 // Clone copy all key and value to a new map
 func Clone[E comparable, V any](mapa map[E]V) map[E]V {

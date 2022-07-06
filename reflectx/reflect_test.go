@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2022-01-21 11:48:16
  */
-package reflects_test
+package reflectx_test
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"testing"
 	"unsafe"
 
-	"github.com/jhunters/goassist/reflects"
+	"github.com/jhunters/goassist/reflectx"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -88,7 +88,7 @@ func TestValueOf(t *testing.T) {
 		i := int64(100)
 		iPtr := &i
 
-		v, isPtr := reflects.ValueOf(iPtr)
+		v, isPtr := reflectx.ValueOf(iPtr)
 		So(isPtr, ShouldBeTrue)
 		So(v, ShouldResemble, reflect.ValueOf(iPtr).Elem())
 		fmt.Println(v.String())
@@ -101,7 +101,7 @@ func TestTypeOf(t *testing.T) {
 		i := int64(100)
 		iPtr := &i
 
-		v, isPtr := reflects.TypeOf(iPtr)
+		v, isPtr := reflectx.TypeOf(iPtr)
 		So(isPtr, ShouldBeTrue)
 		So(v, ShouldResemble, reflect.TypeOf(iPtr).Elem())
 		fmt.Println(v.String())
@@ -111,14 +111,14 @@ func TestTypeOf(t *testing.T) {
 func TestCallMethodByName(t *testing.T) {
 	s := &Student{"matthew"}
 	Convey("TestCallMethod with no parameter", t, func() {
-		result, err := reflects.CallMethodByName(s, "GetName") // 问题， 反射下  地址引用方式，可以调用值引用方式的方法，但返过来，不行
+		result, err := reflectx.CallMethodByName(s, "GetName") // 问题， 反射下  地址引用方式，可以调用值引用方式的方法，但返过来，不行
 		So(err, ShouldBeNil)
 
 		So(result[0].Interface(), ShouldEqual, s.GetName())
 	})
 
 	Convey("TestCallMethod with no such method name", t, func() {
-		result, err := reflects.CallMethodByName(s, "NoSuchMethod")
+		result, err := reflectx.CallMethodByName(s, "NoSuchMethod")
 		So(err, ShouldNotBeNil)
 
 		So(result, ShouldBeNil)
@@ -127,7 +127,7 @@ func TestCallMethodByName(t *testing.T) {
 	Convey("TestCallMethod with one parameter", t, func() {
 
 		var i I = &Value{"Hello"}
-		result, err := reflects.CallMethodByName(s, "Greet", i)
+		result, err := reflectx.CallMethodByName(s, "Greet", i)
 		So(err, ShouldBeNil)
 
 		So(result[0].Interface(), ShouldEqual, s.Greet(i))
@@ -135,7 +135,7 @@ func TestCallMethodByName(t *testing.T) {
 
 	Convey("TestCallMethod with two parameters", t, func() {
 		var i I = &Value{"Hello"}
-		result, err := reflects.CallMethodByName(s, "GreetWithOption", i, "name")
+		result, err := reflectx.CallMethodByName(s, "GreetWithOption", i, "name")
 		So(err, ShouldBeNil)
 
 		So(result[0].Interface(), ShouldEqual, s.GreetWithOption(i, "name"))

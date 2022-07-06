@@ -1,4 +1,4 @@
-package unsafes_test
+package unsafex_test
 
 import (
 	"bytes"
@@ -6,7 +6,7 @@ import (
 	"testing"
 	"unsafe"
 
-	"github.com/jhunters/goassist/unsafes"
+	"github.com/jhunters/goassist/unsafex"
 	"github.com/smartystreets/goconvey/convey"
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -25,7 +25,7 @@ func TestStructMappingToArray(t *testing.T) {
 		s := Simple{age: 100}
 		size := unsafe.Sizeof(s)
 
-		ret := unsafes.MappingToArray(s)
+		ret := unsafex.MappingToArray(s)
 		So(len(ret), ShouldEqual, size)
 		buff := bytes.NewBuffer(ret)
 		var age int64
@@ -42,7 +42,7 @@ func TestArrayMappingToStruct(t *testing.T) {
 		size := unsafe.Sizeof(s)
 
 		arr := make([]byte, size)
-		result := unsafes.ArrayMapping[Simple](arr)
+		result := unsafex.ArrayMapping[Simple](arr)
 
 		binary.LittleEndian.PutUint64(arr, 1000)
 		So(1000, ShouldEqual, result.age)

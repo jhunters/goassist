@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/yeka/zip"
 )
@@ -41,11 +42,12 @@ func listFiles(dir string, callback callbackFn) error {
 
 	for _, f := range directry {
 		if f.IsDir() {
-			listFiles(dir+"/"+f.Name(), callback)
+
+			listFiles(filepath.Join(dir, f.Name()), callback)
 			continue
 		}
 
-		data, _ := ioutil.ReadFile(dir + "/" + f.Name())
+		data, _ := ioutil.ReadFile(filepath.Join(dir, f.Name()))
 		callback(f.Name(), dir, data)
 	}
 	return nil
@@ -74,7 +76,7 @@ func Unzip(file, password, outputdir string) error {
 			return err
 		}
 		r.Close()
-		err = ioutil.WriteFile(outputdir+"/"+f.Name, buf, fs.ModeAppend)
+		err = ioutil.WriteFile(filepath.Join(outputdir, f.Name), buf, fs.ModeAppend)
 		if err != nil {
 			return err
 		}
@@ -93,7 +95,7 @@ func ZipAll(dir, zipfile, password string) error {
 
 	listFiles(dir, func(filename, path string, data []byte) {
 
-		w, err := zipw.Encrypt(path+"/"+filename, password, zip.StandardEncryption)
+		w, err := zipw.Encrypt(filepath.Join(path, filename), password, zip.StandardEncryption)
 
 		if err != nil {
 			log.Fatal(err)

@@ -1,4 +1,4 @@
-package hash_test
+package hashx_test
 
 import (
 	"fmt"

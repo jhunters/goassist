@@ -1,4 +1,4 @@
-package containers_test
+package containerx_test
 
 import (
 	"container/list"
@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/jhunters/goassist/containers"
+	"github.com/jhunters/goassist/containerx"
 )
 
 func TestHeap(t *testing.T) {
@@ -16,7 +16,7 @@ func TestHeap(t *testing.T) {
 		name  string
 	}
 
-	h := containers.NewHeap([]Player{}, func(p1, p2 Player) int {
+	h := containerx.NewHeap([]Player{}, func(p1, p2 Player) int {
 		return p1.level - p2.level // level小的先出
 	})
 

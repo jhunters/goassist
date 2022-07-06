@@ -3,7 +3,7 @@
  * @Description: utility tools for reflect
  * @Date: 2022-01-21 11:43:49
  */
-package reflects
+package reflectx
 
 import (
 	"fmt"

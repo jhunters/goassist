@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2021-12-24 13:44:28
  */
-package arrays
+package arrayx
 
 import (
 	"math/rand"

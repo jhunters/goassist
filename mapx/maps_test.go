@@ -1,10 +1,10 @@
-package maps_test
+package mapx_test
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/jhunters/goassist/maps"
+	"github.com/jhunters/goassist/mapx"
 )
 
 func TestClone(t *testing.T) {
@@ -13,7 +13,7 @@ func TestClone(t *testing.T) {
 	m["hello"] = "world"
 	m["name"] = "matthew"
 
-	newM := maps.Clone(m)
+	newM := mapx.Clone(m)
 	for k, v := range newM {
 		fmt.Println(k, v)
 	}
