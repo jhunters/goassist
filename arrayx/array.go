@@ -10,8 +10,8 @@ import (
 	"sort"
 
 	"github.com/jhunters/goassist/generic"
-	"github.com/jhunters/goassist/maps"
-	"github.com/jhunters/goassist/maths"
+	"github.com/jhunters/goassist/mapx"
+	"github.com/jhunters/goassist/mathx"
 )
 
 const (
@@ -92,6 +92,15 @@ func ShuffleRandom[E any](data []E, r *rand.Rand) {
 		data[i], data[j] = data[j], data[i]
 	}
 
+}
+
+// Shuffle read element from slice
+func ShuffleRead[E any](data []E, reader func(e E)) {
+	size := len(data)
+	eleOrder := rand.Perm(size)
+	for _, k := range eleOrder {
+		reader(data[k])
+	}
 }
 
 // Reverse reverses the order of the elements in the specified
@@ -445,10 +454,10 @@ func UnionOrdered[E generic.Ordered](data, other []E) []E {
 	mapa := getCardinalityMap(data)
 	mapb := getCardinalityMap(other)
 
-	merged := maps.AddAll(mapa, mapb)
+	merged := mapx.AddAll(mapa, mapb)
 	for k := range merged {
 		i := 0
-		for m := maths.Max(int(getFreq(k, mapa)), int(getFreq(k, mapb))); i < m; i++ {
+		for m := mathx.Max(int(getFreq(k, mapa)), int(getFreq(k, mapb))); i < m; i++ {
 			ret = append(ret, k)
 		}
 	}
@@ -464,10 +473,10 @@ func IntersectionOrdered[E generic.Ordered](data, other []E) []E {
 	mapa := getCardinalityMap(data)
 	mapb := getCardinalityMap(other)
 
-	merged := maps.AddAll(mapa, mapb)
+	merged := mapx.AddAll(mapa, mapb)
 	for k := range merged {
 		i := 0
-		for m := maths.Min(int(getFreq(k, mapa)), int(getFreq(k, mapb))); i < m; i++ {
+		for m := mathx.Min(int(getFreq(k, mapa)), int(getFreq(k, mapb))); i < m; i++ {
 			ret = append(ret, k)
 		}
 	}
@@ -483,10 +492,10 @@ func DisjunctionOrdered[E generic.Ordered](data, other []E) []E {
 	mapa := getCardinalityMap(data)
 	mapb := getCardinalityMap(other)
 
-	merged := maps.AddAll(mapa, mapb)
+	merged := mapx.AddAll(mapa, mapb)
 	for k := range merged {
 		i := 0
-		m := maths.Max(int(getFreq(k, mapa)), int(getFreq(k, mapb))) - maths.Min(int(getFreq(k, mapa)), int(getFreq(k, mapb)))
+		m := mathx.Max(int(getFreq(k, mapa)), int(getFreq(k, mapb))) - mathx.Min(int(getFreq(k, mapa)), int(getFreq(k, mapb)))
 		for ; i < m; i++ {
 			ret = append(ret, k)
 		}

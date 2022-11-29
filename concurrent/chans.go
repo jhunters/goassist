@@ -1,12 +1,10 @@
 package concurrent
 
-import "log"
-
+// SafeChanClose to close chan for safty way. if channel is closed will retrun false
 func SafeChanClose[E any](c chan E) (ok bool) {
 	ok = true
 	defer func() {
 		if v := recover(); v != nil {
-			log.Println(v)
 			ok = false
 		}
 	}()
