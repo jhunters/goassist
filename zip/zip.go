@@ -14,44 +14,9 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/jhunters/goassist/filex"
 	"github.com/yeka/zip"
 )
-
-type callbackFn func(filename, path string, data []byte)
-
-func listFiles(dir string, callback callbackFn) error {
-
-	fi, err := os.Stat(dir)
-	if err != nil {
-		return err
-	}
-
-	if !fi.IsDir() {
-		data, _ := ioutil.ReadFile(dir)
-		callback(fi.Name(), dir, data)
-		return nil
-	}
-
-	f, err := os.Open(dir)
-	defer f.Close()
-
-	directry, err := ioutil.ReadDir(dir)
-	if err != nil {
-		return err
-	}
-
-	for _, f := range directry {
-		if f.IsDir() {
-
-			listFiles(filepath.Join(dir, f.Name()), callback)
-			continue
-		}
-
-		data, _ := ioutil.ReadFile(filepath.Join(dir, f.Name()))
-		callback(f.Name(), dir, data)
-	}
-	return nil
-}
 
 // Unzip unzip the target zip file to output directory
 func Unzip(file, password, outputdir string) error {
@@ -93,10 +58,8 @@ func ZipAll(dir, zipfile, password string) error {
 	zipw := zip.NewWriter(buf)
 	defer zipw.Close()
 
-	listFiles(dir, func(filename, path string, data []byte) {
-
+	filex.ListFiles(dir, func(filename, path string, data []byte) {
 		w, err := zipw.Encrypt(filepath.Join(path, filename), password, zip.StandardEncryption)
-
 		if err != nil {
 			log.Fatal(err)
 		}

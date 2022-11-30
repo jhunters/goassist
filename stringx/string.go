@@ -10,6 +10,7 @@ import (
 	"errors"
 	"strings"
 	"unicode/utf8"
+	"unsafe"
 
 	"github.com/jhunters/goassist/arrayx"
 )
@@ -131,7 +132,63 @@ func SubstringBeforeLast(s string, separator string) string {
 	return string(s[:pos])
 }
 
+// fulfill string by repeat target count of byte
 func Repeat(s byte, count int) string {
 	ret := arrayx.CreateAndFill(count, s)
 	return string(ret)
+}
+
+// StringToSlice base on unsafe package to convert string to []byte without copy action
+// key point: copy string's Data and Len to slice's Data and Len, and append Cap value
+func StringToSlice(value string) []byte {
+	// create a new []byte
+	var ret []byte
+
+	// 把string的引用指向 ret的空间
+	*(*string)(unsafe.Pointer(&ret)) = value
+
+	// 设置slice的Cap值 ，用unsafe.Add操作，执行偏移操作 16个字节
+	offset := uintptr(8) * 2
+	*(*int)(unsafe.Add(unsafe.Pointer(&ret), offset)) = len(value)
+
+	return ret
+}
+
+// SliceToString base on unsafe packge to convert []byte to string without copy action
+// key point: copy slice's Data and Len to string's Data and Len.
+func SliceToString(b []byte) string {
+	if b == nil {
+		return EMPTY_STRING
+	}
+
+	// just share Slice's Data and Len content
+	return *(*string)(unsafe.Pointer(&b))
+}
+
+// IsEmpty return if s is empty
+func IsEmpty(s string) bool {
+	if s == EMPTY_STRING || len(s) == 0 {
+		return true
+	}
+	return false
+}
+
+// IsBlank return if s is empty or blank string
+// IsBlank("")  == true
+// IsBlank(" ")  == true
+// IsBlank(" a ")  == false
+func IsBlank(s string) bool {
+	if IsEmpty(s) || strings.TrimSpace(s) == EMPTY_STRING {
+		return true
+	}
+	return false
+}
+
+// Wrap Wraps a String with another String.
+func Wrap(s string, wrap string) string {
+	if IsEmpty(s) || IsEmpty(wrap) {
+		return s
+	}
+
+	return wrap + s + wrap
 }
