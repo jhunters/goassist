@@ -7,7 +7,6 @@ import (
 	"unsafe"
 
 	"github.com/jhunters/goassist/unsafex"
-	"github.com/smartystreets/goconvey/convey"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -36,7 +35,7 @@ func TestStructMappingToArray(t *testing.T) {
 }
 
 func TestArrayMappingToStruct(t *testing.T) {
-	convey.Convey("test convert array to struct ", t, func() {
+	Convey("test convert array to struct ", t, func() {
 
 		s := Simple{age: 100}
 		size := unsafe.Sizeof(s)

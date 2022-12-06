@@ -32,7 +32,7 @@ type (
 )
 
 var (
-	Empty Null
+	Empty Null // const var for nil usage marker
 )
 
 // Sort sort array object, sort order type is decided by cmp function.
