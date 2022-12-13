@@ -23,8 +23,12 @@ func TestNewPool(t *testing.T) {
 		p.Put(&Pojo{"matthew"})
 
 		Convey("pool Get test", func() {
-			So(p.Get().name, ShouldEqual, name2) // pop the last put one
+			get1 := p.Get()
+			So(get1.name, ShouldEqual, name2)    // pop the last put one
 			So(p.Get().name, ShouldEqual, name1) // no element, so New function will be called
+			p.Put(get1)
+			So(p.Get().name, ShouldEqual, name2) // no element, so New function will be called
+
 		})
 
 	})
