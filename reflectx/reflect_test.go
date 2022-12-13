@@ -142,3 +142,55 @@ func TestCallMethodByName(t *testing.T) {
 	})
 
 }
+
+type MultiFieldsPojo struct {
+	IntArray2  [2]int
+	Int32Slice []int
+	MapValue   map[string]int
+}
+
+func TestSetValue(t *testing.T) {
+
+	Convey("TestSetValue", t, func() {
+		Convey("TestSetValue array", func() {
+			arraytoSet := [2]int{3, 4}
+			v := &MultiFieldsPojo{IntArray2: [2]int{1, 2}}
+			r := reflectx.SetValue(v, "IntArray2", arraytoSet)
+			So(r, ShouldBeTrue)
+			So(v.IntArray2, ShouldResemble, arraytoSet)
+		})
+		Convey("TestSetValue slice", func() {
+			intSlice := make([]int, 10)
+			v := &MultiFieldsPojo{}
+			r := reflectx.SetValue(v, "Int32Slice", intSlice)
+			So(r, ShouldBeTrue)
+			So(v.Int32Slice, ShouldResemble, intSlice)
+		})
+		Convey("TestSetValue map", func() {
+			mp := make(map[string]int)
+			mp["hello"] = 1
+			v := &MultiFieldsPojo{}
+			r := reflectx.SetValue(v, "MapValue", mp)
+			So(r, ShouldBeTrue)
+			So(v.MapValue, ShouldResemble, mp)
+		})
+
+	})
+
+}
+
+type VIP struct {
+	Name string
+}
+
+func TestInteface(t *testing.T) {
+	vip := VIP{"matthew"}
+	structV := reflect.ValueOf(vip)
+	v2 := structV.Field(0) // 获取index=0字段的值
+	x2 := v2.Interface()
+	i2, ok2 := x2.(string)
+	fmt.Printf("%s, %v\n", i2, ok2) // matthew, true
+
+	name, b := reflectx.GetValue[string](&vip, "Name")
+	fmt.Println(name, b)
+}

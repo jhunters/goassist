@@ -8,7 +8,6 @@ package reflectx
 import (
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 )
 
@@ -101,65 +100,50 @@ func callMethod(rcvr interface{}, method *reflect.Method, params ...interface{})
 
 // SetSimpleValue set value to target obj and field name. return true if set success
 // not supports array, slice, struct and map type
-func SetSimpleValue(rcvr interface{}, fieldName string, value string) bool {
+func SetValue(rcvr interface{}, fieldName string, value any) bool {
 	v := reflect.ValueOf(rcvr)
 	t := reflect.TypeOf(rcvr)
+	if v.Kind() != reflect.Pointer || v.IsNil() {
+		return false
+	}
 
-	if f, ok := t.FieldByName(fieldName); ok {
-		fvalue := v.FieldByIndex(f.Index)
+	if f, ok := t.Elem().FieldByName(fieldName); ok {
+		fvalue := v.Elem().FieldByIndex(f.Index)
 
 		if !fvalue.CanSet() {
 			return false
 		}
 
 		switch fvalue.Kind() {
-		case reflect.Int32:
-			v, _ := strconv.Atoi(value)
-			fvalue.Set(reflect.ValueOf(int32(v)))
-		case reflect.Int16:
-			v, _ := strconv.Atoi(value)
-			fvalue.Set(reflect.ValueOf(int16(v)))
-		case reflect.Int8:
-			v, _ := strconv.Atoi(value)
-			fvalue.Set(reflect.ValueOf(int8(v)))
-		case reflect.Int64:
-			v, _ := strconv.Atoi(value)
-			fvalue.Set(reflect.ValueOf(int64(v)))
-		case reflect.Int:
-			v, _ := strconv.Atoi(value)
-			fvalue.Set(reflect.ValueOf(int(v)))
-		case reflect.Uint8:
-			v, _ := strconv.Atoi(value)
-			fvalue.Set(reflect.ValueOf(uint8(v)))
-		case reflect.Uint:
-			v, _ := strconv.Atoi(value)
-			fvalue.Set(reflect.ValueOf(uint(v)))
-		case reflect.Uint16:
-			v, _ := strconv.Atoi(value)
-			fvalue.Set(reflect.ValueOf(uint16(v)))
-		case reflect.Uint32:
-			v, _ := strconv.Atoi(value)
-			fvalue.Set(reflect.ValueOf(uint32(v)))
-		case reflect.Uint64:
-			v, _ := strconv.Atoi(value)
-			fvalue.Set(reflect.ValueOf(uint64(v)))
-		case reflect.Float32:
-			v, _ := strconv.ParseFloat(value, 32)
-			fvalue.Set(reflect.ValueOf(float32(v)))
-		case reflect.Float64:
-			v, _ := strconv.ParseFloat(value, 64)
-			fvalue.Set(reflect.ValueOf(v))
+		case reflect.Int32, reflect.Int16, reflect.Int8, reflect.Int64, reflect.Int, reflect.Uint8, reflect.Uint, reflect.Uint16,
+			reflect.Uint32, reflect.Uint64, reflect.Float32, reflect.Float64, reflect.Bool, reflect.Array, reflect.Slice, reflect.Map:
+			fvalue.Set(reflect.ValueOf(value))
 		case reflect.String:
-			fvalue.SetString(value)
-		case reflect.Bool:
-			if strings.Compare(value, "1") == 0 || strings.Compare(strings.ToLower(value), "true") == 0 {
-				fvalue.SetBool(true)
-			} else {
-				fvalue.SetBool(false)
-			}
+			fvalue.SetString(fmt.Sprintf("%s", value))
+		case reflect.Chan:
+			return fvalue.TrySend(reflect.ValueOf(value))
 		}
 		return true
 	}
 
 	return false
+}
+func GetValue[S any](rcvr interface{}, fieldName string) (S, bool) {
+	v := reflect.ValueOf(rcvr)
+	t := reflect.TypeOf(rcvr)
+	var ret S
+	if v.Kind() != reflect.Pointer || v.IsNil() {
+		return ret, false
+	}
+
+	if f, ok := t.Elem().FieldByName(fieldName); ok {
+		fvalue := v.Elem().FieldByIndex(f.Index)
+
+		if !fvalue.CanInterface() {
+			ret, ok := fvalue.Interface().(S)
+			return ret, ok
+		}
+	}
+	return ret, false
+
 }

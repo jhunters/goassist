@@ -19,6 +19,18 @@ func TestReverse(t *testing.T) {
 		ret, err := str.Reverse("hello")
 		So(err, ShouldBeNil)
 		So(ret, ShouldEqual, "olleh")
+
+		Convey("TestReverse by chinese", func() {
+			ret, err := str.Reverse("hello中国")
+			So(err, ShouldBeNil)
+			So(ret, ShouldEqual, "国中olleh")
+		})
+
+		Convey("TestReverse by upper case chinese", func() {
+			ret, err := str.Reverse("helloｃｈｉｎｅｓｅ")
+			So(err, ShouldBeNil)
+			So(ret, ShouldEqual, "ｅｓｅｎｉｈｃolleh")
+		})
 	})
 }
 
