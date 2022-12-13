@@ -1,12 +1,11 @@
 package containerx_test
 
 import (
-	"container/list"
-	"fmt"
 	"strconv"
 	"testing"
 
 	"github.com/jhunters/goassist/containerx"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestHeap(t *testing.T) {
@@ -25,20 +24,9 @@ func TestHeap(t *testing.T) {
 		h.Push(Player{i, "name" + strconv.Itoa(i)})
 	}
 
-	// 优先 pop level值 最小的
-	for i := 0; i < 100; i++ {
-		fmt.Println(h.Pop())
-	}
+	Convey("TestHeap sort", t, func() {
+		player := h.Pop()
+		So(player.level, ShouldEqual, 1)
+	})
 
-}
-
-func TestList(t *testing.T) {
-
-	l := list.New()
-
-	l.PushFront(1)
-	l.PushFront(2)
-
-	fmt.Println(l.Front())
-	fmt.Println(l.Back())
 }
