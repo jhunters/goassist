@@ -122,7 +122,7 @@ func TestIterator(t *testing.T) {
 		l := createListX2()
 		arr := make([]string, l.Len())
 		i := 0
-		l.Iterator(func(s string) bool {
+		l.Iterate(func(s string) bool {
 			arr[i] = s
 			i++
 			return true
@@ -304,4 +304,52 @@ func TestNewFromArray(t *testing.T) {
 		So(want.Len(), ShouldEqual, l.Len())
 		So(want.Front(), ShouldResemble, l.Front())
 	})
+}
+
+func TestWriteToArray(t *testing.T) {
+
+	Convey("TestWriteToArray", t, func() {
+
+		l := createListX2()
+
+		// read empty
+		l.WriteToArray(nil)
+
+		// read partial elements
+		v := make([]string, 5)
+		l.WriteToArray(v)
+		arr1 := []string{"1", "1", "2", "2", "3"}
+		So(arr1, ShouldResemble, v)
+
+		// read full
+		v = make([]string, l.Len())
+		l.WriteToArray(v)
+		So(l.ToArray(), ShouldResemble, v)
+
+		// read full
+		v = make([]string, l.Len()<<1)
+		l.WriteToArray(v)
+		So(l.ToArray(), ShouldResemble, v[:l.Len()])
+	})
+}
+
+func TestIndex(t *testing.T) {
+	Convey("TestIndex", t, func() {
+		l := createListX2()
+		index := l.Index("2", func(s1, s2 string) bool { return strings.Compare(s1, s2) == 0 })
+		So(2, ShouldEqual, index)
+
+		index = l.Index("22", func(s1, s2 string) bool { return strings.Compare(s1, s2) == 0 })
+		So(-1, ShouldEqual, index)
+	})
+
+	Convey("TestLastIndex", t, func() {
+		l := createListX2()
+		index := l.LastIndex("2", func(s1, s2 string) bool { return strings.Compare(s1, s2) == 0 })
+		So(3, ShouldEqual, index)
+
+		index = l.LastIndex("22", func(s1, s2 string) bool { return strings.Compare(s1, s2) == 0 })
+		So(-1, ShouldEqual, index)
+	})
+
 }

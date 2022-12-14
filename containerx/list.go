@@ -255,19 +255,46 @@ func (l *List[E]) ToArray() []E {
 	return ret
 }
 
+func (l *List[E]) WriteToArray(v []E) {
+	if l.IsEmpty() || v == nil || len(v) == 0 {
+		return
+	}
+
+	size := len(v)
+	pos := 0
+	l.iterate(func(e *Element[E]) bool {
+		if pos < size {
+			v[pos] = e.Value
+		} else {
+			return false
+		}
+		pos++
+		return true
+	})
+}
+
 // Iterator to iterate all elements
-func (l *List[E]) Iterator(f func(E) bool) {
-	l.iterator(func(e *Element[E]) bool {
+func (l *List[E]) Iterate(f func(E) bool) {
+	if l.IsEmpty() {
+		return
+	}
+	l.iterate(func(e *Element[E]) bool {
 		return f(e.Value)
 	})
 }
 
 // Iterator to iterate all elements
-func (l *List[E]) iterator(f func(e *Element[E]) bool) {
+func (l *List[E]) IterateReverse(f func(E) bool) {
 	if l.IsEmpty() {
 		return
 	}
+	l.iterateReverse(func(e *Element[E]) bool {
+		return f(e.Value)
+	})
+}
 
+// Iterator to iterate all elements
+func (l *List[E]) iterate(f func(e *Element[E]) bool) {
 	e := l.Front()
 	for e != nil {
 		next := e.Next()
@@ -278,21 +305,62 @@ func (l *List[E]) iterator(f func(e *Element[E]) bool) {
 	}
 }
 
+// Iterator to iterate all elements
+func (l *List[E]) iterateReverse(f func(e *Element[E]) bool) {
+	e := l.Back()
+	for e != nil {
+		next := e.Prev()
+		if !f(e) {
+			break
+		}
+		e = next
+	}
+}
+
 // Contains to check if contains target element value in list.
 func (l *List[E]) Contains(v E, f EQL[E]) (contains bool) {
-	l.Iterator(func(e E) bool {
+	return l.Index(v, f) != -1
+}
+
+// Index return the index of the first matched object in list
+func (l *List[E]) Index(v E, f EQL[E]) (index int) {
+	index = -1
+	matched := false
+	l.Iterate(func(e E) bool {
+		index++
 		if f(v, e) {
-			contains = true
+			matched = true
 			return false
 		}
 		return true
 	})
+	if !matched {
+		index = -1
+	}
+	return
+}
+
+// Index return the last index of the first matched object in list
+func (l *List[E]) LastIndex(v E, f EQL[E]) (index int) {
+	index = l.Len()
+	matched := false
+	l.IterateReverse(func(e E) bool {
+		index--
+		if f(v, e) {
+			matched = true
+			return false
+		}
+		return true
+	})
+	if !matched {
+		index = -1
+	}
 	return
 }
 
 // Clear to remove all elements
 func (l *List[E]) Clear() {
-	l.iterator(func(e *Element[E]) bool {
+	l.iterate(func(e *Element[E]) bool {
 		l.remove(e)
 		return true
 	})
@@ -310,7 +378,7 @@ func (l *List[E]) RemoveAll(v E, f EQL[E]) (ret E, removed bool) {
 
 // Contains to check if contains target element value in list.
 func (l *List[E]) removeMatches(v E, f EQL[E], first bool) (ret E, removed bool) {
-	l.iterator(func(e *Element[E]) bool {
+	l.iterate(func(e *Element[E]) bool {
 		if f(v, e.Value) {
 			removed = true
 			ret = l.RemoveElement(e)
