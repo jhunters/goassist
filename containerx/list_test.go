@@ -353,3 +353,54 @@ func TestIndex(t *testing.T) {
 	})
 
 }
+
+func TestFilter(t *testing.T) {
+	Convey("TestFilter", t, func() {
+		l := createListX2()
+		ll := l.Filter(func(s string) bool {
+			return strings.Compare(s, "2") > 0
+		})
+		So(ll.Len(), ShouldEqual, 6)
+	})
+
+}
+
+func TestMin(t *testing.T) {
+	Convey("TestMin", t, func() {
+		l := createListX2()
+		e := l.Min(func(o1, o2 string) int {
+			return strings.Compare(o1, o2)
+		})
+		So(e, ShouldEqual, "1")
+	})
+
+}
+func TestMax(t *testing.T) {
+	Convey("TestMax", t, func() {
+		l := createListX2()
+		e := l.Max(func(o1, o2 string) int {
+			return strings.Compare(o1, o2)
+		})
+		So(e, ShouldEqual, "5")
+	})
+
+}
+
+func TestSort(t *testing.T) {
+	Convey("TestSort", t, func() {
+		l := containerx.New[string]()
+		l.PushBack("3")
+		l.PushBack("4")
+		l.PushBack("9")
+		l.PushBack("6")
+		l.PushBack("2")
+		l.PushBack("5")
+		l.PushBack("1")
+
+		l.Sort(func(o1, o2 string) int {
+			return strings.Compare(o1, o2)
+		})
+		So(l.Front().Value, ShouldEqual, "1")
+	})
+
+}

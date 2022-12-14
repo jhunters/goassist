@@ -1,5 +1,26 @@
 package containerx
 
+import (
+	"sort"
+)
+
+type sortable[E any] struct {
+	data *List[E]
+	cmp  CMP[E]
+}
+
+func (s sortable[E]) Len() int { return s.data.Len() }
+func (s sortable[E]) Swap(i, j int) {
+	e1, _ := s.data.get(i)
+	e2, _ := s.data.get(j)
+	e1.Value, e2.Value = e2.Value, e1.Value
+}
+func (s sortable[E]) Less(i, j int) bool {
+	e1, _ := s.data.Get(i)
+	e2, _ := s.data.Get(j)
+	return s.cmp(e1, e2) <= 0
+}
+
 type EQL[E any] func(E, E) bool
 
 // Element is an element of a linked list.
@@ -396,7 +417,17 @@ func (l *List[E]) Get(index int) (E, bool) {
 		return ret, false
 	}
 
-	return l.node(index).Value, true
+	e, b := l.get(index)
+	return e.Value, b
+}
+
+// Get the element value at target index
+func (l *List[E]) get(index int) (*Element[E], bool) {
+	if !l.isElementIndex(index) {
+		return nil, false
+	}
+
+	return l.node(index), true
 }
 
 // Set set the value at target index
@@ -405,7 +436,7 @@ func (l *List[E]) Set(index int, v E) bool {
 		return false
 	}
 	e := l.node(index)
-	l.InsertBefore(v, e)
+	e.Value = v
 	return true
 }
 
@@ -462,4 +493,53 @@ func (l *List[E]) node(index int) *Element[E] {
 
 func (l *List[E]) isElementIndex(index int) bool {
 	return index >= 0 && index < l.len
+}
+
+func (l *List[E]) Filter(test func(E) bool) *List[E] {
+	ret := New[E]()
+	if test == nil {
+		return ret
+	}
+
+	l.iterate(func(e *Element[E]) bool {
+		if test(e.Value) {
+			ret.PushBack(e.Value)
+		}
+		return true
+	})
+
+	return ret
+}
+
+func (l *List[E]) Min(compare func(o1, o2 E) int) (min E) {
+	return selectByCompare(l, func(o1, o2 E) int {
+		return compare(o1, o2)
+	})
+}
+
+func (l *List[E]) Max(compare func(o1, o2 E) int) (min E) {
+	return selectByCompare(l, func(o1, o2 E) int {
+		return compare(o2, o1)
+	})
+}
+
+func selectByCompare[E any](l *List[E], compare func(o1, o2 E) int) (v E) {
+	i := 0
+	l.iterate(func(e *Element[E]) bool {
+		if i == 0 {
+			v = e.Value
+		} else {
+			if compare(v, e.Value) > 0 {
+				v = e.Value
+			}
+		}
+		i++
+		return true
+	})
+	return
+}
+
+func (l *List[E]) Sort(compare func(o1, o2 E) int) {
+	sortobject := sortable[E]{data: l, cmp: compare}
+	sort.Sort(sortobject)
 }
