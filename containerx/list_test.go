@@ -12,13 +12,13 @@ func TestInitList(t *testing.T) {
 
 	Convey("TestList", t, func() {
 		Convey("Test init list", func() {
-			l := containerx.New[string]()
+			l := containerx.NewList[string]()
 			size := l.Len()
 			So(size, ShouldEqual, 0)
 		})
 
 		Convey("Test init list and fetch", func() {
-			l := containerx.New[string]()
+			l := containerx.NewList[string]()
 			e := l.Front()
 			So(e, ShouldBeNil)
 
@@ -39,7 +39,7 @@ func TestPushElement(t *testing.T) {
 
 		Convey("Test PushFront", func() {
 			v := "hello"
-			l := containerx.New[string]()
+			l := containerx.NewList[string]()
 			e := l.PushFront(v)
 			size := l.Len()
 			So(size, ShouldEqual, 1)
@@ -53,7 +53,7 @@ func TestPushElement(t *testing.T) {
 		})
 		Convey("Test PushBack", func() {
 			v := "hello"
-			l := containerx.New[string]()
+			l := containerx.NewList[string]()
 			e := l.PushBack(v)
 			size := l.Len()
 			So(size, ShouldEqual, 1)
@@ -68,7 +68,7 @@ func TestPushElement(t *testing.T) {
 		Convey("Test PushBack & PushFront", func() {
 			v := "hello"
 			v2 := "world"
-			l := containerx.New[string]()
+			l := containerx.NewList[string]()
 			l.PushFront(v)
 			l.PushBack(v2)
 			size := l.Len()
@@ -91,7 +91,7 @@ func TestPushElement(t *testing.T) {
 func TestToArray(t *testing.T) {
 	Convey("TestToArray", t, func() {
 		arr1 := []string{"1", "2", "3", "4", "5"}
-		l := containerx.New[string]()
+		l := containerx.NewList[string]()
 		for _, v := range arr1 {
 			l.PushBack(v)
 		}
@@ -198,23 +198,23 @@ func TestGetSet(t *testing.T) {
 		Convey("Test Set", func() {
 			l := createList()
 			b := l.Set(0, "matt")
-			So(l.Len(), ShouldEqual, 6)
+			So(l.Len(), ShouldEqual, 5)
 			So(l.Front().Value, ShouldEqual, "matt")
 			So(b, ShouldBeTrue)
 
 			b = l.Set(1, "xml")
-			So(l.Len(), ShouldEqual, 7)
+			So(l.Len(), ShouldEqual, 5)
 			So(l.Front().Next().Value, ShouldEqual, "xml")
 			So(b, ShouldBeTrue)
 
 			b = l.Set(l.Len(), "out of pos")
-			So(l.Len(), ShouldEqual, 7)
+			So(l.Len(), ShouldEqual, 5)
 			So(b, ShouldBeFalse)
 
 			b = l.Set(l.Len()-1, "bottom of pos")
-			So(l.Len(), ShouldEqual, 8)
+			So(l.Len(), ShouldEqual, 5)
 			So(b, ShouldBeTrue)
-			So("bottom of pos", ShouldEqual, l.Back().Prev().Value)
+			So("bottom of pos", ShouldEqual, l.Back().Value)
 
 		})
 
@@ -277,7 +277,7 @@ func TestRemoveFrontAndBack(t *testing.T) {
 
 func createListX2() *containerx.List[string] {
 	arr1 := []string{"1", "2", "3", "4", "5"}
-	l := containerx.New[string]()
+	l := containerx.NewList[string]()
 	for _, v := range arr1 {
 		l.PushBack(v)
 		l.PushBack(v)
@@ -287,20 +287,20 @@ func createListX2() *containerx.List[string] {
 
 func createList() *containerx.List[string] {
 	arr1 := []string{"10", "20", "30", "40", "50"}
-	l := containerx.New[string]()
+	l := containerx.NewList[string]()
 	for _, v := range arr1 {
 		l.PushBack(v)
 	}
 	return l
 }
 
-func TestNewFromArray(t *testing.T) {
-	Convey("TestNewFromArray", t, func() {
-		want := containerx.New[string]()
+func TestNewListFromArray(t *testing.T) {
+	Convey("TestNewListFromArray", t, func() {
+		want := containerx.NewList[string]()
 		want.PushBack("1")
 		want.PushBack("2")
 
-		l := containerx.NewFromArray([]string{"1", "2"})
+		l := containerx.NewListFromArray([]string{"1", "2"})
 		So(want.Len(), ShouldEqual, l.Len())
 		So(want.Front(), ShouldResemble, l.Front())
 	})
@@ -388,14 +388,7 @@ func TestMax(t *testing.T) {
 
 func TestSort(t *testing.T) {
 	Convey("TestSort", t, func() {
-		l := containerx.New[string]()
-		l.PushBack("3")
-		l.PushBack("4")
-		l.PushBack("9")
-		l.PushBack("6")
-		l.PushBack("2")
-		l.PushBack("5")
-		l.PushBack("1")
+		l := containerx.NewListOf("3", "4", "9", "6", "2", "5", "1")
 
 		l.Sort(func(o1, o2 string) int {
 			return strings.Compare(o1, o2)

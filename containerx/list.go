@@ -4,18 +4,18 @@ import (
 	"sort"
 )
 
-type sortable[E any] struct {
+type sortableList[E any] struct {
 	data *List[E]
 	cmp  CMP[E]
 }
 
-func (s sortable[E]) Len() int { return s.data.Len() }
-func (s sortable[E]) Swap(i, j int) {
+func (s sortableList[E]) Len() int { return s.data.Len() }
+func (s sortableList[E]) Swap(i, j int) {
 	e1, _ := s.data.get(i)
 	e2, _ := s.data.get(j)
 	e1.Value, e2.Value = e2.Value, e1.Value
 }
-func (s sortable[E]) Less(i, j int) bool {
+func (s sortableList[E]) Less(i, j int) bool {
 	e1, _ := s.data.Get(i)
 	e2, _ := s.data.Get(j)
 	return s.cmp(e1, e2) <= 0
@@ -71,10 +71,10 @@ func (l *List[E]) Init() *List[E] {
 }
 
 // New returns an initialized list.
-func New[E any]() *List[E] { return new(List[E]).Init() }
+func NewList[E any]() *List[E] { return new(List[E]).Init() }
 
 // NewFromArray returns an initialized list and set elements from target array.
-func NewFromArray[E any](arr []E) *List[E] {
+func NewListFromArray[E any](arr []E) *List[E] {
 	l := new(List[E]).Init()
 	if arr != nil {
 		for _, v := range arr {
@@ -85,10 +85,22 @@ func NewFromArray[E any](arr []E) *List[E] {
 	return l
 }
 
+// NewOf returns an initialized list and set elements from target variable parameter.
+func NewListOf[E any](e ...E) *List[E] {
+	l := new(List[E]).Init()
+	if e != nil {
+		for _, v := range e {
+			l.PushBack(v)
+		}
+	}
+	return l
+}
+
 // Len returns the number of elements of list l.
 // The complexity is O(1).
 func (l *List[E]) Len() int { return l.len }
 
+// IsEmpty returns true if len is zero
 func (l *List[E]) IsEmpty() bool { return l.len == 0 }
 
 // Front returns the first element of list l or nil if the list is empty.
@@ -99,12 +111,28 @@ func (l *List[E]) Front() *Element[E] {
 	return l.root.next
 }
 
+// FrontValue returns the first element of list value
+func (l *List[E]) FrontValue() (v E) {
+	if e := l.Front(); e != nil {
+		v = e.Value
+	}
+	return
+}
+
 // Back returns the last element of list l or nil if the list is empty.
 func (l *List[E]) Back() *Element[E] {
-	if l.len == 0 {
+	if l.IsEmpty() {
 		return nil
 	}
 	return l.root.prev
+}
+
+// Back returns the last element of list l or nil if the list is empty.
+func (l *List[E]) BackValue() (v E) {
+	if e := l.Back(); e != nil {
+		v = e.Value
+	}
+	return
 }
 
 // lazyInit lazily initializes a zero List value.
@@ -276,6 +304,7 @@ func (l *List[E]) ToArray() []E {
 	return ret
 }
 
+// WriteToArray extract list element to array
 func (l *List[E]) WriteToArray(v []E) {
 	if l.IsEmpty() || v == nil || len(v) == 0 {
 		return
@@ -495,8 +524,9 @@ func (l *List[E]) isElementIndex(index int) bool {
 	return index >= 0 && index < l.len
 }
 
+// Filter do filter element action and return a new list
 func (l *List[E]) Filter(test func(E) bool) *List[E] {
-	ret := New[E]()
+	ret := NewList[E]()
 	if test == nil {
 		return ret
 	}
@@ -511,12 +541,14 @@ func (l *List[E]) Filter(test func(E) bool) *List[E] {
 	return ret
 }
 
+// Min to find the minimum one in the list
 func (l *List[E]) Min(compare func(o1, o2 E) int) (min E) {
 	return selectByCompare(l, func(o1, o2 E) int {
 		return compare(o1, o2)
 	})
 }
 
+// Max to find the maximum one in the list
 func (l *List[E]) Max(compare func(o1, o2 E) int) (min E) {
 	return selectByCompare(l, func(o1, o2 E) int {
 		return compare(o2, o1)
@@ -539,7 +571,8 @@ func selectByCompare[E any](l *List[E], compare func(o1, o2 E) int) (v E) {
 	return
 }
 
+// Sort to sort list elements order by compare condition.
 func (l *List[E]) Sort(compare func(o1, o2 E) int) {
-	sortobject := sortable[E]{data: l, cmp: compare}
+	sortobject := sortableList[E]{data: l, cmp: compare}
 	sort.Sort(sortobject)
 }
