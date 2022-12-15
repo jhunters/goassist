@@ -301,3 +301,18 @@ func (r *Ring[E]) WriteToArray(v []E) {
 	})
 
 }
+
+// Copy to copy all elements to a new ring
+func (r *Ring[E]) Copy() *Ring[E] {
+	ret := NewRing[E](1)
+	i := 0
+	r.Do(func(e E) {
+		if i == 0 {
+			ret.Value = e
+		} else {
+			ret.LinkValue(e)
+		}
+		i++
+	})
+	return ret
+}

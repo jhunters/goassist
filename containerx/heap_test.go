@@ -8,12 +8,13 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
+// Player 结构体，按级别来优化排序
+type Player struct {
+	level int
+	name  string
+}
+
 func TestHeap(t *testing.T) {
-	// Player 结构体，按级别来优化排序
-	type Player struct {
-		level int
-		name  string
-	}
 
 	h := containerx.NewHeap([]Player{}, func(p1, p2 Player) int {
 		return p1.level - p2.level // level小的先出
@@ -29,4 +30,23 @@ func TestHeap(t *testing.T) {
 		So(player.level, ShouldEqual, 1)
 	})
 
+}
+
+func TestHeapCopy(t *testing.T) {
+	Convey("TestHeapCopy", t, func() {
+
+		h := containerx.NewHeap([]Player{}, func(p1, p2 Player) int {
+			return p1.level - p2.level // level小的先出
+		})
+		h.Push(Player{1, "matthew"})
+		h.Push(Player{2, "matt"})
+
+		h2 := h.Copy()
+
+		player := h2.Pop()
+		So(player, ShouldNotBeNil)
+		So(player.level, ShouldEqual, 1)
+		player = h2.Pop()
+		So(player, ShouldNotBeNil)
+	})
 }

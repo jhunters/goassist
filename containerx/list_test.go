@@ -397,3 +397,13 @@ func TestSort(t *testing.T) {
 	})
 
 }
+
+func TestCopy(t *testing.T) {
+	Convey("TestCopy", t, func() {
+		l := containerx.NewListOf("3", "4", "9", "6", "2", "5", "1")
+
+		l2 := l.Copy()
+		So(l2.Len(), ShouldEqual, l.Len())
+		So(l2.ToArray(), ShouldResemble, l.ToArray())
+	})
+}

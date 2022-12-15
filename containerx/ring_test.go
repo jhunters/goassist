@@ -198,3 +198,14 @@ func TestRingToArray(t *testing.T) {
 		So(arr2, ShouldResemble, createRingPojoArray()[:2])
 	})
 }
+
+func TestRingCopy(t *testing.T) {
+	Convey("TestRingCopy", t, func() {
+		r := createRing()
+
+		r2 := r.Copy()
+		So(r2.Len(), ShouldEqual, 6)
+
+	})
+
+}

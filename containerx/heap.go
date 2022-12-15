@@ -65,6 +65,14 @@ func (h *Heap[E]) Remove(index int) E {
 	return heap.Remove(h.data, index).(E)
 }
 
+func (h *Heap[E]) Copy() *Heap[E] {
+	ret := heapST[E]{cmp: h.data.cmp}
+	ret.data = make([]E, len(h.data.data))
+	copy(ret.data, h.data.data)
+	heap.Init(&ret)
+	return &Heap[E]{&ret}
+}
+
 // NewHeap return Heap pointer and init the heap tree
 func NewHeap[E any](t []E, cmp base.CMP[E]) *Heap[E] {
 	ret := heapST[E]{data: t, cmp: cmp}

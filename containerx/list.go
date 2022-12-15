@@ -576,3 +576,13 @@ func (l *List[E]) Sort(compare base.CMP[E]) {
 	sortobject := sortableList[E]{data: l, cmp: compare}
 	sort.Sort(sortobject)
 }
+
+// Copy to copy all elements to a new list
+func (l *List[E]) Copy() *List[E] {
+	ret := NewList[E]()
+	l.iterate(func(e *Element[E]) bool {
+		ret.PushBack(e.Value)
+		return true
+	})
+	return ret
+}
