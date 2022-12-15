@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/jhunters/goassist/arrayx"
 	"github.com/jhunters/goassist/containerx"
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -41,6 +42,11 @@ func createRing() *containerx.Ring[*RingPojo] {
 	r := containerx.NewRingOf(NewRingPojo("matt"), NewRingPojo("xml"), NewRingPojo("ant_miracle"),
 		NewRingPojo("michael"), NewRingPojo(""), NewRingPojo("ryan"))
 	return r
+}
+
+func createRingPojoArray() []*RingPojo {
+	return arrayx.AsList(NewRingPojo("matt"), NewRingPojo("xml"), NewRingPojo("ant_miracle"),
+		NewRingPojo("michael"), NewRingPojo(""), NewRingPojo("ryan"))
 }
 
 func TestNewRing(t *testing.T) {
@@ -91,6 +97,38 @@ func TestMinMax(t *testing.T) {
 
 }
 
+func TestRingLink(t *testing.T) {
+	Convey("TestRingLink", t, func() {
+		r := createRing()
+		r2 := createRing()
+		r3 := r.Link(r2)
+		So(r.Len(), ShouldEqual, 12)
+		So(r3, ShouldNotBeNil)
+		So(r3.Len(), ShouldEqual, 12)
+		So(r3.Value.Name, ShouldEqual, "xml")
+	})
+}
+
+func TestRingLinkValueAndGet(t *testing.T) {
+	Convey("TestRingLinkValueAndGet", t, func() {
+		r := containerx.NewRing[*RingPojo](1)
+		So(r.Len(), ShouldEqual, 1)
+		So(r.Value, ShouldBeNil)
+
+		r.Value = NewRingPojo("matt")
+
+		r.LinkValue(NewRingPojo("xml"))
+		nr := r.Get(1)
+		So(nr.Name, ShouldEqual, "xml")
+
+		e := r.Unlink(1)
+		So(r.Len(), ShouldEqual, 1)
+		So(e.Value.Name, ShouldEqual, "xml")
+
+	})
+
+}
+
 func TestSortRing(t *testing.T) {
 	Convey("TestSortRing", t, func() {
 		r := createRing()
@@ -98,5 +136,65 @@ func TestSortRing(t *testing.T) {
 
 		So(r.Value.Name, ShouldBeEmpty)
 		So(r.Prev().Value.Name, ShouldEqual, "xml")
+	})
+}
+
+func TestRingNext(t *testing.T) {
+	Convey("TestRingNext", t, func() {
+
+		r := containerx.NewRing[*RingPojo](1)
+		So(r.Len(), ShouldEqual, 1)
+
+		e := r.Next()
+		So(e, ShouldNotBeNil)
+		So(e.Next(), ShouldNotBeNil)
+	})
+}
+
+func TestRingMove(t *testing.T) {
+	Convey("TestRingMove", t, func() {
+
+		r := createRing()
+		e := r.Move(1)
+		So(e.Value.Name, ShouldEqual, "xml")
+
+		e = r.Move(1 + r.Len())
+		So(e.Value.Name, ShouldEqual, "xml")
+
+		e = r.Move(1 - r.Len())
+		So(e.Value.Name, ShouldEqual, "xml")
+	})
+}
+
+func TestRingContains(t *testing.T) {
+	Convey("TestRingContains element exist", t, func() {
+		r := createRing()
+		b := r.Contains(NewRingPojo(""), func(rp1, rp2 *RingPojo) bool { return compareRingPojo(rp1, rp2) == 0 })
+		So(b, ShouldBeTrue)
+
+		idx := r.Index(NewRingPojo(""), func(rp1, rp2 *RingPojo) bool { return compareRingPojo(rp1, rp2) == 0 })
+		So(idx, ShouldBeGreaterThan, 0)
+	})
+
+	Convey("TestRingContains element not exist", t, func() {
+		r := createRing()
+		b := r.Contains(NewRingPojo("unknown"), func(rp1, rp2 *RingPojo) bool { return compareRingPojo(rp1, rp2) == 0 })
+		So(b, ShouldBeFalse)
+
+		idx := r.Index(NewRingPojo("unknown"), func(rp1, rp2 *RingPojo) bool { return compareRingPojo(rp1, rp2) == 0 })
+		So(idx, ShouldEqual, -1)
+	})
+
+}
+
+func TestRingToArray(t *testing.T) {
+	Convey("TestRingToArray", t, func() {
+		r := createRing()
+		arr := r.ToArray()
+		So(arr, ShouldResemble, createRingPojoArray())
+
+		arr2 := make([]*RingPojo, 2)
+		r.WriteToArray(arr2)
+		So(arr2, ShouldResemble, createRingPojoArray()[:2])
 	})
 }

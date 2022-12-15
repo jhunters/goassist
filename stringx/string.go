@@ -13,6 +13,7 @@ import (
 	"unsafe"
 
 	"github.com/jhunters/goassist/arrayx"
+	"github.com/jhunters/goassist/unsafex"
 )
 
 const (
@@ -189,6 +190,12 @@ func Wrap(s string, wrap string) string {
 	if IsEmpty(s) || IsEmpty(wrap) {
 		return s
 	}
+	b := make([]byte, len(s)+2*len(wrap))
+	b1 := unsafex.StringToSlice(s)
+	b2 := unsafex.StringToSlice(wrap)
+	copy(b, b2)
+	copy(b[len(wrap):], b1)
+	copy(b[len(s)+len(wrap):], b2)
 
-	return wrap + s + wrap
+	return unsafex.SliceToString(b)
 }

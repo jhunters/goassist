@@ -35,6 +35,20 @@ func TestCloseChan(t *testing.T) {
 func TestTrySend(t *testing.T) {
 	Convey("TestTrySend", t, func() {
 		s := "hello"
+
+		Convey("TestTrySend with nil channel", func() {
+			var ch chan string = nil
+			ok := concurrent.TrySendChan(s, ch, 1*time.Second)
+			So(ok, ShouldBeFalse)
+		})
+
+		Convey("TestTrySend with closed channel", func() {
+			ch := make(chan string, 0)
+			concurrent.SafeCloseChan(ch)
+			ok := concurrent.TrySendChan(s, ch, 1*time.Second)
+			So(ok, ShouldBeFalse)
+		})
+
 		Convey("TestTrySend in time", func() {
 			ch := make(chan string, 1)
 			now := time.Now()
@@ -76,6 +90,21 @@ func TestTrySend(t *testing.T) {
 func TestTryReceive(t *testing.T) {
 	Convey("TestTryReceive", t, func() {
 		s := "hello"
+
+		Convey("TestTryReceive with nil channel", func() {
+			var ch chan string = nil
+			ok, _ := concurrent.TryRecevieChan(ch, 1*time.Second)
+			So(ok, ShouldBeFalse)
+		})
+
+		Convey("TestTryReceive with closed channel", func() {
+			ch := make(chan string, 0)
+			concurrent.SafeCloseChan(ch)
+			ok, v := concurrent.TryRecevieChan(ch, 1*time.Second)
+			So(ok, ShouldBeTrue)
+			So(v, ShouldBeEmpty)
+		})
+
 		Convey("TestTryReceive in time", func() {
 			ch := make(chan string, 1)
 			ch <- s

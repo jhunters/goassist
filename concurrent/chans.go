@@ -16,32 +16,43 @@ func SafeCloseChan[E any](c chan E) (ok bool) {
 
 // TrySend try to send value to channel within target time
 func TrySendChan[E any](v E, c chan<- E, timeout time.Duration) (ok bool) {
+	if c == nil {
+		return false
+	}
+	defer func() {
+		if v := recover(); v != nil {
+			ok = false
+		}
+	}()
 	if timeout <= 0 {
 		c <- v
 		return true
 	}
-	tick := time.NewTicker(timeout)
-	defer tick.Stop()
+	tout, cancel := timeoutF(timeout)
+	defer cancel()
 	select {
 	case c <- v:
 		return true
-	case <-tick.C:
+	case <-tout:
 		return false
 	}
 }
 
 // TryRecevie try to receive value from channel within target time
 func TryRecevieChan[E any](c <-chan E, timeout time.Duration) (ok bool, v E) {
+	if c == nil {
+		return
+	}
 	if timeout <= 0 {
 		v = <-c
 		return true, v
 	}
-	tick := time.NewTicker(timeout)
-	defer tick.Stop()
+	tout, cancel := timeoutF(timeout)
+	defer cancel()
 	select {
 	case v = <-c:
 		return true, v
-	case <-tick.C:
+	case <-tout:
 		return false, v
 	}
 }

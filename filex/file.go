@@ -10,8 +10,6 @@ const (
 	COMMON_FILE_MODE = 0644 // common file mode , value as '-rw-r--r--' by unix os
 )
 
-// 0644) //  -rw-r--r--
-
 // file info watch call back function process during in #ListFiles
 type callbackFn func(filename, path string, data []byte)
 

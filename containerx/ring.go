@@ -1,10 +1,14 @@
 package containerx
 
-import "sort"
+import (
+	"sort"
+
+	"github.com/jhunters/goassist/base"
+)
 
 type sortableRing[E any] struct {
 	data *Ring[E]
-	cmp  CMP[E]
+	cmp  base.CMP[E]
 }
 
 func (s sortableRing[E]) Len() int { return s.data.Len() }
@@ -72,6 +76,31 @@ func (r *Ring[E]) Move(n int) *Ring[E] {
 	return r
 }
 
+// Get to get n % r.Len() elements backward (n < 0) or forward (n >= 0)
+// in the ring and returns that ring element value. r must not be empty.
+func (r *Ring[E]) Get(n int) (ret E) {
+	return r.get(n).Value
+}
+
+func (r *Ring[E]) get(n int) (ret *Ring[E]) {
+
+	if r.next == nil {
+		return r.init()
+	}
+	ret = r
+	switch {
+	case n < 0:
+		for ; n < 0; n++ {
+			ret = ret.prev
+		}
+	case n > 0:
+		for ; n > 0; n-- {
+			ret = ret.next
+		}
+	}
+	return ret
+}
+
 // New creates a ring of n elements.
 func NewRing[E any](n int) *Ring[E] {
 	if n <= 0 {
@@ -136,6 +165,11 @@ func (r *Ring[E]) Link(s *Ring[E]) *Ring[E] {
 	return n
 }
 
+func (r *Ring[E]) LinkValue(e E) {
+	nr := &Ring[E]{Value: e}
+	r.Link(nr)
+}
+
 // Unlink removes n % r.Len() elements from the ring r, starting
 // at r.Next(). If n % r.Len() == 0, r remains unchanged.
 // The result is the removed subring. r must not be empty.
@@ -172,21 +206,32 @@ func (r *Ring[E]) Do(f func(E)) {
 	}
 }
 
+func (r *Ring[E]) Iterate(f func(E) bool) {
+	if r != nil {
+		f(r.Value)
+		for p := r.Next(); p != r; p = p.next {
+			if !f(p.Value) {
+				return
+			}
+		}
+	}
+}
+
 // Min to find the minimum one in the list
-func (r *Ring[E]) Min(compare func(o1, o2 E) int) (min E) {
+func (r *Ring[E]) Min(compare base.CMP[E]) (min E) {
 	return selectByCompareRing(r, func(o1, o2 E) int {
 		return compare(o1, o2)
 	})
 }
 
 // Max to find the maximum one in the list
-func (r *Ring[E]) Max(compare func(o1, o2 E) int) (min E) {
+func (r *Ring[E]) Max(compare base.CMP[E]) (min E) {
 	return selectByCompareRing(r, func(o1, o2 E) int {
 		return compare(o2, o1)
 	})
 }
 
-func selectByCompareRing[E any](r *Ring[E], compare func(o1, o2 E) int) (v E) {
+func selectByCompareRing[E any](r *Ring[E], compare base.CMP[E]) (v E) {
 	i := 0
 	r.Do(func(e E) {
 		if i == 0 {
@@ -201,30 +246,58 @@ func selectByCompareRing[E any](r *Ring[E], compare func(o1, o2 E) int) (v E) {
 	return
 }
 
-func (r *Ring[E]) get(pos int) *Ring[E] {
-	if pos < 0 {
-		return nil
-	}
+// Sort to sort ring elements order by compare condition.
+func (r *Ring[E]) Sort(compare base.CMP[E]) {
+	sortobject := sortableRing[E]{data: r, cmp: compare}
+	sort.Sort(sortobject)
+}
 
-	if pos == 0 {
-		return r
-	}
-
-	n := 0
-	if r != nil {
-		n = 1
-		for p := r.Next(); p != r; p = p.next {
-			if n == pos {
-				return p
-			}
-			n++
+// Index return the index of the first matched object in list
+func (r *Ring[E]) Index(v E, f base.EQL[E]) (index int) {
+	index = -1
+	matched := false
+	r.Iterate(func(e E) bool {
+		index++
+		if f(v, e) {
+			matched = true
+			return false
 		}
+		return true
+	})
+	if !matched {
+		index = -1
 	}
-	return nil
+	return
 }
 
 // Sort to sort ring elements order by compare condition.
-func (r *Ring[E]) Sort(compare func(o1, o2 E) int) {
-	sortobject := sortableRing[E]{data: r, cmp: compare}
-	sort.Sort(sortobject)
+func (r *Ring[E]) Contains(v E, f base.EQL[E]) bool {
+	return r.Index(v, f) != -1
+}
+
+// ToArray to convert list elements to array
+func (r *Ring[E]) ToArray() []E {
+	ret := make([]E, 0)
+	r.Do(func(e E) {
+		ret = append(ret, e)
+	})
+
+	return ret
+}
+
+// WriteToArray extract list element to array
+func (r *Ring[E]) WriteToArray(v []E) {
+	size := len(v)
+	pos := 0
+
+	r.Iterate(func(e E) bool {
+		if pos < size {
+			v[pos] = e
+		} else {
+			return false
+		}
+		pos++
+		return true
+	})
+
 }

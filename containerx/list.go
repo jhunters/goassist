@@ -2,11 +2,13 @@ package containerx
 
 import (
 	"sort"
+
+	"github.com/jhunters/goassist/base"
 )
 
 type sortableList[E any] struct {
 	data *List[E]
-	cmp  CMP[E]
+	cmp  base.CMP[E]
 }
 
 func (s sortableList[E]) Len() int { return s.data.Len() }
@@ -20,8 +22,6 @@ func (s sortableList[E]) Less(i, j int) bool {
 	e2, _ := s.data.Get(j)
 	return s.cmp(e1, e2) <= 0
 }
-
-type EQL[E any] func(E, E) bool
 
 // Element is an element of a linked list.
 type Element[E any] struct {
@@ -368,12 +368,12 @@ func (l *List[E]) iterateReverse(f func(e *Element[E]) bool) {
 }
 
 // Contains to check if contains target element value in list.
-func (l *List[E]) Contains(v E, f EQL[E]) (contains bool) {
+func (l *List[E]) Contains(v E, f base.EQL[E]) (contains bool) {
 	return l.Index(v, f) != -1
 }
 
 // Index return the index of the first matched object in list
-func (l *List[E]) Index(v E, f EQL[E]) (index int) {
+func (l *List[E]) Index(v E, f base.EQL[E]) (index int) {
 	index = -1
 	matched := false
 	l.Iterate(func(e E) bool {
@@ -391,7 +391,7 @@ func (l *List[E]) Index(v E, f EQL[E]) (index int) {
 }
 
 // Index return the last index of the first matched object in list
-func (l *List[E]) LastIndex(v E, f EQL[E]) (index int) {
+func (l *List[E]) LastIndex(v E, f base.EQL[E]) (index int) {
 	index = l.Len()
 	matched := false
 	l.IterateReverse(func(e E) bool {
@@ -417,17 +417,17 @@ func (l *List[E]) Clear() {
 }
 
 // Contains to check if contains target element value in list.
-func (l *List[E]) Remove(v E, f EQL[E]) (ret E, removed bool) {
+func (l *List[E]) Remove(v E, f base.EQL[E]) (ret E, removed bool) {
 	return l.removeMatches(v, f, true)
 }
 
 // Contains to check if contains target element value in list.
-func (l *List[E]) RemoveAll(v E, f EQL[E]) (ret E, removed bool) {
+func (l *List[E]) RemoveAll(v E, f base.EQL[E]) (ret E, removed bool) {
 	return l.removeMatches(v, f, false)
 }
 
 // Contains to check if contains target element value in list.
-func (l *List[E]) removeMatches(v E, f EQL[E], first bool) (ret E, removed bool) {
+func (l *List[E]) removeMatches(v E, f base.EQL[E], first bool) (ret E, removed bool) {
 	l.iterate(func(e *Element[E]) bool {
 		if f(v, e.Value) {
 			removed = true
@@ -525,7 +525,7 @@ func (l *List[E]) isElementIndex(index int) bool {
 }
 
 // Filter do filter element action and return a new list
-func (l *List[E]) Filter(test func(E) bool) *List[E] {
+func (l *List[E]) Filter(test base.Evaluate[E]) *List[E] {
 	ret := NewList[E]()
 	if test == nil {
 		return ret
@@ -542,20 +542,20 @@ func (l *List[E]) Filter(test func(E) bool) *List[E] {
 }
 
 // Min to find the minimum one in the list
-func (l *List[E]) Min(compare func(o1, o2 E) int) (min E) {
+func (l *List[E]) Min(compare base.CMP[E]) (min E) {
 	return selectByCompare(l, func(o1, o2 E) int {
 		return compare(o1, o2)
 	})
 }
 
 // Max to find the maximum one in the list
-func (l *List[E]) Max(compare func(o1, o2 E) int) (min E) {
+func (l *List[E]) Max(compare base.CMP[E]) (min E) {
 	return selectByCompare(l, func(o1, o2 E) int {
 		return compare(o2, o1)
 	})
 }
 
-func selectByCompare[E any](l *List[E], compare func(o1, o2 E) int) (v E) {
+func selectByCompare[E any](l *List[E], compare base.CMP[E]) (v E) {
 	i := 0
 	l.iterate(func(e *Element[E]) bool {
 		if i == 0 {
@@ -572,7 +572,7 @@ func selectByCompare[E any](l *List[E], compare func(o1, o2 E) int) (v E) {
 }
 
 // Sort to sort list elements order by compare condition.
-func (l *List[E]) Sort(compare func(o1, o2 E) int) {
+func (l *List[E]) Sort(compare base.CMP[E]) {
 	sortobject := sortableList[E]{data: l, cmp: compare}
 	sort.Sort(sortobject)
 }

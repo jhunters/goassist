@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"sort"
 
+	"github.com/jhunters/goassist/base"
 	"github.com/jhunters/goassist/generic"
 	"github.com/jhunters/goassist/mapx"
 	"github.com/jhunters/goassist/mathx"
@@ -16,23 +17,6 @@ import (
 
 const (
 	SHUFFLE_THRESHOLD = 5
-)
-
-type (
-	// compare function
-	CMP[E any] func(E, E) int
-
-	// equal function
-	EQL[E any] func(E, E) bool
-
-	Null struct{}
-
-	// Evaluate use the specified parameter to perform a test that returns true or false.
-	Evaluate[E any] func(E) bool
-)
-
-var (
-	Empty Null // const var for nil usage marker
 )
 
 // Sort sort array object, sort order type is decided by cmp function.
@@ -44,7 +28,7 @@ var (
 //	Sort(students, func(e1, e2 Student) int {
 //		return strings.Compare(e1.Name, e2.Name)
 //	})
-func Sort[E any](data []E, cmp CMP[E]) {
+func Sort[E any](data []E, cmp base.CMP[E]) {
 	sortobject := sortable[E]{data: data, cmp: cmp}
 	sort.Sort(sortobject)
 }
@@ -67,7 +51,7 @@ func SortOrdered[E generic.Ordered](data []E, asc bool) {
 
 type sortable[E any] struct {
 	data []E
-	cmp  CMP[E]
+	cmp  base.CMP[E]
 }
 
 func (s sortable[E]) Len() int      { return len(s.data) }
@@ -117,7 +101,7 @@ func Reverse[E any](data []E) {
 // BinarySearch searches the specified array for the specified value using the
 // binary search algorithm. return index of the search key
 // note that target array must be ordered
-func BinarySearch[E any](data []E, key E, cmp CMP[E]) int {
+func BinarySearch[E any](data []E, key E, cmp base.CMP[E]) int {
 	low := 0
 	high := len(data) - 1
 
@@ -146,7 +130,7 @@ func BinarySearchOrdered[E generic.Ordered](data []E, key E) int {
 }
 
 // Contains returns <tt>true</tt> if this array contains the specified element.
-func Contains[E any](data []E, key E, equal EQL[E]) bool {
+func Contains[E any](data []E, key E, equal base.EQL[E]) bool {
 	size := len(data)
 	if size == 0 {
 		return false
@@ -166,7 +150,7 @@ func ContainsOrdered[E generic.Ordered](data []E, key E) bool {
 }
 
 // ContainsAny returns if any elements from other exist in this array
-func ContainsAny[E any](data, other []E, equal EQL[E]) bool {
+func ContainsAny[E any](data, other []E, equal base.EQL[E]) bool {
 	size := len(other)
 	if size == 0 {
 		return false
@@ -186,7 +170,7 @@ func ContainsAnyOrdered[E generic.Ordered](data, other []E) bool {
 }
 
 // Remove removes the first same element value of the key from this array
-func Remove[E any](data []E, key E, equal EQL[E]) ([]E, bool) {
+func Remove[E any](data []E, key E, equal base.EQL[E]) ([]E, bool) {
 	return removeContional(data, key, equal, false)
 }
 
@@ -196,7 +180,7 @@ func RemoveOrdered[E generic.Ordered](data []E, key E) ([]E, bool) {
 }
 
 // Remove removes the all same element value of the key from this array
-func RemoveAll[E any](data []E, key E, equal EQL[E]) ([]E, bool) {
+func RemoveAll[E any](data []E, key E, equal base.EQL[E]) ([]E, bool) {
 	return removeContional(data, key, equal, true)
 }
 
@@ -205,7 +189,7 @@ func RemoveAllOrdered[E generic.Ordered](data []E, key E) ([]E, bool) {
 	return removeContional(data, key, Equals[E], true)
 }
 
-func removeContional[E any](data []E, key E, equal EQL[E], all bool) ([]E, bool) {
+func removeContional[E any](data []E, key E, equal base.EQL[E], all bool) ([]E, bool) {
 	size := len(data)
 	if size == 0 {
 		return data, false
@@ -235,7 +219,7 @@ func remove[E any](data []E, i int) []E {
 }
 
 // Min Returns the minimum element and position of the given array
-func Min[E any](data []E, cmp CMP[E]) (E, int) {
+func Min[E any](data []E, cmp base.CMP[E]) (E, int) {
 	size := len(data)
 	if size == 1 {
 		return data[0], 0
@@ -260,7 +244,7 @@ func MinOrdered[E generic.Ordered](data []E) (E, int) {
 }
 
 // Max Returns the maximum element and position of the given array
-func Max[E any](data []E, cmp CMP[E]) (E, int) {
+func Max[E any](data []E, cmp base.CMP[E]) (E, int) {
 	size := len(data)
 	if size == 1 {
 		return data[0], 0
@@ -282,7 +266,7 @@ func MaxOrdered[E generic.Ordered](data []E) (E, int) {
 }
 
 // ReplaceAll Replaces all occurrences of one specified value in a array with another
-func ReplaceAll[E any](data []E, oldVal, newVal E, euqal EQL[E]) {
+func ReplaceAll[E any](data []E, oldVal, newVal E, euqal base.EQL[E]) {
 	if data == nil {
 		return
 	}
@@ -300,7 +284,7 @@ func ReplaceOrderedAll[E generic.Ordered](data []E, oldVal, newVal E) {
 }
 
 // EqualWith to theck all elements of the two array are same
-func EqualWith[E any](data, other []E, euqal EQL[E]) bool {
+func EqualWith[E any](data, other []E, euqal base.EQL[E]) bool {
 	s1, s2 := len(data), len(other)
 	if s1 != s2 {
 		return false
@@ -321,7 +305,7 @@ func EqualWithOrdered[E generic.Ordered](data, other []E) bool {
 }
 
 // Filter to filter target array by specified tester.
-func Filter[E any](data []E, evaluate Evaluate[E]) []E {
+func Filter[E any](data []E, evaluate base.Evaluate[E]) []E {
 	ret := make([]E, 0)
 	for _, v := range data {
 		if !evaluate(v) {
@@ -334,7 +318,7 @@ func Filter[E any](data []E, evaluate Evaluate[E]) []E {
 
 // IndexOfSubArrayReturns the starting position of the first occurrence of the specified
 //  target array within the specified source array
-func IndexOfSubArray[E any](data, sub []E, euqal EQL[E]) int {
+func IndexOfSubArray[E any](data, sub []E, euqal base.EQL[E]) int {
 	s1, s2 := len(data), len(sub)
 	if s2 == 0 {
 		return -1
@@ -363,7 +347,7 @@ func IndexOfSubOrderedArray[E generic.Ordered](data, sub []E) int {
 
 // LastIndexOfSubArray the last starting position of the first occurrence of the specified
 //  target array within the specified source array
-func LastIndexOfSubArray[E any](data, sub []E, euqal EQL[E]) int {
+func LastIndexOfSubArray[E any](data, sub []E, euqal base.EQL[E]) int {
 	s1, s2 := len(data), len(sub)
 	if s2 == 0 {
 		return -1
@@ -394,7 +378,7 @@ func LastIndexOfSubOrderedArray[E generic.Ordered](data, sub []E) int {
 
 // Disjoint Returns true if the two specified collections have no
 // elements in common.
-func Disjoint[E any](data []E, other []E, euqal EQL[E]) bool {
+func Disjoint[E any](data []E, other []E, euqal base.EQL[E]) bool {
 	s1, s2 := len(data), len(other)
 	if s1 == 0 || s2 == 0 {
 		return true
@@ -505,7 +489,7 @@ func DisjunctionOrdered[E generic.Ordered](data, other []E) []E {
 }
 
 // Subtract returns a new array containing data - other.
-func Substract[E any](data, other []E, equal EQL[E]) []E {
+func Substract[E any](data, other []E, equal base.EQL[E]) []E {
 	ret := Clone(data)
 
 	for _, e := range other {
@@ -569,6 +553,18 @@ func CreateAndFill[E any](size int, defaultElementValue E) []E {
 	ret := make([]E, size)
 	for i := 0; i < size; i++ {
 		ret[i] = defaultElementValue
+	}
+	return ret
+}
+
+// AsList convert to array
+func AsList[E any](e ...E) []E {
+	if e == nil {
+		return nil
+	}
+	ret := make([]E, len(e))
+	for i := 0; i < len(e); i++ {
+		ret[i] = e[i]
 	}
 	return ret
 }

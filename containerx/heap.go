@@ -3,15 +3,14 @@ package containerx
 import (
 	"container/heap"
 	"fmt"
-)
 
-// compare function
-type CMP[E any] func(E, E) int
+	"github.com/jhunters/goassist/base"
+)
 
 // heapST to implments the interface of "heap.Interface"
 type heapST[E any] struct {
 	data []E
-	cmp  CMP[E]
+	cmp  base.CMP[E]
 }
 
 // implments the methods for "heap.Interface"
@@ -67,7 +66,7 @@ func (h *Heap[E]) Remove(index int) E {
 }
 
 // NewHeap return Heap pointer and init the heap tree
-func NewHeap[E any](t []E, cmp CMP[E]) *Heap[E] {
+func NewHeap[E any](t []E, cmp base.CMP[E]) *Heap[E] {
 	ret := heapST[E]{data: t, cmp: cmp}
 	heap.Init(&ret)
 	return &Heap[E]{&ret}
