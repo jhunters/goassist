@@ -56,7 +56,7 @@ func TestAsyncGo(t *testing.T) {
 		took := time.Now().Sub(now)
 		So(f, ShouldBeFalse)
 		So(err, ShouldBeNil)
-		So(took, ShouldBeGreaterThan, 1*time.Second)
+		So(took, ShouldBeGreaterThan, 900*time.Millisecond)
 		So(took, ShouldBeLessThan, 2*time.Second)
 		So(<-ch, ShouldResemble, var_pojo)
 		took = time.Now().Sub(now)
@@ -88,7 +88,7 @@ func TestAsyncCall(t *testing.T) {
 
 		took := time.Now().Sub(now)
 		So(f, ShouldNotBeNil)
-		So(err, ShouldBeNil)
+		So(err, ShouldNotBeNil)
 		So(took, ShouldBeGreaterThan, 1*time.Second)
 		So(took, ShouldBeLessThan, 2*time.Second)
 		So(f(), ShouldResemble, var_pojo)

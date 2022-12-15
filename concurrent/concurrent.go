@@ -51,14 +51,20 @@ func timeoutF(timeout time.Duration) (<-chan time.Time, func()) {
 // AsyncGo execute target function by goroutine. if panic happened will wrap error object and return false
 // if just time out will return ok(false), err(nil)
 func AsyncGo(f func(), timeout time.Duration) (ok bool, err error) {
-	tout, cancel := timeoutF(timeout)
-	defer cancel()
 	ch := make(chan error, 1)
 	go func(ch chan<- error) {
 		defer panicCatch(ch)
 		f() // do process
 		close(ch)
 	}(ch)
+
+	if timeout <= 0 { // no timeout need
+		ok = true
+		return
+	}
+
+	tout, cancel := timeoutF(timeout)
+	defer cancel()
 	select {
 	case e := <-ch:
 		ok = (e == nil)
@@ -72,8 +78,6 @@ func AsyncGo(f func(), timeout time.Duration) (ok bool, err error) {
 // AsyncCall execute target function by goroutine and has a generic returned parameter. if panic happened will wrap error object and return future(nil)
 // if just time out will return future(func), err(nil)
 func AsyncCall[E any](f func() E, timeout time.Duration) (future func() E, err error) {
-	tout, cancel := timeoutF(timeout)
-	defer cancel()
 	ret := make(chan E, 1)
 	future = func() E {
 		return <-ret
@@ -85,6 +89,13 @@ func AsyncCall[E any](f func() E, timeout time.Duration) (future func() E, err e
 		ret <- e
 		close(ch)
 	}(ch)
+
+	if timeout <= 0 { // no timeout need
+		return
+	}
+
+	tout, cancel := timeoutF(timeout)
+	defer cancel()
 	select {
 	case e := <-ch:
 		err = e
@@ -92,6 +103,7 @@ func AsyncCall[E any](f func() E, timeout time.Duration) (future func() E, err e
 			future = nil
 		}
 	case <-tout:
+		err = fmt.Errorf("AsyncCall execute timeout. expect %v", timeout)
 	}
 	return
 }
