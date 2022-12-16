@@ -65,6 +65,7 @@ func (h *Heap[E]) Remove(index int) E {
 	return heap.Remove(h.data, index).(E)
 }
 
+// Copy to copy heap
 func (h *Heap[E]) Copy() *Heap[E] {
 	ret := heapST[E]{cmp: h.data.cmp}
 	ret.data = make([]E, len(h.data.data))

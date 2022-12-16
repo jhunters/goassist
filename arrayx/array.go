@@ -1,7 +1,5 @@
 /*
- * @Author: Malin Xie
- * @Description:
- * @Date: 2021-12-24 13:44:28
+ * Package arrayx to provides utility api for array operation
  */
 package arrayx
 

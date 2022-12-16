@@ -120,6 +120,7 @@ func TestRingLinkValueAndGet(t *testing.T) {
 		r.LinkValue(NewRingPojo("xml"))
 		nr := r.Get(1)
 		So(nr.Name, ShouldEqual, "xml")
+		So(r.Len(), ShouldEqual, 2)
 
 		e := r.Unlink(1)
 		So(r.Len(), ShouldEqual, 1)

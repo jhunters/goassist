@@ -1,8 +1,3 @@
-/*
- * @Author: Malin Xie
- * @Description:
- * @Date: 2022-02-10 18:53:19
- */
 package compress
 
 import (
