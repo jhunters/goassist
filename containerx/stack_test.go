@@ -7,17 +7,25 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
+type StackPojo struct {
+	Name string
+}
+
+func NewStackPojo(name string) *StackPojo {
+	return &StackPojo{Name: name}
+}
+
 func TestNewStack(t *testing.T) {
 	Convey("TestNewStack", t, func() {
-		s := containerx.NewStack[*RingPojo]()
+		s := containerx.NewStack[*StackPojo]()
 		So(s.IsEmpty(), ShouldBeTrue)
 	})
 	Convey("TestNewStackSize", t, func() {
-		s := containerx.NewStackSize[*RingPojo](16)
+		s := containerx.NewStackSize[*StackPojo](16)
 		size := s.Cap()
 		So(size, ShouldEqual, 16)
 
-		s = containerx.NewStackSize[*RingPojo](-1)
+		s = containerx.NewStackSize[*StackPojo](-1)
 		So(s.IsEmpty(), ShouldBeTrue)
 	})
 
@@ -25,9 +33,9 @@ func TestNewStack(t *testing.T) {
 
 func TestStackPushPoP(t *testing.T) {
 	Convey("TestStackPushPoP", t, func() {
-		s := containerx.NewStackSize[*RingPojo](16)
+		s := containerx.NewStackSize[*StackPojo](16)
 		So(s.IsEmpty(), ShouldBeTrue)
-		s.Push(NewRingPojo("matt"))
+		s.Push(NewStackPojo("matt"))
 		size := s.Cap()
 		So(size, ShouldEqual, 15)
 		So(s.IsEmpty(), ShouldBeFalse)
@@ -46,19 +54,31 @@ func TestStackPushPoP(t *testing.T) {
 
 func TestStackResize(t *testing.T) {
 	Convey("TestStackResize", t, func() {
-		s := containerx.NewStackSize[*RingPojo](2)
+		s := containerx.NewStackSize[*StackPojo](2)
 		So(s.Size(), ShouldEqual, 0)
 		So(s.Cap(), ShouldEqual, 2)
 
-		s.Push(NewRingPojo("matt"))
-		s.Push(NewRingPojo("xml"))
+		s.Push(NewStackPojo("matt"))
+		s.Push(NewStackPojo("xml"))
 
 		So(s.Cap(), ShouldEqual, 0)
 		So(s.Size(), ShouldEqual, 2)
 
 		// resize
-		s.Push(NewRingPojo("michael"))
+		s.Push(NewStackPojo("michael"))
 		So(s.Size(), ShouldEqual, 3)
 		So(s.Cap(), ShouldEqual, 1)
+	})
+}
+
+func TestStackCopy(t *testing.T) {
+	Convey("TestStackCopy", t, func() {
+		s := containerx.NewStackSize[*StackPojo](2)
+		s.Push(NewStackPojo("matt"))
+		s.Push(NewStackPojo("xml"))
+
+		cs := s.Copy()
+		So(cs.Cap(), ShouldEqual, s.Cap())
+		So(cs.Size(), ShouldEqual, s.Size())
 	})
 }

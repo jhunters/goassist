@@ -210,3 +210,40 @@ func TestRingCopy(t *testing.T) {
 	})
 
 }
+
+func TestRingIsLoop(t *testing.T) {
+	Convey("TestRingIsRealRing", t, func() {
+		r := createRing()
+		loop := false
+		r1 := r
+		r2 := r
+		checkCount := r.Len() * 3
+		var b bool
+		for i := 0; i < checkCount; i++ {
+			r1, b = step(r1, 1)
+			So(b, ShouldBeTrue)
+			r2, b = step(r2, 2)
+			So(b, ShouldBeTrue)
+			if r1 == r2 {
+				loop = true
+				break
+			}
+		}
+		So(loop, ShouldBeTrue)
+	})
+}
+
+func step[E any](r *containerx.Ring[E], step int) (*containerx.Ring[E], bool) {
+	if r == nil {
+		return nil, false
+	}
+	ret := r
+	for i := 0; i < step; i++ {
+		ret = ret.Next()
+		if ret == nil {
+			return nil, false
+		}
+	}
+
+	return ret, true
+}

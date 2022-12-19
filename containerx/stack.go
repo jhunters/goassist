@@ -6,6 +6,7 @@ var (
 	default_init_size = 16
 )
 
+// Stack struct
 type Stack[E any] struct {
 	data []E
 	pos  int
@@ -34,6 +35,7 @@ func (s *Stack[E]) resize() {
 	s.data = newData
 }
 
+// Pop push the element into the stack
 func (s *Stack[E]) Push(e E) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
@@ -44,6 +46,7 @@ func (s *Stack[E]) Push(e E) {
 	s.data[s.pos] = e
 }
 
+// Pop pop the element from the stack
 func (s *Stack[E]) Pop() (e E) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
@@ -68,4 +71,10 @@ func (s *Stack[E]) IsEmpty() bool {
 // Size to get stack elements size
 func (s *Stack[E]) Size() int {
 	return s.pos + 1
+}
+
+// Copy copy to a new stack
+func (s *Stack[E]) Copy() *Stack[E] {
+	r := &Stack[E]{data: s.data, pos: s.pos}
+	return r
 }
