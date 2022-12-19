@@ -1,4 +1,4 @@
-package containerx
+package stack
 
 import "sync"
 

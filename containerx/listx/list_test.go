@@ -1,10 +1,10 @@
-package containerx_test
+package listx_test
 
 import (
 	"strings"
 	"testing"
 
-	"github.com/jhunters/goassist/containerx"
+	"github.com/jhunters/goassist/containerx/listx"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -12,13 +12,13 @@ func TestInitList(t *testing.T) {
 
 	Convey("TestList", t, func() {
 		Convey("Test init list", func() {
-			l := containerx.NewList[string]()
+			l := listx.NewList[string]()
 			size := l.Len()
 			So(size, ShouldEqual, 0)
 		})
 
 		Convey("Test init list and fetch", func() {
-			l := containerx.NewList[string]()
+			l := listx.NewList[string]()
 			e := l.Front()
 			So(e, ShouldBeNil)
 
@@ -39,7 +39,7 @@ func TestPushElement(t *testing.T) {
 
 		Convey("Test PushFront", func() {
 			v := "hello"
-			l := containerx.NewList[string]()
+			l := listx.NewList[string]()
 			e := l.PushFront(v)
 			size := l.Len()
 			So(size, ShouldEqual, 1)
@@ -53,7 +53,7 @@ func TestPushElement(t *testing.T) {
 		})
 		Convey("Test PushBack", func() {
 			v := "hello"
-			l := containerx.NewList[string]()
+			l := listx.NewList[string]()
 			e := l.PushBack(v)
 			size := l.Len()
 			So(size, ShouldEqual, 1)
@@ -68,7 +68,7 @@ func TestPushElement(t *testing.T) {
 		Convey("Test PushBack & PushFront", func() {
 			v := "hello"
 			v2 := "world"
-			l := containerx.NewList[string]()
+			l := listx.NewList[string]()
 			l.PushFront(v)
 			l.PushBack(v2)
 			size := l.Len()
@@ -91,7 +91,7 @@ func TestPushElement(t *testing.T) {
 func TestToArray(t *testing.T) {
 	Convey("TestToArray", t, func() {
 		arr1 := []string{"1", "2", "3", "4", "5"}
-		l := containerx.NewList[string]()
+		l := listx.NewList[string]()
 		for _, v := range arr1 {
 			l.PushBack(v)
 		}
@@ -275,9 +275,9 @@ func TestRemoveFrontAndBack(t *testing.T) {
 	})
 }
 
-func createListX2() *containerx.List[string] {
+func createListX2() *listx.List[string] {
 	arr1 := []string{"1", "2", "3", "4", "5"}
-	l := containerx.NewList[string]()
+	l := listx.NewList[string]()
 	for _, v := range arr1 {
 		l.PushBack(v)
 		l.PushBack(v)
@@ -285,9 +285,9 @@ func createListX2() *containerx.List[string] {
 	return l
 }
 
-func createList() *containerx.List[string] {
+func createList() *listx.List[string] {
 	arr1 := []string{"10", "20", "30", "40", "50"}
-	l := containerx.NewList[string]()
+	l := listx.NewList[string]()
 	for _, v := range arr1 {
 		l.PushBack(v)
 	}
@@ -296,11 +296,11 @@ func createList() *containerx.List[string] {
 
 func TestNewListFromArray(t *testing.T) {
 	Convey("TestNewListFromArray", t, func() {
-		want := containerx.NewList[string]()
+		want := listx.NewList[string]()
 		want.PushBack("1")
 		want.PushBack("2")
 
-		l := containerx.NewListFromArray([]string{"1", "2"})
+		l := listx.NewListFromArray([]string{"1", "2"})
 		So(want.Len(), ShouldEqual, l.Len())
 		So(want.Front(), ShouldResemble, l.Front())
 	})
@@ -388,7 +388,7 @@ func TestMax(t *testing.T) {
 
 func TestSort(t *testing.T) {
 	Convey("TestSort", t, func() {
-		l := containerx.NewListOf("3", "4", "9", "6", "2", "5", "1")
+		l := listx.NewListOf("3", "4", "9", "6", "2", "5", "1")
 
 		l.Sort(func(o1, o2 string) int {
 			return strings.Compare(o1, o2)
@@ -400,7 +400,7 @@ func TestSort(t *testing.T) {
 
 func TestCopy(t *testing.T) {
 	Convey("TestCopy", t, func() {
-		l := containerx.NewListOf("3", "4", "9", "6", "2", "5", "1")
+		l := listx.NewListOf("3", "4", "9", "6", "2", "5", "1")
 
 		l2 := l.Copy()
 		So(l2.Len(), ShouldEqual, l.Len())

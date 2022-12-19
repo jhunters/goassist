@@ -1,9 +1,9 @@
-package containerx_test
+package stack_test
 
 import (
 	"testing"
 
-	"github.com/jhunters/goassist/containerx"
+	"github.com/jhunters/goassist/containerx/stack"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -17,15 +17,15 @@ func NewStackPojo(name string) *StackPojo {
 
 func TestNewStack(t *testing.T) {
 	Convey("TestNewStack", t, func() {
-		s := containerx.NewStack[*StackPojo]()
+		s := stack.NewStack[*StackPojo]()
 		So(s.IsEmpty(), ShouldBeTrue)
 	})
 	Convey("TestNewStackSize", t, func() {
-		s := containerx.NewStackSize[*StackPojo](16)
+		s := stack.NewStackSize[*StackPojo](16)
 		size := s.Cap()
 		So(size, ShouldEqual, 16)
 
-		s = containerx.NewStackSize[*StackPojo](-1)
+		s = stack.NewStackSize[*StackPojo](-1)
 		So(s.IsEmpty(), ShouldBeTrue)
 	})
 
@@ -33,7 +33,7 @@ func TestNewStack(t *testing.T) {
 
 func TestStackPushPoP(t *testing.T) {
 	Convey("TestStackPushPoP", t, func() {
-		s := containerx.NewStackSize[*StackPojo](16)
+		s := stack.NewStackSize[*StackPojo](16)
 		So(s.IsEmpty(), ShouldBeTrue)
 		s.Push(NewStackPojo("matt"))
 		size := s.Cap()
@@ -54,7 +54,7 @@ func TestStackPushPoP(t *testing.T) {
 
 func TestStackResize(t *testing.T) {
 	Convey("TestStackResize", t, func() {
-		s := containerx.NewStackSize[*StackPojo](2)
+		s := stack.NewStackSize[*StackPojo](2)
 		So(s.Size(), ShouldEqual, 0)
 		So(s.Cap(), ShouldEqual, 2)
 
@@ -73,7 +73,7 @@ func TestStackResize(t *testing.T) {
 
 func TestStackCopy(t *testing.T) {
 	Convey("TestStackCopy", t, func() {
-		s := containerx.NewStackSize[*StackPojo](2)
+		s := stack.NewStackSize[*StackPojo](2)
 		s.Push(NewStackPojo("matt"))
 		s.Push(NewStackPojo("xml"))
 

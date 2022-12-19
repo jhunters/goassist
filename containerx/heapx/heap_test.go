@@ -1,10 +1,10 @@
-package containerx_test
+package heapx_test
 
 import (
 	"strconv"
 	"testing"
 
-	"github.com/jhunters/goassist/containerx"
+	"github.com/jhunters/goassist/containerx/heapx"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -16,7 +16,7 @@ type Player struct {
 
 func TestHeap(t *testing.T) {
 
-	h := containerx.NewHeap([]Player{}, func(p1, p2 Player) int {
+	h := heapx.NewHeap([]Player{}, func(p1, p2 Player) int {
 		return p1.level - p2.level // level小的先出
 	})
 
@@ -35,7 +35,7 @@ func TestHeap(t *testing.T) {
 func TestHeapCopy(t *testing.T) {
 	Convey("TestHeapCopy", t, func() {
 
-		h := containerx.NewHeap([]Player{}, func(p1, p2 Player) int {
+		h := heapx.NewHeap([]Player{}, func(p1, p2 Player) int {
 			return p1.level - p2.level // level小的先出
 		})
 		h.Push(Player{1, "matthew"})

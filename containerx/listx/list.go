@@ -1,4 +1,4 @@
-package containerx
+package listx
 
 import (
 	"sort"

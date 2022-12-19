@@ -1,10 +1,10 @@
-package containerx_test
+package mapx_test
 
 import (
 	"strings"
 	"testing"
 
-	"github.com/jhunters/goassist/containerx"
+	"github.com/jhunters/goassist/containerx/mapx"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -20,8 +20,8 @@ func newMapPojo(name string) *MapPojo {
 	return &MapPojo{name}
 }
 
-func createMap() *containerx.Map[string, *MapPojo] {
-	mp := containerx.NewMap[string, *MapPojo]()
+func createMap() *mapx.Map[string, *MapPojo] {
+	mp := mapx.NewMap[string, *MapPojo]()
 	mp.Store("key1", newMapPojo("hello"))
 	mp.Store("key2", newMapPojo("world"))
 	mp.Store("key3", newMapPojo("to"))
@@ -32,7 +32,7 @@ func createMap() *containerx.Map[string, *MapPojo] {
 
 func TestNewMap(t *testing.T) {
 	Convey("TestNewMap", t, func() {
-		mp := containerx.NewMap[string, *MapPojo]()
+		mp := mapx.NewMap[string, *MapPojo]()
 		So(mp, ShouldNotBeNil)
 		So(mp.IsEmpty(), ShouldBeTrue)
 
@@ -40,12 +40,12 @@ func TestNewMap(t *testing.T) {
 
 	Convey("TestNewMapNewMapByInitial", t, func() {
 
-		mp := containerx.NewMapByInitial[string, *MapPojo](nil)
+		mp := mapx.NewMapByInitial[string, *MapPojo](nil)
 		So(mp, ShouldNotBeNil)
 		So(mp.IsEmpty(), ShouldBeTrue)
 
 		mp1 := createMap()
-		mp = containerx.NewMapByInitial(mp1.ToMap())
+		mp = mapx.NewMapByInitial(mp1.ToMap())
 		So(mp, ShouldNotBeNil)
 		So(mp.IsEmpty(), ShouldBeFalse)
 		So(mp.Size(), ShouldEqual, mp1.Size())
@@ -108,7 +108,7 @@ func TestMapStore(t *testing.T) {
 			mp := createMap()
 			So(mp.IsEmpty(), ShouldBeFalse)
 
-			mp2 := containerx.NewMap[string, *MapPojo]()
+			mp2 := mapx.NewMap[string, *MapPojo]()
 			So(mp2.IsEmpty(), ShouldBeTrue)
 			So(mp2.Size(), ShouldBeZeroValue)
 
@@ -123,7 +123,7 @@ func TestMapStore(t *testing.T) {
 
 		Convey("Test store all from origin map", func() {
 
-			mp2 := containerx.NewMap[string, *MapPojo]()
+			mp2 := mapx.NewMap[string, *MapPojo]()
 			So(mp2.IsEmpty(), ShouldBeTrue)
 			So(mp2.Size(), ShouldBeZeroValue)
 

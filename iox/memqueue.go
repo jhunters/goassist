@@ -50,6 +50,10 @@ func (mq *MemQueue) Dequeue() ([]byte, error) {
 }
 
 func (mq *MemQueue) Close() {
-	mq.in.Close()
-	mq.out.Close()
+	if mq.in != nil {
+		mq.in.Close()
+	}
+	if mq.out != nil {
+		mq.out.Close()
+	}
 }

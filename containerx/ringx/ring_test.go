@@ -1,11 +1,11 @@
-package containerx_test
+package ringx_test
 
 import (
 	"strings"
 	"testing"
 
 	"github.com/jhunters/goassist/arrayx"
-	"github.com/jhunters/goassist/containerx"
+	"github.com/jhunters/goassist/containerx/ringx"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -38,8 +38,8 @@ func compareRingPojo(o1, o2 *RingPojo) int {
 	}
 }
 
-func createRing() *containerx.Ring[*RingPojo] {
-	r := containerx.NewRingOf(NewRingPojo("matt"), NewRingPojo("xml"), NewRingPojo("ant_miracle"),
+func createRing() *ringx.Ring[*RingPojo] {
+	r := ringx.NewRingOf(NewRingPojo("matt"), NewRingPojo("xml"), NewRingPojo("ant_miracle"),
 		NewRingPojo("michael"), NewRingPojo(""), NewRingPojo("ryan"))
 	return r
 }
@@ -52,7 +52,7 @@ func createRingPojoArray() []*RingPojo {
 func TestNewRing(t *testing.T) {
 
 	Convey("TestNewRing", t, func() {
-		r := containerx.NewRing[*RingPojo](10)
+		r := ringx.NewRing[*RingPojo](10)
 		So(10, ShouldEqual, r.Len())
 
 		r.Do(func(rp *RingPojo) {
@@ -72,12 +72,12 @@ func TestNewRing(t *testing.T) {
 func TestMinMax(t *testing.T) {
 	Convey("TestMinMax", t, func() {
 		Convey("Test min in initial ring", func() {
-			r := containerx.NewRing[*RingPojo](10)
+			r := ringx.NewRing[*RingPojo](10)
 			v := r.Min(compareRingPojo)
 			So(v, ShouldBeNil)
 		})
 		Convey("Test max in initial ring", func() {
-			r := containerx.NewRing[*RingPojo](10)
+			r := ringx.NewRing[*RingPojo](10)
 			v := r.Max(compareRingPojo)
 			So(v, ShouldBeNil)
 		})
@@ -111,7 +111,7 @@ func TestRingLink(t *testing.T) {
 
 func TestRingLinkValueAndGet(t *testing.T) {
 	Convey("TestRingLinkValueAndGet", t, func() {
-		r := containerx.NewRing[*RingPojo](1)
+		r := ringx.NewRing[*RingPojo](1)
 		So(r.Len(), ShouldEqual, 1)
 		So(r.Value, ShouldBeNil)
 
@@ -143,7 +143,7 @@ func TestSortRing(t *testing.T) {
 func TestRingNext(t *testing.T) {
 	Convey("TestRingNext", t, func() {
 
-		r := containerx.NewRing[*RingPojo](1)
+		r := ringx.NewRing[*RingPojo](1)
 		So(r.Len(), ShouldEqual, 1)
 
 		e := r.Next()
@@ -233,7 +233,7 @@ func TestRingIsLoop(t *testing.T) {
 	})
 }
 
-func step[E any](r *containerx.Ring[E], step int) (*containerx.Ring[E], bool) {
+func step[E any](r *ringx.Ring[E], step int) (*ringx.Ring[E], bool) {
 	if r == nil {
 		return nil, false
 	}

@@ -1,4 +1,4 @@
-package containerx
+package heapx
 
 import (
 	"container/heap"

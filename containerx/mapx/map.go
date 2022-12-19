@@ -1,4 +1,4 @@
-package containerx
+package mapx
 
 import (
 	"sync"
