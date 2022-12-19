@@ -95,6 +95,21 @@ func (m *Map[K, V]) Replace(key K, oldValue, newValue V, equal base.EQL[V]) bool
 	return false
 }
 
+// ReplaceByCondition replaces the value for key if value compare condition
+func (m *Map[K, V]) ReplaceByCondition(key K, c base.BiFunc[V, K, V]) bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	v, ok := m.Load(key)
+	if !ok {
+		return false
+	}
+
+	r := c(key, v)
+	m.mp.Store(key, r)
+	return true
+}
+
 // Load returns the value stored in the map for a key, or nil if no
 // value is present.
 // The ok result indicates whether value was found in the map.
@@ -146,7 +161,7 @@ func (m *Map[K, V]) Delete(key K) {
 //
 // Range may be O(N) with the number of elements in the map even if f returns
 // false after a constant number of calls.
-func (m *Map[K, V]) Range(f func(key K, value V) bool) {
+func (m *Map[K, V]) Range(f base.BiFunc[bool, K, V]) {
 	m.mp.Range(func(key, value any) bool {
 		return f(key.(K), value.(V))
 	})

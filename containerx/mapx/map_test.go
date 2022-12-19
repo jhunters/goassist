@@ -219,6 +219,21 @@ func TestMapRelace(t *testing.T) {
 			So(v, ShouldResemble, newMapPojo("hello"))
 
 		})
+
+		Convey("ReplaceByCondition exist", func() {
+			ok := mp.ReplaceByCondition("key1", func(s string, mp *MapPojo) *MapPojo {
+				if strings.Compare(mp.Name, "hello") == 0 {
+					return newMapPojo("unknown")
+				}
+				return mp
+			})
+			So(ok, ShouldBeTrue)
+
+			v, ok := mp.Load("key1")
+			So(ok, ShouldBeTrue)
+			So(v, ShouldResemble, newMapPojo("unknown"))
+
+		})
 	})
 }
 
