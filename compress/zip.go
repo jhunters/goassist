@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/jhunters/goassist/filex"
+	"github.com/jhunters/goassist/fileutil"
 	"github.com/yeka/zip"
 )
 
@@ -84,7 +84,7 @@ func ZipDir(dir, zipfile, password string) error {
 	zipw := zip.NewWriter(buf)
 	defer zipw.Close()
 
-	filex.ListFiles(dir, func(filename, path string, data []byte) {
+	fileutil.ListFiles(dir, func(filename, path string, data []byte) {
 		w, err := zipw.Encrypt(filepath.Join(path, filename), password, zip.StandardEncryption)
 		if err != nil {
 			log.Fatal(err)
