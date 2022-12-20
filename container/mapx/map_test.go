@@ -101,7 +101,7 @@ func TestMapExist(t *testing.T) {
 
 }
 
-func TestRemoveAndClear(t *testing.T) {
+func TestMapRemoveAndClear(t *testing.T) {
 	Convey("TestRemove", t, func() {
 		mp := createMap()
 		// key not found
@@ -125,4 +125,35 @@ func TestRemoveAndClear(t *testing.T) {
 		So(mp.Size(), ShouldBeZeroValue)
 	})
 
+}
+
+func TestMapKeysAndValues(t *testing.T) {
+	Convey("TestKeysAndValues", t, func() {
+		Convey("test keys", func() {
+			mp := createMap()
+			keys := mp.Keys()
+			So(len(keys), ShouldEqual, 5)
+
+		})
+		Convey("test values", func() {
+			mp := createMap()
+			values := mp.Values()
+			So(len(values), ShouldEqual, 5)
+		})
+	})
+}
+
+func TestMapCopy(t *testing.T) {
+
+	Convey("TestMapCopy", t, func() {
+		mp := createMap()
+		mp2 := mp.Copy()
+		So(mp.Size(), ShouldEqual, mp2.Size())
+
+		mp.Range(func(s string, mp *MapPojo) bool {
+			ok := mp2.Exist(s)
+			So(ok, ShouldBeTrue)
+			return true
+		})
+	})
 }

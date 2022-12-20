@@ -9,25 +9,24 @@ import (
 	"testing"
 
 	"github.com/jhunters/goassist/stringutil"
-	str "github.com/jhunters/goassist/stringutil"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestReverse(t *testing.T) {
 
 	Convey("TestReverse", t, func() {
-		ret, err := str.Reverse("hello")
+		ret, err := stringutil.Reverse("hello")
 		So(err, ShouldBeNil)
 		So(ret, ShouldEqual, "olleh")
 
 		Convey("TestReverse by chinese", func() {
-			ret, err := str.Reverse("hello中国")
+			ret, err := stringutil.Reverse("hello中国")
 			So(err, ShouldBeNil)
 			So(ret, ShouldEqual, "国中olleh")
 		})
 
 		Convey("TestReverse by upper case chinese", func() {
-			ret, err := str.Reverse("helloｃｈｉｎｅｓｅ")
+			ret, err := stringutil.Reverse("helloｃｈｉｎｅｓｅ")
 			So(err, ShouldBeNil)
 			So(ret, ShouldEqual, "ｅｓｅｎｉｈｃolleh")
 		})
@@ -37,16 +36,16 @@ func TestReverse(t *testing.T) {
 func TestCapitalize(t *testing.T) {
 
 	Convey("TestCapitalize", t, func() {
-		ret := str.Capitalize("hello")
+		ret := stringutil.Capitalize("hello")
 		So(ret, ShouldEqual, "Hello")
 
-		ret = str.Capitalize("HEllo")
+		ret = stringutil.Capitalize("HEllo")
 		So(ret, ShouldEqual, "HEllo")
 
-		ret = str.Capitalize("")
+		ret = stringutil.Capitalize("")
 		So(ret, ShouldEqual, "")
 
-		ret = str.Capitalize("121H")
+		ret = stringutil.Capitalize("121H")
 		So(ret, ShouldEqual, "121H")
 
 	})
@@ -55,16 +54,16 @@ func TestCapitalize(t *testing.T) {
 func TestUncapitalize(t *testing.T) {
 
 	Convey("TestCapitalize", t, func() {
-		ret := str.Uncapitalize("hello")
+		ret := stringutil.Uncapitalize("hello")
 		So(ret, ShouldEqual, "hello")
 
-		ret = str.Uncapitalize("HEllo")
+		ret = stringutil.Uncapitalize("HEllo")
 		So(ret, ShouldEqual, "hEllo")
 
-		ret = str.Uncapitalize("")
+		ret = stringutil.Uncapitalize("")
 		So(ret, ShouldEqual, "")
 
-		ret = str.Uncapitalize("121H")
+		ret = stringutil.Uncapitalize("121H")
 		So(ret, ShouldEqual, "121H")
 	})
 
@@ -126,4 +125,13 @@ func TestSubstringAfterLast(t *testing.T) {
 		})
 
 	})
+}
+
+func TestWrap(t *testing.T) {
+	Convey("TestWrap", t, func() {
+		s := stringutil.Wrap("hello", "|")
+		So(s, ShouldEqual, "|hello|")
+
+	})
+
 }

@@ -3,6 +3,7 @@ package reflectx_test
 import (
 	"fmt"
 	"testing"
+	"unsafe"
 
 	"github.com/jhunters/goassist/reflectx"
 
@@ -36,6 +37,38 @@ func TestAssignableIfConvertibleTo(t *testing.T) {
 		result, ok := reflectx.AssignIfConvertibleTo(age, age2)
 		So(ok, ShouldBeTrue)
 		So(result, ShouldEqual, 200)
+	})
+
+}
+
+func TestIsByteType(t *testing.T) {
+	Convey("TestIsByteType", t, func() {
+		i := 0
+		ok := reflectx.IsByteType(i)
+		So(ok, ShouldBeFalse)
+
+		var b byte = 0
+		ok = reflectx.IsByteType(b)
+		So(ok, ShouldBeTrue)
+	})
+
+}
+
+func TestTypeOfName(t *testing.T) {
+
+	Convey("TestTypeOfName", t, func() {
+
+		s := "hello"
+		tn := reflectx.TypeOfName(s)
+		So(tn, ShouldEqual, "string")
+
+		i := 0
+		tn = reflectx.TypeOfName(i)
+		So(tn, ShouldEqual, "int")
+
+		ptri := &i
+		tn = reflectx.TypeOfName(unsafe.Pointer(ptri))
+		So(tn, ShouldEqual, "Pointer")
 	})
 
 }
