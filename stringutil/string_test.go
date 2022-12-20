@@ -135,3 +135,34 @@ func TestWrap(t *testing.T) {
 	})
 
 }
+
+func TestAbbreviate(t *testing.T) {
+	Convey("TestAbbreviate", t, func() {
+		s, err := stringutil.Abbreviate("abcdefghijklmno", "---", -1, 10)
+		So(err, ShouldBeNil)
+		So(s, ShouldEqual, "abcdefg---")
+
+		s, err = stringutil.Abbreviate("abcdefghijklmno", ",", 0, 10)
+		So(err, ShouldBeNil)
+		So(s, ShouldEqual, "abcdefghi,")
+
+		s, err = stringutil.Abbreviate("abcdefghijklmno", "...", 6, 10)
+		So(err, ShouldBeNil)
+		So(s, ShouldEqual, "...ghij...")
+
+		s, err = stringutil.Abbreviate("abcdefghij", "abra", 0, 4)
+		So(err, ShouldNotBeNil)
+	})
+
+}
+
+func TestAbbreviateMiddle(t *testing.T) {
+	Convey("TestAbbreviateMiddle", t, func() {
+		s := stringutil.AbbreviateMiddle("abcdef", ".", 4)
+		So(s, ShouldEqual, "ab.f")
+
+		s = stringutil.AbbreviateMiddle("abc", ".", 3)
+		So(s, ShouldEqual, "abc")
+	})
+
+}

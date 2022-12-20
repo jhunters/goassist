@@ -8,11 +8,12 @@ package stringutil
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"unicode/utf8"
 	"unsafe"
 
-	"github.com/jhunters/goassist/arrayx"
+	"github.com/jhunters/goassist/arrayutil"
 	"github.com/jhunters/goassist/unsafex"
 )
 
@@ -20,6 +21,68 @@ const (
 	INDEX_NOT_FOUND = -1
 	EMPTY_STRING    = ""
 )
+
+// Abbreviates a String using a given replacement marker
+func Abbreviate(str, abbrevMarker string, offset, maxWidth int) (string, error) {
+	if IsEmpty(str) && IsEmpty(abbrevMarker) {
+		return str, nil
+	} else if !IsEmpty(str) && abbrevMarker == "" && maxWidth > 0 {
+		return SubString(str, 0, maxWidth), nil
+	} else if IsEmpty(str) || IsEmpty(abbrevMarker) {
+		return str, nil
+	}
+
+	abbrevMarkerLength := len(abbrevMarker)
+	minAbbrevWidth := abbrevMarkerLength + 1
+	minAbbrevWidthOffset := abbrevMarkerLength + abbrevMarkerLength + 1
+
+	if maxWidth < minAbbrevWidth {
+		return str, fmt.Errorf("Minimum abbreviation width is %d", minAbbrevWidth)
+	}
+	l := len(str)
+	if l <= maxWidth {
+		return str, nil
+	}
+	if offset > l {
+		offset = l
+	}
+	if l-offset < maxWidth-abbrevMarkerLength {
+		offset = l - (maxWidth - abbrevMarkerLength)
+	}
+	if offset <= abbrevMarkerLength+1 {
+		return SubString(str, 0, maxWidth-abbrevMarkerLength) + abbrevMarker, nil
+	}
+	if maxWidth < minAbbrevWidthOffset {
+		return str, fmt.Errorf("Minimum abbreviation width with offset is %d", minAbbrevWidthOffset)
+	}
+	if offset+maxWidth-abbrevMarkerLength < l {
+		ns, err := Abbreviate(SubString(str, offset, -1), abbrevMarker, 0, maxWidth-abbrevMarkerLength)
+		if err != nil {
+			return str, err
+		}
+		return abbrevMarker + ns, nil
+	}
+	return abbrevMarker + SubString(str, l-(maxWidth-abbrevMarkerLength), -1), nil
+}
+
+// AbbreviateMiddle a String to the length passed, replacing the middle characters with the supplied replacement String.
+func AbbreviateMiddle(str, middle string, length int) string {
+	if IsEmpty(str) || IsEmpty(middle) {
+		return str
+	}
+
+	if length >= len(str) || length < len(middle)+2 {
+		return str
+	}
+
+	targetSting := length - len(middle)
+	startOffset := targetSting/2 + targetSting%2
+	endOffset := len(str) - targetSting/2
+
+	return SubString(str, 0, startOffset) +
+		middle +
+		SubString(str, endOffset, -1)
+}
 
 // Reverse to reverse the string
 func Reverse(s string) (string, error) {
@@ -61,6 +124,18 @@ func Uncapitalize(s string) string {
 	b := []byte(s)
 	b[0] = []byte(strings.ToLower(string(b[0])))[0]
 	return string(b)
+}
+
+// SubString a string that is a substring of this string.
+func SubString(s string, beginIndex, endIndex int) string {
+	if beginIndex < 0 {
+		return s
+	}
+	if endIndex > len(s) || endIndex < 0 {
+		return s[beginIndex:]
+	}
+
+	return s[beginIndex:endIndex]
 }
 
 // SubstringAfter Gets the substring after the first occurrence of a separator
@@ -135,7 +210,7 @@ func SubstringBeforeLast(s string, separator string) string {
 
 // fulfill string by repeat target count of byte
 func Repeat(s byte, count int) string {
-	ret := arrayx.CreateAndFill(count, s)
+	ret := arrayutil.CreateAndFill(count, s)
 	return string(ret)
 }
 

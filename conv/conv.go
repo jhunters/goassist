@@ -34,7 +34,7 @@ func FormatInt[E generic.Integer](i E, base int) string {
 	return strconv.FormatInt(int64(i), base)
 }
 
-// convert to
+// ToPtr convert to pointer
 func ToPtr[E any](t E) *E {
 	return &t
 }
