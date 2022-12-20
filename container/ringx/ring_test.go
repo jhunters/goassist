@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/jhunters/goassist/arrayx"
+	"github.com/jhunters/goassist/arrayutil"
 	"github.com/jhunters/goassist/container/ringx"
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -45,7 +45,7 @@ func createRing() *ringx.Ring[*RingPojo] {
 }
 
 func createRingPojoArray() []*RingPojo {
-	return arrayx.AsList(NewRingPojo("matt"), NewRingPojo("xml"), NewRingPojo("ant_miracle"),
+	return arrayutil.AsList(NewRingPojo("matt"), NewRingPojo("xml"), NewRingPojo("ant_miracle"),
 		NewRingPojo("michael"), NewRingPojo(""), NewRingPojo("ryan"))
 }
 

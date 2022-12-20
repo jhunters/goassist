@@ -62,12 +62,23 @@ func TestSafeSubstract(t *testing.T) {
 
 	})
 
-	Convey("Test SafeAdd negative", t, func() {
+	Convey("Test Substract negative", t, func() {
 
 		a := -1 << 63
 		b := 1 << 62
 
 		c, err := mathutil.SafeSubstract(a, b)
+		So(err, ShouldNotBeNil)
+		So(c, ShouldBeGreaterThanOrEqualTo, 0)
+
+	})
+
+	Convey("Test SubstractUnsigned negative", t, func() {
+
+		var a uint64 = 1 << 62
+		var b uint64 = 1 << 63
+
+		c, err := mathutil.SafeSubstractUnsigned(a, b)
 		So(err, ShouldNotBeNil)
 		So(c, ShouldBeGreaterThanOrEqualTo, 0)
 
@@ -91,6 +102,33 @@ func TestMod(t *testing.T) {
 	Convey("Test Mod failed", t, func() {
 		_, err := mathutil.Mod(-10, -3)
 		So(err, ShouldNotBeNil)
+	})
+
+}
+
+func TestMaxMin(t *testing.T) {
+
+	Convey("TestMaxMin", t, func() {
+
+		v := mathutil.Max(1, 0)
+		So(v, ShouldEqual, 1)
+
+		v = mathutil.Min(1, 0)
+		So(v, ShouldEqual, 0)
+
+	})
+
+}
+
+func TestAbs(t *testing.T) {
+
+	Convey("TestAbs", t, func() {
+		v := mathutil.Abs(1)
+		So(v, ShouldEqual, 1)
+
+		v = mathutil.Abs(-1)
+		So(v, ShouldEqual, 1)
+
 	})
 
 }

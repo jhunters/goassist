@@ -20,7 +20,6 @@ type Simple struct {
 }
 
 func TestStructMappingToArray(t *testing.T) {
-
 	Convey("test struct convert to array", t, func() {
 
 		s := Simple{age: 100}
@@ -67,4 +66,23 @@ func TestSliceStringConvert(t *testing.T) {
 
 	// // 设置slice的Cap值 ，用unsafe.Add操作，执行偏移操作 16个字节
 	// *(*int)(unsafe.Add(unsafe.Pointer(&ret), uintptr(8)*2)) = len(value)
+}
+
+func TestStringToSlice(t *testing.T) {
+	Convey("TestStringToSlice", t, func() {
+		b := unsafex.StringToSlice("hello world!")
+		s := unsafex.SliceToString(b)
+		So(s, ShouldEqual, "hello world!")
+	})
+}
+
+func TestValueSizeof(t *testing.T) {
+	Convey("TestValueSizeof", t, func() {
+		i := 0
+		sz := unsafex.ValueSizeof(i)
+		So(sz, ShouldEqual, 8)
+
+		sz = unsafex.ValueSizeof(&i)
+		So(sz, ShouldEqual, 8)
+	})
 }

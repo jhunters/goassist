@@ -3,7 +3,7 @@ package stack_test
 import (
 	"testing"
 
-	"github.com/jhunters/goassist/containerx/stack"
+	"github.com/jhunters/goassist/container/stack"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
