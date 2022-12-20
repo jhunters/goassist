@@ -1,7 +1,7 @@
 /*
  * Package arrayx to provides utility api for array operation
  */
-package arrayx
+package arrayutil
 
 import (
 	"math/rand"
@@ -9,8 +9,8 @@ import (
 
 	"github.com/jhunters/goassist/base"
 	"github.com/jhunters/goassist/generic"
-	"github.com/jhunters/goassist/mapx"
-	"github.com/jhunters/goassist/mathx"
+	"github.com/jhunters/goassist/maputil"
+	"github.com/jhunters/goassist/mathutil"
 )
 
 const (
@@ -436,10 +436,10 @@ func UnionOrdered[E generic.Ordered](data, other []E) []E {
 	mapa := getCardinalityMap(data)
 	mapb := getCardinalityMap(other)
 
-	merged := mapx.AddAll(mapa, mapb)
+	merged := maputil.AddAll(mapa, mapb)
 	for k := range merged {
 		i := 0
-		for m := mathx.Max(int(getFreq(k, mapa)), int(getFreq(k, mapb))); i < m; i++ {
+		for m := mathutil.Max(int(getFreq(k, mapa)), int(getFreq(k, mapb))); i < m; i++ {
 			ret = append(ret, k)
 		}
 	}
@@ -455,10 +455,10 @@ func IntersectionOrdered[E generic.Ordered](data, other []E) []E {
 	mapa := getCardinalityMap(data)
 	mapb := getCardinalityMap(other)
 
-	merged := mapx.AddAll(mapa, mapb)
+	merged := maputil.AddAll(mapa, mapb)
 	for k := range merged {
 		i := 0
-		for m := mathx.Min(int(getFreq(k, mapa)), int(getFreq(k, mapb))); i < m; i++ {
+		for m := mathutil.Min(int(getFreq(k, mapa)), int(getFreq(k, mapb))); i < m; i++ {
 			ret = append(ret, k)
 		}
 	}
@@ -474,10 +474,10 @@ func DisjunctionOrdered[E generic.Ordered](data, other []E) []E {
 	mapa := getCardinalityMap(data)
 	mapb := getCardinalityMap(other)
 
-	merged := mapx.AddAll(mapa, mapb)
+	merged := maputil.AddAll(mapa, mapb)
 	for k := range merged {
 		i := 0
-		m := mathx.Max(int(getFreq(k, mapa)), int(getFreq(k, mapb))) - mathx.Min(int(getFreq(k, mapa)), int(getFreq(k, mapb)))
+		m := mathutil.Max(int(getFreq(k, mapa)), int(getFreq(k, mapb))) - mathutil.Min(int(getFreq(k, mapa)), int(getFreq(k, mapb)))
 		for ; i < m; i++ {
 			ret = append(ret, k)
 		}

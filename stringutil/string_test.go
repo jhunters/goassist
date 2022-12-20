@@ -3,13 +3,13 @@
  * @Description:
  * @Date: 2022-02-08 14:14:37
  */
-package stringx_test
+package stringutil_test
 
 import (
 	"testing"
 
-	"github.com/jhunters/goassist/stringx"
-	str "github.com/jhunters/goassist/stringx"
+	"github.com/jhunters/goassist/stringutil"
+	str "github.com/jhunters/goassist/stringutil"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -74,26 +74,26 @@ func TestSubstringAfter(t *testing.T) {
 	Convey("TestSubstringAfter", t, func() {
 		Convey("Test found", func() {
 			s := "abc"
-			r := stringx.SubstringAfter(s, "a")
+			r := stringutil.SubstringAfter(s, "a")
 			So(r, ShouldEqual, "bc")
 
 			s = "abcba"
-			r = stringx.SubstringAfter(s, "b")
+			r = stringutil.SubstringAfter(s, "b")
 			So(r, ShouldEqual, "cba")
 
 			s = "abcba"
-			r = stringx.SubstringAfterLast(s, "a")
+			r = stringutil.SubstringAfterLast(s, "a")
 			So(r, ShouldEqual, "")
 		})
 
 		Convey("Test not found", func() {
 			s := "abc"
-			r := stringx.SubstringAfter(s, "")
-			So(r, ShouldEqual, stringx.EMPTY_STRING)
+			r := stringutil.SubstringAfter(s, "")
+			So(r, ShouldEqual, stringutil.EMPTY_STRING)
 
 			s = "abcba"
-			r = stringx.SubstringAfter(s, "d")
-			So(r, ShouldEqual, stringx.EMPTY_STRING)
+			r = stringutil.SubstringAfter(s, "d")
+			So(r, ShouldEqual, stringutil.EMPTY_STRING)
 		})
 
 	})
@@ -103,26 +103,26 @@ func TestSubstringAfterLast(t *testing.T) {
 	Convey("TestSubstringAfter", t, func() {
 		Convey("Test found", func() {
 			s := "abc"
-			r := stringx.SubstringAfterLast(s, "a")
+			r := stringutil.SubstringAfterLast(s, "a")
 			So(r, ShouldEqual, "bc")
 
 			s = "abcba"
-			r = stringx.SubstringAfterLast(s, "b")
+			r = stringutil.SubstringAfterLast(s, "b")
 			So(r, ShouldEqual, "a")
 
 			s = "abcba"
-			r = stringx.SubstringAfterLast(s, "a")
+			r = stringutil.SubstringAfterLast(s, "a")
 			So(r, ShouldEqual, "")
 		})
 
 		Convey("Test not found", func() {
 			s := "abc"
-			r := stringx.SubstringAfterLast(s, "")
-			So(r, ShouldEqual, stringx.EMPTY_STRING)
+			r := stringutil.SubstringAfterLast(s, "")
+			So(r, ShouldEqual, stringutil.EMPTY_STRING)
 
 			s = "abcba"
-			r = stringx.SubstringAfterLast(s, "d")
-			So(r, ShouldEqual, stringx.EMPTY_STRING)
+			r = stringutil.SubstringAfterLast(s, "d")
+			So(r, ShouldEqual, stringutil.EMPTY_STRING)
 		})
 
 	})

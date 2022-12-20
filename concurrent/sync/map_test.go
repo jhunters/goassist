@@ -1,10 +1,11 @@
-package mapx_test
+package sync_test
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
-	"github.com/jhunters/goassist/containerx/mapx"
+	"github.com/jhunters/goassist/concurrent/sync"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -20,8 +21,8 @@ func newMapPojo(name string) *MapPojo {
 	return &MapPojo{name}
 }
 
-func createMap() *mapx.Map[string, *MapPojo] {
-	mp := mapx.NewMap[string, *MapPojo]()
+func createMap() *sync.Map[string, *MapPojo] {
+	mp := sync.NewMap[string, *MapPojo]()
 	mp.Store("key1", newMapPojo("hello"))
 	mp.Store("key2", newMapPojo("world"))
 	mp.Store("key3", newMapPojo("to"))
@@ -32,7 +33,7 @@ func createMap() *mapx.Map[string, *MapPojo] {
 
 func TestNewMap(t *testing.T) {
 	Convey("TestNewMap", t, func() {
-		mp := mapx.NewMap[string, *MapPojo]()
+		mp := sync.NewMap[string, *MapPojo]()
 		So(mp, ShouldNotBeNil)
 		So(mp.IsEmpty(), ShouldBeTrue)
 
@@ -40,12 +41,12 @@ func TestNewMap(t *testing.T) {
 
 	Convey("TestNewMapNewMapByInitial", t, func() {
 
-		mp := mapx.NewMapByInitial[string, *MapPojo](nil)
+		mp := sync.NewMapByInitial[string, *MapPojo](nil)
 		So(mp, ShouldNotBeNil)
 		So(mp.IsEmpty(), ShouldBeTrue)
 
 		mp1 := createMap()
-		mp = mapx.NewMapByInitial(mp1.ToMap())
+		mp = sync.NewMapByInitial(mp1.ToMap())
 		So(mp, ShouldNotBeNil)
 		So(mp.IsEmpty(), ShouldBeFalse)
 		So(mp.Size(), ShouldEqual, mp1.Size())
@@ -108,7 +109,7 @@ func TestMapStore(t *testing.T) {
 			mp := createMap()
 			So(mp.IsEmpty(), ShouldBeFalse)
 
-			mp2 := mapx.NewMap[string, *MapPojo]()
+			mp2 := sync.NewMap[string, *MapPojo]()
 			So(mp2.IsEmpty(), ShouldBeTrue)
 			So(mp2.Size(), ShouldBeZeroValue)
 
@@ -123,7 +124,7 @@ func TestMapStore(t *testing.T) {
 
 		Convey("Test store all from origin map", func() {
 
-			mp2 := mapx.NewMap[string, *MapPojo]()
+			mp2 := sync.NewMap[string, *MapPojo]()
 			So(mp2.IsEmpty(), ShouldBeTrue)
 			So(mp2.Size(), ShouldBeZeroValue)
 
@@ -291,9 +292,13 @@ func TestMapExistValue(t *testing.T) {
 	Convey("TestMapExistValue", t, func() {
 		mp := createMap()
 
-		k, ok := mp.ExistValue(newMapPojo("!"), func(mp1, mp2 *MapPojo) bool {
+		k, ok := mp.ExistValueWithComparator(newMapPojo("!"), func(mp1, mp2 *MapPojo) bool {
 			return strings.Compare(mp1.Name, mp2.Name) == 0
 		})
+		So(ok, ShouldBeTrue)
+		So(k, ShouldEqual, "key5")
+
+		k, ok = mp.ExistValue(newMapPojo("!"))
 		So(ok, ShouldBeTrue)
 		So(k, ShouldEqual, "key5")
 
@@ -318,4 +323,19 @@ func TestMapCopy(t *testing.T) {
 		So(newMp.Size(), ShouldEqual, mp.Size())
 
 	})
+}
+
+func TestXxx(t *testing.T) {
+
+	mp := make(map[any]string)
+
+	mp[MapPojo{Name: "hello"}] = "1"
+	mp[MapPojo{Name: "world"}] = "2"
+
+	fmt.Println(mp[MapPojo{Name: "world"}])
+
+	mp2 := sync.NewMap[MapPojo, *MapPojo]()
+	mp2.Store(MapPojo{Name: "world"}, &MapPojo{Name: "world"})
+	fmt.Println(mp2.Load(MapPojo{Name: "world"}))
+
 }

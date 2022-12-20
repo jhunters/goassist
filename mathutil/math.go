@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2022-01-05 15:52:22
  */
-package mathx
+package mathutil
 
 import (
 	"fmt"

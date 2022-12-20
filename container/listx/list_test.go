@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/jhunters/goassist/containerx/listx"
+	"github.com/jhunters/goassist/container/listx"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

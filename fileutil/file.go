@@ -1,4 +1,4 @@
-package filex
+package fileutil
 
 import (
 	"io/ioutil"

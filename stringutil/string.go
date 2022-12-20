@@ -4,7 +4,7 @@
  * @Date: 2022-02-08 14:12:42
  */
 
-package stringx
+package stringutil
 
 import (
 	"errors"

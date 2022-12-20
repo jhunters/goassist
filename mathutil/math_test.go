@@ -3,12 +3,12 @@
  * @Description:
  * @Date: 2022-01-17 20:13:17
  */
-package mathx_test
+package mathutil_test
 
 import (
 	"testing"
 
-	"github.com/jhunters/goassist/mathx"
+	"github.com/jhunters/goassist/mathutil"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -18,7 +18,7 @@ func TestSafeAdd(t *testing.T) {
 		a := 1 << 62
 		b := 1 << 62
 
-		c, err := mathx.SafeAdd(a, b)
+		c, err := mathutil.SafeAdd(a, b)
 		So(err, ShouldNotBeNil)
 		So(c, ShouldBeLessThan, 0)
 
@@ -29,7 +29,7 @@ func TestSafeAdd(t *testing.T) {
 		a := -1 << 63
 		b := -1 << 63
 
-		c, err := mathx.SafeAdd(a, b)
+		c, err := mathutil.SafeAdd(a, b)
 		So(err, ShouldNotBeNil)
 		So(c, ShouldBeGreaterThanOrEqualTo, 0)
 
@@ -42,7 +42,7 @@ func TestSafeAddUnsigned(t *testing.T) {
 		a := uint64(1 << 63)
 		b := uint64(1 << 63)
 
-		c, err := mathx.SafeAddUnsigned(a, b)
+		c, err := mathutil.SafeAddUnsigned(a, b)
 		So(err, ShouldNotBeNil)
 		So(c, ShouldEqual, 0)
 
@@ -56,7 +56,7 @@ func TestSafeSubstract(t *testing.T) {
 		a := 1 << 62
 		b := -1 << 63
 
-		c, err := mathx.SafeSubstract(a, b)
+		c, err := mathutil.SafeSubstract(a, b)
 		So(err, ShouldNotBeNil)
 		So(c, ShouldBeLessThan, 0)
 
@@ -67,7 +67,7 @@ func TestSafeSubstract(t *testing.T) {
 		a := -1 << 63
 		b := 1 << 62
 
-		c, err := mathx.SafeSubstract(a, b)
+		c, err := mathutil.SafeSubstract(a, b)
 		So(err, ShouldNotBeNil)
 		So(c, ShouldBeGreaterThanOrEqualTo, 0)
 
@@ -77,19 +77,19 @@ func TestSafeSubstract(t *testing.T) {
 func TestMod(t *testing.T) {
 
 	Convey("Test Mod positive", t, func() {
-		v, err := mathx.Mod(10, 3)
+		v, err := mathutil.Mod(10, 3)
 		So(err, ShouldBeNil)
 		So(v, ShouldEqual, 1)
 	})
 
 	Convey("Test Mod negative", t, func() {
-		v, err := mathx.Mod(-10, 3)
+		v, err := mathutil.Mod(-10, 3)
 		So(err, ShouldBeNil)
 		So(v, ShouldEqual, 2)
 	})
 
 	Convey("Test Mod failed", t, func() {
-		_, err := mathx.Mod(-10, -3)
+		_, err := mathutil.Mod(-10, -3)
 		So(err, ShouldNotBeNil)
 	})
 

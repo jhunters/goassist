@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/jhunters/goassist/arrayx"
-	"github.com/jhunters/goassist/containerx/ringx"
+	"github.com/jhunters/goassist/container/ringx"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2022-01-05 13:01:14
  */
-package mapx
+package maputil
 
 // Clone copy all key and value to a new map
 func Clone[E comparable, V any](mapa map[E]V) map[E]V {
@@ -25,4 +25,15 @@ func AddAll[E comparable, V any](mapa, mapb map[E]V) map[E]V {
 		}
 	}
 	return ret
+}
+
+// Clear remove all keys and values in map
+func Clear[E comparable, V any](mapa map[E]V) {
+	if mapa == nil {
+		return
+	}
+
+	for k := range mapa {
+		delete(mapa, k)
+	}
 }

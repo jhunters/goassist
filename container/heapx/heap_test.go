@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/jhunters/goassist/containerx/heapx"
+	"github.com/jhunters/goassist/container/heapx"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

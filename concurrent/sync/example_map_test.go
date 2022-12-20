@@ -1,10 +1,10 @@
-package mapx_test
+package sync_test
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/jhunters/goassist/containerx/mapx"
+	"github.com/jhunters/goassist/concurrent/sync"
 )
 
 type MapExamplePojo struct {
@@ -21,7 +21,7 @@ func newMapExamplePojo(name string) *MapExamplePojo {
 
 func ExampleExistValueComparable() {
 	v := newMapExamplePojo("!")
-	mp := mapx.NewMap[string, *MapExamplePojo]()
+	mp := sync.NewMap[string, *MapExamplePojo]()
 	mp.Store("hello", v)
 
 	k, ok := mp.ExistValueComparable(v)
