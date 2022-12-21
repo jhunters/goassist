@@ -1,7 +1,5 @@
 /*
- * @Author: Malin Xie
- * @Description: utility tools for reflect
- * @Date: 2022-01-21 11:43:49
+ * Package reflectx to provides utility api for reflect operation
  */
 package reflectx
 

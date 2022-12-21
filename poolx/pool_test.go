@@ -17,10 +17,10 @@ func TestNewPool(t *testing.T) {
 	name2 := "matthew"
 	Convey("TestNewPool", t, func() {
 		p := poolx.NewPool(func() *Pojo {
-			return &Pojo{"matt"}
+			return &Pojo{name1}
 		})
 
-		p.Put(&Pojo{"matthew"})
+		p.Put(&Pojo{name2})
 
 		Convey("pool Get test", func() {
 			get1 := p.Get()

@@ -1,7 +1,5 @@
 /*
- * @Author: Malin Xie
- * @Description:
- * @Date: 2022-01-05 13:01:14
+ * Package maputil to provides utility api for map container
  */
 package maputil
 

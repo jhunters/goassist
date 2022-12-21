@@ -1,7 +1,5 @@
 /*
- * @Author: Malin Xie
- * @Description:
- * @Date: 2022-01-05 15:52:22
+ * Package mathutil to provides utility api for math
  */
 package mathutil
 

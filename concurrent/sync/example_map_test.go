@@ -19,14 +19,35 @@ func newMapExamplePojo(name string) *MapExamplePojo {
 	return &MapExamplePojo{name}
 }
 
-func ExampleExistValueComparable() {
-	v := newMapExamplePojo("!")
-	mp := sync.NewMap[string, *MapExamplePojo]()
-	mp.Store("hello", v)
+func ExampleNewMapByInitial() {
+	mmp := map[string]*MapExamplePojo{
+		"key1": newMapExamplePojo("hello"),
+		"key2": newMapExamplePojo("world"),
+	}
 
-	k, ok := mp.ExistValueComparable(v)
-	fmt.Println(k, ok)
+	mp := sync.NewMapByInitial(mmp)
+	mp.Range(func(s string, mep *MapExamplePojo) bool {
+		// visit all elements here
+		return true
+	})
+
+	fmt.Println(mp.Size())
+	fmt.Println(mp.Exist("key1"))
+	fmt.Println(mp.ExistValue(newMapExamplePojo("world")))
 
 	// Output:
-	// hello true
+	// 2
+	// true
+	// key2 true
+}
+
+func ExampleNewMap() {
+	mp := sync.NewMap[string, *MapExamplePojo]()
+	v := newMapExamplePojo("!")
+	mp.Store("hello", v)
+	v2, ok := mp.Load("hello")
+	fmt.Println(v2.Name, ok)
+
+	// Output:
+	// ! true
 }
