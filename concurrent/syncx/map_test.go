@@ -1,11 +1,11 @@
-package sync_test
+package syncx_test
 
 import (
 	"fmt"
 	"strings"
 	"testing"
 
-	"github.com/jhunters/goassist/concurrent/sync"
+	"github.com/jhunters/goassist/concurrent/syncx"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -21,8 +21,8 @@ func newMapPojo(name string) *MapPojo {
 	return &MapPojo{name}
 }
 
-func createMap() *sync.Map[string, *MapPojo] {
-	mp := sync.NewMap[string, *MapPojo]()
+func createMap() *syncx.Map[string, *MapPojo] {
+	mp := syncx.NewMap[string, *MapPojo]()
 	mp.Store("key1", newMapPojo("hello"))
 	mp.Store("key2", newMapPojo("world"))
 	mp.Store("key3", newMapPojo("to"))
@@ -33,7 +33,7 @@ func createMap() *sync.Map[string, *MapPojo] {
 
 func TestNewMap(t *testing.T) {
 	Convey("TestNewMap", t, func() {
-		mp := sync.NewMap[string, *MapPojo]()
+		mp := syncx.NewMap[string, *MapPojo]()
 		So(mp, ShouldNotBeNil)
 		So(mp.IsEmpty(), ShouldBeTrue)
 
@@ -41,12 +41,12 @@ func TestNewMap(t *testing.T) {
 
 	Convey("TestNewMapNewMapByInitial", t, func() {
 
-		mp := sync.NewMapByInitial[string, *MapPojo](nil)
+		mp := syncx.NewMapByInitial[string, *MapPojo](nil)
 		So(mp, ShouldNotBeNil)
 		So(mp.IsEmpty(), ShouldBeTrue)
 
 		mp1 := createMap()
-		mp = sync.NewMapByInitial(mp1.ToMap())
+		mp = syncx.NewMapByInitial(mp1.ToMap())
 		So(mp, ShouldNotBeNil)
 		So(mp.IsEmpty(), ShouldBeFalse)
 		So(mp.Size(), ShouldEqual, mp1.Size())
@@ -109,7 +109,7 @@ func TestMapStore(t *testing.T) {
 			mp := createMap()
 			So(mp.IsEmpty(), ShouldBeFalse)
 
-			mp2 := sync.NewMap[string, *MapPojo]()
+			mp2 := syncx.NewMap[string, *MapPojo]()
 			So(mp2.IsEmpty(), ShouldBeTrue)
 			So(mp2.Size(), ShouldBeZeroValue)
 
@@ -124,7 +124,7 @@ func TestMapStore(t *testing.T) {
 
 		Convey("Test store all from origin map", func() {
 
-			mp2 := sync.NewMap[string, *MapPojo]()
+			mp2 := syncx.NewMap[string, *MapPojo]()
 			So(mp2.IsEmpty(), ShouldBeTrue)
 			So(mp2.Size(), ShouldBeZeroValue)
 
@@ -334,7 +334,7 @@ func TestXxx(t *testing.T) {
 
 	fmt.Println(mp[MapPojo{Name: "world"}])
 
-	mp2 := sync.NewMap[MapPojo, *MapPojo]()
+	mp2 := syncx.NewMap[MapPojo, *MapPojo]()
 	mp2.Store(MapPojo{Name: "world"}, &MapPojo{Name: "world"})
 	fmt.Println(mp2.Load(MapPojo{Name: "world"}))
 

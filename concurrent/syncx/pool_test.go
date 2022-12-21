@@ -1,10 +1,9 @@
-package poolx_test
+package syncx_test
 
 import (
 	"testing"
 
-	"github.com/jhunters/goassist/poolx"
-
+	"github.com/jhunters/goassist/concurrent/syncx"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -16,7 +15,7 @@ func TestNewPool(t *testing.T) {
 	name1 := "matt"
 	name2 := "matthew"
 	Convey("TestNewPool", t, func() {
-		p := poolx.NewPool(func() *Pojo {
+		p := syncx.NewPool(func() *Pojo {
 			return &Pojo{name1}
 		})
 

@@ -1,10 +1,10 @@
-package sync_test
+package syncx_test
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/jhunters/goassist/concurrent/sync"
+	"github.com/jhunters/goassist/concurrent/syncx"
 )
 
 type MapExamplePojo struct {
@@ -25,7 +25,7 @@ func ExampleNewMapByInitial() {
 		"key2": newMapExamplePojo("world"),
 	}
 
-	mp := sync.NewMapByInitial(mmp)
+	mp := syncx.NewMapByInitial(mmp)
 	mp.Range(func(s string, mep *MapExamplePojo) bool {
 		// visit all elements here
 		return true
@@ -42,7 +42,7 @@ func ExampleNewMapByInitial() {
 }
 
 func ExampleNewMap() {
-	mp := sync.NewMap[string, *MapExamplePojo]()
+	mp := syncx.NewMap[string, *MapExamplePojo]()
 	v := newMapExamplePojo("!")
 	mp.Store("hello", v)
 	v2, ok := mp.Load("hello")
