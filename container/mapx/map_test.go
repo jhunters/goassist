@@ -30,6 +30,16 @@ func createMap() *mapx.Map[string, *MapPojo] {
 	return mp
 }
 
+func createMap2() *mapx.Map[string, *MapPojo] {
+	mp := mapx.NewMap[string, *MapPojo]()
+	mp.Put("key1", newMapPojo("2"))
+	mp.Put("key2", newMapPojo("3"))
+	mp.Put("key3", newMapPojo("4"))
+	mp.Put("key4", newMapPojo("1"))
+	mp.Put("key5", newMapPojo("5"))
+	return mp
+}
+
 func TestNewMap(t *testing.T) {
 	Convey("TestNewMap", t, func() {
 		Convey("empty map", func() {
@@ -156,4 +166,47 @@ func TestMapCopy(t *testing.T) {
 			return true
 		})
 	})
+}
+
+func TestMapMinMaxValue(t *testing.T) {
+	Convey("TestMapMinMaxValue", t, func() {
+		mp := createMap2()
+		Convey("Test map min value", func() {
+			k, v := mp.MinValue(func(mp1, mp2 *MapPojo) int {
+				return strings.Compare(mp1.Name, mp2.Name)
+			})
+			So(k, ShouldEqual, "key4")
+			So(v.Name, ShouldEqual, "1")
+		})
+		Convey("Test map max value", func() {
+			k, v := mp.MaxValue(func(mp1, mp2 *MapPojo) int {
+				return strings.Compare(mp1.Name, mp2.Name)
+			})
+			So(k, ShouldEqual, "key5")
+			So(v.Name, ShouldEqual, "5")
+		})
+
+	})
+
+}
+func TestMapMinMaxKey(t *testing.T) {
+	Convey("TestMapMinMaxKey", t, func() {
+		mp := createMap2()
+		Convey("Test map min key", func() {
+			k, v := mp.MinKey(func(mp1, mp2 string) int {
+				return strings.Compare(mp1, mp2)
+			})
+			So(k, ShouldEqual, "key1")
+			So(v.Name, ShouldEqual, "2")
+		})
+		Convey("Test map max key", func() {
+			k, v := mp.MaxKey(func(mp1, mp2 string) int {
+				return strings.Compare(mp1, mp2)
+			})
+			So(k, ShouldEqual, "key5")
+			So(v.Name, ShouldEqual, "5")
+		})
+
+	})
+
 }

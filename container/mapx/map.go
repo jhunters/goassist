@@ -143,3 +143,73 @@ func (m *Map[K, V]) Remove(key K) bool {
 	}
 	return ok
 }
+
+// MinValue to return min value in the map
+func (m *Map[K, V]) MinValue(compare base.CMP[V]) (key K, v V) {
+	return selectByCompareValue(m, func(o1, o2 V) int {
+		return compare(o1, o2)
+	})
+
+}
+
+// MaxValue to return max value in the map
+func (m *Map[K, V]) MaxValue(compare base.CMP[V]) (key K, v V) {
+	return selectByCompareValue(m, func(o1, o2 V) int {
+		return compare(o2, o1)
+	})
+
+}
+
+func selectByCompareValue[K comparable, V any](mp *Map[K, V], compare base.CMP[V]) (key K, v V) {
+	var ret V
+	i := 0
+	mp.Range(func(k K, v V) bool {
+		if i == 0 {
+			ret = v
+			key = k
+		} else {
+			if compare(ret, v) > 0 {
+				ret = v
+				key = k
+			}
+		}
+		i++
+		return true
+	})
+	return key, ret
+}
+
+// MinKey to return min key in the map
+func (m *Map[K, V]) MinKey(compare base.CMP[K]) (key K, v V) {
+	return selectByCompareKey(m, func(o1, o2 K) int {
+		return compare(o1, o2)
+	})
+
+}
+
+// MaxKey to return max key in the map
+func (m *Map[K, V]) MaxKey(compare base.CMP[K]) (key K, v V) {
+	return selectByCompareKey(m, func(o1, o2 K) int {
+		return compare(o2, o1)
+	})
+
+}
+
+func selectByCompareKey[K comparable, V any](mp *Map[K, V], compare base.CMP[K]) (key K, value V) {
+	var ret K
+	i := 0
+	mp.Range(func(k K, v V) bool {
+		if i == 0 {
+			ret = k
+			value = v
+		} else {
+			if compare(ret, k) > 0 {
+				ret = k
+				value = v
+			}
+		}
+		i++
+		return true
+	})
+	return ret, value
+}
