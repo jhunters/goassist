@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	"github.com/jhunters/goassist/base"
-	"github.com/jhunters/goassist/reflectx"
+	"github.com/jhunters/goassist/reflectutil"
 )
 
 // Map is like a Go map[interface{}]interface{} but is safe for concurrent use
@@ -176,7 +176,7 @@ func (m *Map[K, V]) Exist(key K) bool {
 
 // ExistValue return true if value exist
 func (m *Map[K, V]) ExistValue(value V) (k K, exist bool) {
-	de := reflectx.NewDeepEquals(value)
+	de := reflectutil.NewDeepEquals(value)
 	m.Range(func(key K, val V) bool {
 		if de.Matches(val) {
 			exist = true
