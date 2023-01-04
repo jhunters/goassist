@@ -1,12 +1,11 @@
-package reflectx_test
+package reflectutil_test
 
 import (
 	"fmt"
 	"testing"
 	"unsafe"
 
-	"github.com/jhunters/goassist/reflectx"
-
+	"github.com/jhunters/goassist/reflectutil"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -19,7 +18,7 @@ func TestConvertibleTo(t *testing.T) {
 		var age2 Old = 100
 		fmt.Println(age2)
 
-		result := reflectx.ConvertibleTo(age, age2)
+		result := reflectutil.ConvertibleTo(age, age2)
 		So(result, ShouldBeTrue)
 	})
 
@@ -34,7 +33,7 @@ func TestAssignableIfConvertibleTo(t *testing.T) {
 		var age2 Old = 200
 
 		// check age2 can convert to age and do convert
-		result, ok := reflectx.AssignIfConvertibleTo(age, age2)
+		result, ok := reflectutil.AssignIfConvertibleTo(age, age2)
 		So(ok, ShouldBeTrue)
 		So(result, ShouldEqual, 200)
 	})
@@ -44,11 +43,11 @@ func TestAssignableIfConvertibleTo(t *testing.T) {
 func TestIsByteType(t *testing.T) {
 	Convey("TestIsByteType", t, func() {
 		i := 0
-		ok := reflectx.IsByteType(i)
+		ok := reflectutil.IsByteType(i)
 		So(ok, ShouldBeFalse)
 
 		var b byte = 0
-		ok = reflectx.IsByteType(b)
+		ok = reflectutil.IsByteType(b)
 		So(ok, ShouldBeTrue)
 	})
 
@@ -59,15 +58,15 @@ func TestTypeOfName(t *testing.T) {
 	Convey("TestTypeOfName", t, func() {
 
 		s := "hello"
-		tn := reflectx.TypeOfName(s)
+		tn := reflectutil.TypeOfName(s)
 		So(tn, ShouldEqual, "string")
 
 		i := 0
-		tn = reflectx.TypeOfName(i)
+		tn = reflectutil.TypeOfName(i)
 		So(tn, ShouldEqual, "int")
 
 		ptri := &i
-		tn = reflectx.TypeOfName(unsafe.Pointer(ptri))
+		tn = reflectutil.TypeOfName(unsafe.Pointer(ptri))
 		So(tn, ShouldEqual, "Pointer")
 	})
 

@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2022-01-21 11:48:16
  */
-package reflectx_test
+package reflectutil_test
 
 import (
 	"fmt"
@@ -11,8 +11,7 @@ import (
 	"testing"
 	"unsafe"
 
-	"github.com/jhunters/goassist/reflectx"
-
+	"github.com/jhunters/goassist/reflectutil"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -88,7 +87,7 @@ func TestValueOf(t *testing.T) {
 		i := int64(100)
 		iPtr := &i
 
-		v, isPtr := reflectx.ValueOf(iPtr)
+		v, isPtr := reflectutil.ValueOf(iPtr)
 		So(isPtr, ShouldBeTrue)
 		So(v, ShouldResemble, reflect.ValueOf(iPtr).Elem())
 		fmt.Println(v.String())
@@ -101,7 +100,7 @@ func TestTypeOf(t *testing.T) {
 		i := int64(100)
 		iPtr := &i
 
-		v, isPtr := reflectx.TypeOf(iPtr)
+		v, isPtr := reflectutil.TypeOf(iPtr)
 		So(isPtr, ShouldBeTrue)
 		So(v, ShouldResemble, reflect.TypeOf(iPtr).Elem())
 		fmt.Println(v.String())
@@ -111,14 +110,14 @@ func TestTypeOf(t *testing.T) {
 func TestCallMethodByName(t *testing.T) {
 	s := &Student{"matthew"}
 	Convey("TestCallMethod with no parameter", t, func() {
-		result, err := reflectx.CallMethodByName(s, "GetName") // 问题， 反射下  地址引用方式，可以调用值引用方式的方法，但返过来，不行
+		result, err := reflectutil.CallMethodByName(s, "GetName") // 问题， 反射下  地址引用方式，可以调用值引用方式的方法，但返过来，不行
 		So(err, ShouldBeNil)
 
 		So(result[0].Interface(), ShouldEqual, s.GetName())
 	})
 
 	Convey("TestCallMethod with no such method name", t, func() {
-		result, err := reflectx.CallMethodByName(s, "NoSuchMethod")
+		result, err := reflectutil.CallMethodByName(s, "NoSuchMethod")
 		So(err, ShouldNotBeNil)
 
 		So(result, ShouldBeNil)
@@ -127,7 +126,7 @@ func TestCallMethodByName(t *testing.T) {
 	Convey("TestCallMethod with one parameter", t, func() {
 
 		var i I = &Value{"Hello"}
-		result, err := reflectx.CallMethodByName(s, "Greet", i)
+		result, err := reflectutil.CallMethodByName(s, "Greet", i)
 		So(err, ShouldBeNil)
 
 		So(result[0].Interface(), ShouldEqual, s.Greet(i))
@@ -135,7 +134,7 @@ func TestCallMethodByName(t *testing.T) {
 
 	Convey("TestCallMethod with two parameters", t, func() {
 		var i I = &Value{"Hello"}
-		result, err := reflectx.CallMethodByName(s, "GreetWithOption", i, "name")
+		result, err := reflectutil.CallMethodByName(s, "GreetWithOption", i, "name")
 		So(err, ShouldBeNil)
 
 		So(result[0].Interface(), ShouldEqual, s.GreetWithOption(i, "name"))
@@ -155,14 +154,14 @@ func TestSetValue(t *testing.T) {
 		Convey("TestSetValue array", func() {
 			arraytoSet := [2]int{3, 4}
 			v := &MultiFieldsPojo{IntArray2: [2]int{1, 2}}
-			r := reflectx.SetValue(v, "IntArray2", arraytoSet)
+			r := reflectutil.SetValue(v, "IntArray2", arraytoSet)
 			So(r, ShouldBeTrue)
 			So(v.IntArray2, ShouldResemble, arraytoSet)
 		})
 		Convey("TestSetValue slice", func() {
 			intSlice := make([]int, 10)
 			v := &MultiFieldsPojo{}
-			r := reflectx.SetValue(v, "Int32Slice", intSlice)
+			r := reflectutil.SetValue(v, "Int32Slice", intSlice)
 			So(r, ShouldBeTrue)
 			So(v.Int32Slice, ShouldResemble, intSlice)
 		})
@@ -170,7 +169,7 @@ func TestSetValue(t *testing.T) {
 			mp := make(map[string]int)
 			mp["hello"] = 1
 			v := &MultiFieldsPojo{}
-			r := reflectx.SetValue(v, "MapValue", mp)
+			r := reflectutil.SetValue(v, "MapValue", mp)
 			So(r, ShouldBeTrue)
 			So(v.MapValue, ShouldResemble, mp)
 		})
@@ -191,6 +190,6 @@ func TestInteface(t *testing.T) {
 	i2, ok2 := x2.(string)
 	fmt.Printf("%s, %v\n", i2, ok2) // matthew, true
 
-	name, b := reflectx.GetValue[string](&vip, "Name")
+	name, b := reflectutil.GetValue[string](&vip, "Name")
 	fmt.Println(name, b)
 }

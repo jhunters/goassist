@@ -1,9 +1,9 @@
-package reflectx_test
+package reflectutil_test
 
 import (
 	"testing"
 
-	"github.com/jhunters/goassist/reflectx"
+	"github.com/jhunters/goassist/reflectutil"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -24,7 +24,7 @@ func TestNewDeepEquals(t *testing.T) {
 		v1 := NewEqualsPojo("matt", 10, "shanghai pudong", true)
 		v2 := NewEqualsPojo("matt", 10, "shanghai pudong", true)
 
-		de := reflectx.NewDeepEquals(v1)
+		de := reflectutil.NewDeepEquals(v1)
 		equals := de.Matches(v2)
 		So(equals, ShouldBeTrue)
 

@@ -1,7 +1,7 @@
 /*
  * Package reflectx to provides utility api for reflect operation
  */
-package reflectx
+package reflectutil
 
 import (
 	"fmt"
