@@ -1,14 +1,18 @@
 package syncx
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/jhunters/goassist/base"
+)
 
 type Pool[E any] struct {
-	New      func() E
+	New      base.Supplier[E]
 	internal sync.Pool
 }
 
 // NewPoolX create a new PoolX
-func NewPool[E any](f func() E) *Pool[E] {
+func NewPool[E any](f base.Supplier[E]) *Pool[E] {
 	p := Pool[E]{New: f}
 	p.internal = sync.Pool{
 		New: func() any {

@@ -3,6 +3,8 @@ package base
 type (
 	Null struct{}
 
+	Call func()
+
 	// function provides one input argument and one return
 	Func[R, T any] func(T) R
 
@@ -14,6 +16,9 @@ type (
 
 	// function provides two input arguments and no returns
 	BiConsumer[T, U any] func(T, U)
+
+	// function provides one input and one return
+	Supplier[R any] func() R
 
 	// Evaluate use the specified parameter to perform a test that returns true or false.
 	Evaluate[E any] Func[bool, E]

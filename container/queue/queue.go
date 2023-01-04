@@ -3,7 +3,6 @@ package queue
 import (
 	"sync"
 
-	"github.com/jhunters/goassist/base"
 	"github.com/jhunters/goassist/container/listx"
 )
 
@@ -58,23 +57,4 @@ func (q *Queue[E]) Clear() {
 	defer q.lock.Unlock()
 
 	q.l.Clear()
-}
-
-// SubScribe
-func (q *Queue[E]) SubScribe(c base.Consumer[E]) {
-	go func(q *Queue[E]) {
-		for {
-			q.cond.L.Lock()
-			v := q.dequeueEle()
-			if v == nil {
-				// no value and wait
-				q.cond.Wait()
-			} else {
-				c(v.v)
-			}
-
-			q.cond.L.Unlock()
-		}
-
-	}(q)
 }
