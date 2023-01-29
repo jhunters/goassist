@@ -94,7 +94,7 @@ func SetMonths(t time.Time, months int) time.Time {
 	return time.Date(t.Year(), time.Month(months), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), t.Location())
 }
 
-func setDays(t time.Time, days int) time.Time {
+func SetDays(t time.Time, days int) time.Time {
 	return time.Date(t.Year(), t.Month(), days, t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), t.Location())
 }
 
@@ -106,10 +106,10 @@ func SetMinutes(t time.Time, minutes int) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), minutes, t.Second(), t.Nanosecond(), t.Location())
 }
 
-func setSeconds(t time.Time, seconds int) time.Time {
+func SetSeconds(t time.Time, seconds int) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), seconds, t.Nanosecond(), t.Location())
 }
 
-func setMilliSeconds(t time.Time, milliseconds int) time.Time {
+func SetMilliSeconds(t time.Time, milliseconds int) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), milliseconds*1000, t.Location())
 }

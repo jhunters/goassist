@@ -393,7 +393,7 @@ func TestSort(t *testing.T) {
 		l.Sort(func(o1, o2 string) int {
 			return strings.Compare(o1, o2)
 		})
-		So(l.Front().Value, ShouldEqual, "1")
+		So(l.FrontValue(), ShouldEqual, "1")
 	})
 
 }

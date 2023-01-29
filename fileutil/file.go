@@ -1,6 +1,7 @@
 package fileutil
 
 import (
+	"io/fs"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -13,34 +14,21 @@ const (
 // file info watch call back function process during in #ListFiles
 type callbackFn func(filename, path string, data []byte)
 
-// list all files and directies by recursion way
-func ListFiles(dir string, callback callbackFn) error {
-	fi, err := os.Stat(dir)
-	if err != nil {
-		return err
-	}
-
-	if !fi.IsDir() {
-		data, _ := ioutil.ReadFile(dir)
-		callback(fi.Name(), dir, data)
-		return nil
-	}
-
-	f, err := os.Open(dir)
-	defer f.Close()
-
-	directry, err := ioutil.ReadDir(dir)
-	if err != nil {
-		return err
-	}
-
-	for _, f := range directry {
-		if f.IsDir() {
-			ListFiles(filepath.Join(dir, f.Name()), callback)
-			continue
+func ListFiles(dir string, callback callbackFn) (reterr error) {
+	fileSystem := os.DirFS(dir)
+	return fs.WalkDir(fileSystem, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
 		}
-		data, _ := ioutil.ReadFile(filepath.Join(dir, f.Name()))
-		callback(f.Name(), dir, data)
-	}
-	return nil
+		if d.IsDir() {
+			return nil
+		}
+		data, err := ioutil.ReadFile(filepath.Join(dir, path))
+		if err != nil {
+			return err
+		}
+		callback(path, dir, data)
+		return nil
+	})
+
 }

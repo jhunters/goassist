@@ -31,4 +31,9 @@ func TestHashcode(t *testing.T) {
 		hc = hashx.Hashcode([]byte("nodeC"))
 		So(hc, ShouldBeGreaterThanOrEqualTo, 0)
 	})
+
+	Convey("Hashcode64", t, func() {
+		hc := hashx.Hashcode64([]byte("nodeA"))
+		So(hc, ShouldBeGreaterThanOrEqualTo, 0)
+	})
 }

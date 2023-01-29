@@ -75,6 +75,8 @@ func (s *Stack[E]) Size() int {
 
 // Copy copy to a new stack
 func (s *Stack[E]) Copy() *Stack[E] {
-	r := &Stack[E]{data: s.data, pos: s.pos}
+	data := make([]E, len(s.data))
+	copy(data, s.data)
+	r := &Stack[E]{data: data, pos: s.pos}
 	return r
 }

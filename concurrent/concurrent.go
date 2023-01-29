@@ -78,7 +78,7 @@ func AsyncGo(f base.Call, timeout time.Duration) (ok bool, err error) {
 
 // AsyncCall execute target function by goroutine and has a generic returned parameter. if panic happened will wrap error object and return future(nil)
 // if just time out will return future(func), err(nil)
-func AsyncCall[E any](f base.Supplier[E], timeout time.Duration) (future func() E, err error) {
+func AsyncCall[E any](f base.Supplier[E], timeout time.Duration) (future base.Supplier[E], err error) {
 	ret := make(chan E, 1)
 	future = func() E {
 		return <-ret

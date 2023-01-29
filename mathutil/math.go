@@ -9,20 +9,33 @@ import (
 	"github.com/jhunters/goassist/generic"
 )
 
-// Max return the greater one
-func Max[E generic.Ordered](a, b E) E {
-	if a >= b {
-		return a
+func Max[E generic.Ordered](array ...E) E {
+	if len(array) < 1 {
+		panic("target 'array' cannot be empty.")
 	}
-	return b
+	// Finds and returns min
+	max := array[0]
+	for i := 1; i < len(array); i++ {
+		if array[i] > max {
+			max = array[i]
+		}
+	}
+	return max
 }
 
 // Min return the smaller one
-func Min[E generic.Ordered](a, b E) E {
-	if a <= b {
-		return a
+func Min[E generic.Ordered](array ...E) E {
+	if len(array) < 1 {
+		panic("target 'array' cannot be empty.")
 	}
-	return b
+	// Finds and returns min
+	min := array[0]
+	for i := 1; i < len(array); i++ {
+		if array[i] < min {
+			min = array[i]
+		}
+	}
+	return min
 }
 
 // Abs returns the absolute value of an target value.

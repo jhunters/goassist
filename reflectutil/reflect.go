@@ -1,5 +1,5 @@
 /*
- * Package reflectx to provides utility api for reflect operation
+ * Package reflectutil to provides utility api for reflect operation
  */
 package reflectutil
 
@@ -126,18 +126,27 @@ func SetValue(rcvr interface{}, fieldName string, value any) bool {
 
 	return false
 }
+
+// GetValue get value by struct field name
 func GetValue[S any](rcvr interface{}, fieldName string) (S, bool) {
 	v := reflect.ValueOf(rcvr)
-	t := reflect.TypeOf(rcvr)
 	var ret S
-	if v.Kind() != reflect.Pointer || v.IsNil() {
+
+	if v.Kind() == reflect.Pointer {
+		if v.IsNil() {
+			return ret, false
+		}
+		v = v.Elem()
+	}
+
+	if v.Kind() != reflect.Struct {
 		return ret, false
 	}
 
-	if f, ok := t.Elem().FieldByName(fieldName); ok {
-		fvalue := v.Elem().FieldByIndex(f.Index)
+	if f, ok := v.Type().FieldByName(fieldName); ok {
+		fvalue := v.FieldByIndex(f.Index)
 
-		if !fvalue.CanInterface() {
+		if fvalue.CanInterface() {
 			ret, ok := fvalue.Interface().(S)
 			return ret, ok
 		}

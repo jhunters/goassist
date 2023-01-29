@@ -5,7 +5,7 @@ import (
 	"github.com/jhunters/goassist/maputil"
 )
 
-// Set provides one value container and keep on duplicate value
+// Set provides one value container and keep no duplicate value
 type Set[V comparable] struct {
 	mp map[V]base.Null // internal mp
 }
@@ -55,9 +55,11 @@ func (m *Set[K]) Range(f base.Func[bool, K]) {
 
 // Keys return all key as slice in map
 func (m *Set[K]) ToArray() []K {
-	ret := make([]K, 0)
+	ret := make([]K, m.Size())
+	i := 0
 	m.Range(func(key K) bool {
-		ret = append(ret, key)
+		ret[i] = key
+		i++
 		return true
 	})
 	return ret

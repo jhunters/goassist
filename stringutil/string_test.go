@@ -166,3 +166,65 @@ func TestAbbreviateMiddle(t *testing.T) {
 	})
 
 }
+
+func TestIsNumber(t *testing.T) {
+	Convey("TestIsNumber", t, func() {
+		Convey("hex", func() {
+			isNumber := stringutil.IsNumber("0x12")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = stringutil.IsNumber("0xac")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = stringutil.IsNumber("0x")
+			So(isNumber, ShouldBeFalse)
+
+			isNumber = stringutil.IsNumber("0x093g")
+			So(isNumber, ShouldBeFalse)
+		})
+		Convey("octal", func() {
+			isNumber := stringutil.IsNumber("0o10")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = stringutil.IsNumber("0O17")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = stringutil.IsNumber("0o18")
+			So(isNumber, ShouldBeFalse)
+
+			isNumber = stringutil.IsNumber("0O093g")
+			So(isNumber, ShouldBeFalse)
+		})
+		Convey("binary", func() {
+			isNumber := stringutil.IsNumber("0b10")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = stringutil.IsNumber("0B11")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = stringutil.IsNumber("0b18")
+			So(isNumber, ShouldBeFalse)
+
+			isNumber = stringutil.IsNumber("0B093g")
+			So(isNumber, ShouldBeFalse)
+		})
+		Convey("common", func() {
+			isNumber := stringutil.IsNumber("-12.11")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = stringutil.IsNumber("19.1")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = stringutil.IsNumber("-12.1.1")
+			So(isNumber, ShouldBeFalse)
+
+			isNumber = stringutil.IsNumber("12e1")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = stringutil.IsNumber("12e-9")
+			So(isNumber, ShouldBeTrue)
+		})
+
+	})
+
+}

@@ -13,7 +13,7 @@ type ExamplePoolPojo struct {
 	name string
 }
 
-func ExamplePool() {
+func ExampleNewPool() {
 	name1 := "matt"
 	name2 := "matthew"
 	p := syncx.NewPool(func() *ExamplePoolPojo {
