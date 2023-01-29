@@ -274,3 +274,133 @@ func Wrap(s string, wrap string) string {
 
 	return unsafex.SliceToString(b)
 }
+
+// IsNumber return string 'str' is a validate number
+// stringutil.IsNumber("0x12") = true
+// stringutil.IsNumber("0x") = false
+// stringutil.IsNumber("0o10") = true
+// stringutil.IsNumber("0o18") = false
+// stringutil.IsNumber("0b10") = true
+// stringutil.IsNumber("0B093g") = false
+// stringutil.IsNumber("-12.11") = true
+// stringutil.IsNumber("12e-9") = true
+// stringutil.IsNumber("19.1") = true
+// stringutil.IsNumber("-12.1.1") = false
+func IsNumber(str string) bool {
+	if IsEmpty(str) {
+		return false
+	}
+
+	chars := []byte(str)
+	sz := len(chars)
+	hasExp := false
+	hasDecPoint := false
+	allowSigns := false
+	foundDigit := false
+
+	// deal with any possible sign up front
+	start := 0
+	if chars[0] == '-' || chars[0] == '+' {
+		start = 1
+	}
+
+	if sz > start+1 && chars[start] == '0' && !strings.Contains(str, ".") { // leading 0, skip if is a decimal number
+		if chars[start+1] == 'x' || chars[start+1] == 'X' { // leading 0x/0X for hex number
+			i := start + 2
+			if i == sz {
+				return false // str == "0x"
+			}
+
+			// checking hex (it can't be anything else)
+			for ; i < len(chars); i++ {
+				if (chars[i] < '0' || chars[i] > '9') && (chars[i] < 'a' || chars[i] > 'f') && (chars[i] < 'A' || chars[i] > 'F') {
+					return false
+				}
+			}
+			return true
+		} else if chars[start+1] == 'o' || chars[start+1] == 'O' { // leading 0o/0O for octal number
+			i := start + 2
+			for ; i < len(chars); i++ {
+				if chars[i] < '0' || chars[i] > '7' {
+					return false
+				}
+			}
+			return true
+		} else if chars[start+1] == 'b' || chars[start+1] == 'B' { // leading 0o/0O for binary number
+			i := start + 2
+			for ; i < len(chars); i++ {
+				if chars[i] < '0' || chars[i] > '1' {
+					return false
+				}
+			}
+			return true
+		}
+	}
+
+	sz-- // don't want to loop to the last char, check it afterwords
+	// for type qualifiers
+	i := start
+	// loop to the next to last char or to the last char if we need another digit to
+	// make a valid number (e.g. chars[0..5] = "1234E")
+	for i < sz || i < sz+1 && allowSigns && !foundDigit {
+		if chars[i] >= '0' && chars[i] <= '9' {
+			foundDigit = true
+			allowSigns = false
+
+		} else if chars[i] == '.' {
+			if hasDecPoint || hasExp {
+				// two decimal points or dec in exponent
+				return false
+			}
+			hasDecPoint = true
+		} else if chars[i] == 'e' || chars[i] == 'E' {
+			// we've already taken care of hex.
+			if hasExp {
+				// two E's
+				return false
+			}
+			if !foundDigit {
+				return false
+			}
+			hasExp = true
+			allowSigns = true
+		} else if chars[i] == '+' || chars[i] == '-' {
+			if !allowSigns {
+				return false
+			}
+			allowSigns = false
+			foundDigit = false // we need a digit after the E
+		} else {
+			return false
+		}
+		i++
+	}
+
+	if i < len(chars) {
+		if chars[i] >= '0' && chars[i] <= '9' {
+			// no type qualifier, OK
+			return true
+		}
+		if chars[i] == 'e' || chars[i] == 'E' {
+			// can't have an E at the last byte
+			return false
+		}
+		if chars[i] == '.' {
+			if hasDecPoint || hasExp {
+				// two decimal points or dec in exponent
+				return false
+			}
+			// single trailing decimal point after non-exponent is ok
+			return foundDigit
+		}
+		if !allowSigns {
+			return foundDigit
+		}
+		// last character is illegal
+		return false
+	}
+	// allowSigns is true iff the val ends in 'E'
+	// found digit it to make sure weird stuff like '.' and '1E-' doesn't pass
+	return !allowSigns && foundDigit
+
+}
