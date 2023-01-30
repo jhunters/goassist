@@ -18,16 +18,17 @@ need go 1.18
 
 API包|说明
 --|--
-arrayx|数组操作
+arrayutil|数组处理
 concurrent|并发操作
-containerx|容器操作(heap)
+concurrent/syncx| 同步应用(pool, map)
+containerx|容器操作(heap, list, set, stack, queue)
 hashx|hash操作
-mapx| map操作
+maputil|map操作
 poolx|对象池操作
-reflectx|反射操作
-typex|
-stringx|字符串操作
-unsafex|
+reflectutil|反射操作
+stringutil|字符串操作
+unsafex|unsafe包扩展应用
+timeutil|时间处理
 
 ## License
 goassist is [Apache 2.0 licensed](./LICENSE).
