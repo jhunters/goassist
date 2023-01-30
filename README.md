@@ -28,3 +28,6 @@ reflectx|反射操作
 typex|
 stringx|字符串操作
 unsafex|
+
+## License
+goassist is [Apache 2.0 licensed](./LICENSE).
