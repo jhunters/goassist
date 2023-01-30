@@ -4,7 +4,7 @@ goassist is provides utility apis for gopher for more easy to use.
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/jhunters/goassist?style=flat-square)](https://goreportcard.com/report/github.com/jhunters/goassist)
 [![Build Status](https://github.com/jhunters/goassist/actions/workflows/go.yml/badge.svg)](https://github.com/jhunters/goassist/actions/workflows/go.yml)
-[![codecov](https://codecov.io/gh/jhunters/goassist/branch/master/graph/badge.svg)](https://codecov.io/gh/jhunters/goassist)
+[![codecov](https://codecov.io/gh/jhunters/goassist/branch/main/graph/badge.svg)](https://codecov.io/gh/jhunters/goassist)
 [![Releases](https://img.shields.io/github/release/jhunters/goassist/all.svg?style=flat-square)](https://github.com/jhunters/goassist/releases)
 [![Godoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/jhunters/goassist)
 [![LICENSE](https://img.shields.io/github/license/jhunters/goassist.svg?style=flat-square)](https://github.com/jhunters/goassist/blob/main/LICENSE)
