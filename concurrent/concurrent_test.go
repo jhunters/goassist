@@ -1,9 +1,11 @@
 package concurrent_test
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
+	"github.com/jhunters/goassist/arrayutil"
 	"github.com/jhunters/goassist/concurrent"
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -64,6 +66,32 @@ func TestAsyncGo(t *testing.T) {
 	})
 
 }
+
+func ExampleAsyncGo() {
+	// run function in async way
+	f, err := concurrent.AsyncGo(func() {
+		time.Sleep(200 * time.Millisecond)
+	}, time.Second)
+	fmt.Println(f, err)
+
+	// run function in async way and ocurres timeout
+	f, err = concurrent.AsyncGo(func() {
+		time.Sleep(2 * time.Second)
+	}, time.Second)
+	fmt.Println(f, err)
+
+	// run function in async way and panic error
+	f, err = concurrent.AsyncGo(func() {
+		panic("surprise")
+	}, time.Second)
+	fmt.Println(f, err.Error())
+
+	// Output:
+	// true <nil>
+	// false <nil>
+	// false surprise
+}
+
 func TestAsyncCall(t *testing.T) {
 
 	Convey("TestAsyncCall in time", t, func() {
@@ -95,6 +123,46 @@ func TestAsyncCall(t *testing.T) {
 		took = time.Now().Sub(now)
 		So(took, ShouldBeGreaterThan, 2*time.Second)
 	})
+
+}
+
+func ExampleAsyncCall() {
+
+	get := func() (name, address string) {
+		return "matt", "pudong"
+	}
+
+	// run call function in async way
+	f, err := concurrent.AsyncCall(func() []string {
+		time.Sleep(200 * time.Millisecond)
+		name, address := get()
+		return arrayutil.AsList(name, address)
+
+	}, time.Second)
+	fmt.Println(f(), err)
+
+	// run call function in async way and ocurres timeout
+	f, err = concurrent.AsyncCall(func() []string {
+		time.Sleep(2 * time.Second)
+		name, address := get()
+		return arrayutil.AsList(name, address)
+
+	}, time.Second)
+	fmt.Println(f(), err)
+
+	// run call function in async way without time wait
+	f, err = concurrent.AsyncCall(func() []string {
+		time.Sleep(2 * time.Second)
+		name, address := get()
+		return arrayutil.AsList(name, address)
+
+	}, 0)
+	fmt.Println(f(), err)
+
+	// Output:
+	// [matt pudong] <nil>
+	// [matt pudong] AsyncCall execute timeout. expect 1s
+	// [matt pudong] <nil>
 
 }
 

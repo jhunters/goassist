@@ -1,6 +1,7 @@
 package reflectutil_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/jhunters/goassist/reflectutil"
@@ -32,4 +33,16 @@ func TestNewDeepEquals(t *testing.T) {
 		equals = de.Matches(v2)
 		So(equals, ShouldBeFalse)
 	})
+}
+
+func ExampleNewDeepEquals() {
+	p1 := EqualsPojo{"matt", 10, "shanghai pudong", true}
+	p2 := EqualsPojo{"matt", 10, "shanghai pudong", true}
+
+	dequal := reflectutil.NewDeepEquals(p1) // create a new deep equals
+	equals := dequal.Matches(p2)
+	fmt.Println(equals)
+
+	// Output:
+	// true
 }

@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
-	"unsafe"
 
 	"github.com/jhunters/goassist/reflectutil"
 	. "github.com/smartystreets/goconvey/convey"
@@ -54,31 +53,6 @@ func (s *Student) Greet(greeting I) string {
 
 func (s *Student) GreetWithOption(greeting I, option string) string {
 	return fmt.Sprintf("%s : %s [%s]", greeting.GetName(), s.Name, option)
-}
-
-func TestCase(t *testing.T) {
-	s := Student{"matthew"}
-	s.ChangeName2("xml")
-	fmt.Println(s.GetName()) // print  matthew   value ref way just copy a  new struct object
-
-	s2 := &Student{"matthew"}
-	s2.ChangeName("xml")
-	fmt.Println(s2.GetName()) // print  xml   ptr ref way
-
-	// ptr := unsafe.Pointer(s2)
-	// fmt.Println(ptr)
-	// sz := unsafe.Sizeof(s2)
-	// fmt.Println(sz)
-
-	arr := []int{1, 2, 3, 4, 5, 6, 7}
-	r := unsafe.Slice(&arr[0], 2) // 从地址时，获取切片内容
-	fmt.Println(r)
-
-	// 这里的代码等同于上面
-	arr2 := (*[0x7FFFFFFF]int)(unsafe.Pointer(&arr[0])) // 把cap大小设置了0x7FFFFFFF， 表示可以越界读到更多内容
-	fmt.Println(arr2[:2])
-
-	fmt.Println(0x7FFFFFFF, len(arr2))
 }
 
 func TestValueOf(t *testing.T) {
@@ -140,6 +114,15 @@ func TestCallMethodByName(t *testing.T) {
 		So(result[0].Interface(), ShouldEqual, s.GreetWithOption(i, "name"))
 	})
 
+}
+
+func ExampleCallMethodByName() {
+	s := &Student{"matthew"}
+	result, err := reflectutil.CallMethodByName(s, "GetName")
+	fmt.Println(result[0].Interface(), err)
+
+	// Output:
+	// matthew <nil>
 }
 
 type MultiFieldsPojo struct {
