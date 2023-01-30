@@ -10,25 +10,24 @@ goassist is provides utility apis for gopher for more easy to use.
 [![LICENSE](https://img.shields.io/github/license/jhunters/goassist.svg?style=flat-square)](https://github.com/jhunters/goassist/blob/main/LICENSE)
 
 
-# Version
+# Go Required Version
 need go 1.18
 
 
 # API List
 
-API包|说明
---|--
-arrayutil|数组处理
-concurrent|并发操作
-concurrent/syncx| 同步应用(pool, map)
-containerx|容器操作(heap, list, set, stack, queue)
-hashx|hash操作
-maputil|map操作
-poolx|对象池操作
-reflectutil|反射操作
-stringutil|字符串操作
-unsafex|unsafe包扩展应用
-timeutil|时间处理
+API包|说明|文档
+--|--|--
+arrayutil|数组处理|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/arrayutil)
+concurrent|并发操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/concurrent)
+concurrent/syncx| 同步应用(pool, map)|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/concurrent/syncx)
+containerx|容器操作 | [heap](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/heapx) [list](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/listx) [map](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/mapx) [queue](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/queue) [ring](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/ringx) [set](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/set) [stack](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/stack)
+hashx|hash操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/hashx)
+maputil|map操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/maputil)
+reflectutil|反射操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/reflectutil)
+stringutil|字符串操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/stringutil)
+unsafex|unsafe包扩展应用|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/unsafex)
+timeutil|时间处理|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/timeutil)
 
 ## License
 goassist is [Apache 2.0 licensed](./LICENSE).
