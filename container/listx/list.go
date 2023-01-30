@@ -324,7 +324,7 @@ func (l *List[E]) WriteToArray(v []E) {
 }
 
 // Iterator to iterate all elements
-func (l *List[E]) Iterate(f func(E) bool) {
+func (l *List[E]) Iterate(f base.Func[bool, E]) {
 	if l.IsEmpty() {
 		return
 	}
@@ -334,7 +334,7 @@ func (l *List[E]) Iterate(f func(E) bool) {
 }
 
 // Iterator to iterate all elements
-func (l *List[E]) IterateReverse(f func(E) bool) {
+func (l *List[E]) IterateReverse(f base.Func[bool, E]) {
 	if l.IsEmpty() {
 		return
 	}
@@ -344,7 +344,7 @@ func (l *List[E]) IterateReverse(f func(E) bool) {
 }
 
 // Iterator to iterate all elements
-func (l *List[E]) iterate(f func(e *Element[E]) bool) {
+func (l *List[E]) iterate(f base.Func[bool, *Element[E]]) {
 	e := l.Front()
 	for e != nil {
 		next := e.Next()
@@ -356,7 +356,7 @@ func (l *List[E]) iterate(f func(e *Element[E]) bool) {
 }
 
 // Iterator to iterate all elements
-func (l *List[E]) iterateReverse(f func(e *Element[E]) bool) {
+func (l *List[E]) iterateReverse(f base.Func[bool, *Element[E]]) {
 	e := l.Back()
 	for e != nil {
 		next := e.Prev()
@@ -471,6 +471,10 @@ func (l *List[E]) Set(index int, v E) bool {
 
 // Set set the value at target index
 func (l *List[E]) Add(index int, v E) bool {
+	if l.IsEmpty() {
+		l.PushFront(v)
+		return true
+	}
 	if !l.isElementIndex(index) {
 		return false
 	}
@@ -585,4 +589,9 @@ func (l *List[E]) Copy() *List[E] {
 		return true
 	})
 	return ret
+}
+
+// Range has same function to Iterate
+func (l *List[E]) Range(c base.Func[bool, E]) {
+	l.Iterate(c)
 }

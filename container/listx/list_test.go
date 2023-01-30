@@ -1,6 +1,7 @@
 package listx_test
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -406,4 +407,38 @@ func TestCopy(t *testing.T) {
 		So(l2.Len(), ShouldEqual, l.Len())
 		So(l2.ToArray(), ShouldResemble, l.ToArray())
 	})
+}
+
+func ExampleNewList() {
+
+	l := listx.NewList[string]()
+	fmt.Println(l.Len()) // len is 0
+
+	l.Add(0, "golang")
+	fmt.Println(l.Len()) // len is 1
+
+	l.PushFront("java")
+	fmt.Println(l.FrontValue())
+
+	l.PushBack("python")
+	fmt.Println(l.BackValue())
+
+	exist := l.Contains("java", func(s1, s2 string) bool { return strings.EqualFold(s1, s2) })
+	fmt.Println(exist)
+
+	l.Sort(func(s1, s2 string) int { return strings.Compare(s1, s2) })
+	l.Range(func(s string) bool {
+		fmt.Println(s)
+		return true
+	})
+
+	// Output:
+	// 0
+	// 1
+	// java
+	// python
+	// true
+	// golang
+	// java
+	// python
 }
