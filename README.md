@@ -1,10 +1,13 @@
-<!--
- * @Author: Malin Xie
- * @Description: 
- * @Date: 2021-12-28 17:58:49
--->
+<p align="center">
+goassist is provides utility apis for gopher for more easy to use.
+</p>
 
-[![Go](https://github.com/jhunters/goassist/actions/workflows/go.yml/badge.svg)](https://github.com/jhunters/goassist/actions/workflows/go.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/jhunters/goassist?style=flat-square)](https://goreportcard.com/report/github.com/jhunters/goassist)
+[![Build Status](https://github.com/jhunters/goassist/actions/workflows/go.yml/badge.svg)](https://github.com/jhunters/goassist/actions/workflows/go.yml)
+[![codecov](https://codecov.io/gh/jhunters/goassist/branch/master/graph/badge.svg)](https://codecov.io/gh/jhunters/goassist)
+[![Releases](https://img.shields.io/github/release/jhunters/bigqueue/all.svg?style=flat-square)](https://github.com/jhunters/goassist/releases)
+[![Godoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/jhunters/goassist)
+[![LICENSE](https://img.shields.io/github/license/jhunters/goassist.svg?style=flat-square)](https://github.com/jhunters/goassist/blob/master/LICENSE)
 
 # goassist
 utility api for golang
