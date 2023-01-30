@@ -9,6 +9,8 @@ package stringutil
 import (
 	"errors"
 	"fmt"
+	"math"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 	"unsafe"
@@ -403,4 +405,107 @@ func IsNumber(str string) bool {
 	// found digit it to make sure weird stuff like '.' and '1E-' doesn't pass
 	return !allowSigns && foundDigit
 
+}
+
+// ParseInt to parse string to int
+func ParseInt(str string) (int, error) {
+	if !IsNumber(str) && !strings.Contains(str, ".") {
+		return -1, fmt.Errorf("string '%s' is not a valid int number.", str)
+	}
+
+	chars := []byte(str)
+	neg := 1
+	start := 0
+	if chars[0] == '-' {
+		neg = -1
+		start = 1
+	} else if chars[0] == '+' {
+		start = 1
+	}
+
+	if chars[start] == '0' { // leading 0, maybe base specified int eg 0x, 0b, 0o
+		base := 0
+		if chars[start+1] == 'x' || chars[start+1] == 'X' {
+			base = 16
+		} else if chars[start+1] == 'o' || chars[start+1] == 'O' {
+			base = 8
+		} else if chars[start+1] == 'b' || chars[start+1] == 'B' {
+			base = 2
+		}
+		v, err := strconv.ParseInt(string(chars[start+2:]), base, 64)
+		if err != nil {
+			return -1, err
+		}
+		return int(v) * neg, nil
+	}
+
+	// if has e or E
+	s := strings.ToLower(string(chars[start:]))
+	if strings.Contains(s, "e") {
+		splits := strings.Split(s, "e")
+		v, err := strconv.ParseInt(splits[0], 10, 64)
+		if err != nil {
+			return -1, err
+		}
+		v2, err := strconv.ParseInt(splits[1], 10, 64)
+		if err != nil {
+			return -1, err
+		}
+		pow := math.Pow10(int(v2))
+		return int(float64(v) * pow), nil
+	}
+
+	v, err := strconv.ParseInt(str, 10, 64)
+	return int(v), err
+}
+
+// ParseFloat to parse string to float64
+func ParseFloat(str string) (float64, error) {
+	if !IsNumber(str) {
+		return -1, fmt.Errorf("string '%s' is not a valid int number.", str)
+	}
+
+	chars := []byte(str)
+	neg := 1
+	start := 0
+	if chars[0] == '-' {
+		neg = -1
+		start = 1
+	} else if chars[0] == '+' {
+		start = 1
+	}
+
+	if chars[start] == '0' { // leading 0, maybe base specified int eg 0x, 0b, 0o
+		base := 0
+		if chars[start+1] == 'x' || chars[start+1] == 'X' {
+			base = 16
+		} else if chars[start+1] == 'o' || chars[start+1] == 'O' {
+			base = 8
+		} else if chars[start+1] == 'b' || chars[start+1] == 'B' {
+			base = 2
+		}
+		v, err := strconv.ParseInt(string(chars[start+2:]), base, 64)
+		if err != nil {
+			return -1, err
+		}
+		return float64(int(v) * neg), nil
+	}
+
+	// if has e or E
+	s := strings.ToLower(string(chars[start:]))
+	if strings.Contains(s, "e") {
+		splits := strings.Split(s, "e")
+		v, err := strconv.ParseFloat(splits[0], 10)
+		if err != nil {
+			return -1, err
+		}
+		v2, err := strconv.ParseInt(splits[1], 10, 64)
+		if err != nil {
+			return -1, err
+		}
+		pow := math.Pow10(int(v2))
+		return v * pow, nil
+	}
+
+	return strconv.ParseFloat(str, 10)
 }

@@ -6,6 +6,7 @@
 package stringutil_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/jhunters/goassist/stringutil"
@@ -227,4 +228,191 @@ func TestIsNumber(t *testing.T) {
 
 	})
 
+}
+
+func TestParseInt(t *testing.T) {
+	Convey("TestParseInt", t, func() {
+		// hex string
+		v, err := stringutil.ParseInt("-0x19ac")
+		So(v, ShouldEqual, -6572)
+		So(err, ShouldBeNil)
+
+		v, err = stringutil.ParseInt("0X19ac")
+		So(v, ShouldEqual, 6572)
+		So(err, ShouldBeNil)
+
+		// octal string
+		v, err = stringutil.ParseInt("0o1312")
+		So(v, ShouldEqual, 714)
+		So(err, ShouldBeNil)
+
+		v, err = stringutil.ParseInt("-0O1312")
+		So(v, ShouldEqual, -714)
+		So(err, ShouldBeNil)
+
+		// binary string
+		v, err = stringutil.ParseInt("0b1011")
+		So(v, ShouldEqual, 11)
+		So(err, ShouldBeNil)
+
+		v, err = stringutil.ParseInt("-0B1011")
+		So(v, ShouldEqual, -11)
+		So(err, ShouldBeNil)
+
+		// e
+		v, err = stringutil.ParseInt("11e10")
+		So(v, ShouldEqual, 110000000000)
+		So(err, ShouldBeNil)
+
+		v, err = stringutil.ParseInt("110e-1")
+		So(v, ShouldEqual, 11)
+		So(err, ShouldBeNil)
+
+		v, err = stringutil.ParseInt("11e-1")
+		So(v, ShouldEqual, 1)
+		So(err, ShouldBeNil)
+
+		// invalid int number
+		v, err = stringutil.ParseInt("11ee-1")
+		So(v, ShouldEqual, -1)
+		So(err, ShouldNotBeNil)
+
+		v, err = stringutil.ParseInt("--11e-1")
+		So(v, ShouldEqual, -1)
+		So(err, ShouldNotBeNil)
+		v, err = stringutil.ParseInt("-+11e-1")
+		So(v, ShouldEqual, -1)
+		So(err, ShouldNotBeNil)
+		v, err = stringutil.ParseInt("1.1e1")
+		So(v, ShouldEqual, -1)
+		So(err, ShouldNotBeNil)
+	})
+
+}
+func ExampleParseInt() {
+	// hex string
+	v, err := stringutil.ParseInt("-0x19ac")
+	fmt.Println(v, err)
+
+	v, err = stringutil.ParseInt("0X19ac")
+	fmt.Println(v, err)
+
+	// octal string
+	v, err = stringutil.ParseInt("0o1312")
+	fmt.Println(v, err)
+	v, err = stringutil.ParseInt("-0O1312")
+	fmt.Println(v, err)
+
+	// binary string
+	v, err = stringutil.ParseInt("0b1011")
+	fmt.Println(v, err)
+	v, err = stringutil.ParseInt("-0B1011")
+	fmt.Println(v, err)
+
+	// e
+	v, err = stringutil.ParseInt("11e10")
+	fmt.Println(v, err)
+
+	v, err = stringutil.ParseInt("110e-1")
+	fmt.Println(v, err)
+
+	v, err = stringutil.ParseInt("11e-1")
+	fmt.Println(v, err)
+
+	// Output:
+	// 	-6572 <nil>
+	// 6572 <nil>
+	// 714 <nil>
+	// -714 <nil>
+	// 11 <nil>
+	// -11 <nil>
+	// 110000000000 <nil>
+	// 11 <nil>
+	// 1 <nil>
+
+}
+func TestParseFloat(t *testing.T) {
+
+	Convey("TestParseFloat", t, func() {
+		// hex string
+		v, err := stringutil.ParseFloat("-0x19ac")
+		So(v, ShouldEqual, -6572)
+		So(err, ShouldBeNil)
+
+		v, err = stringutil.ParseFloat("0X19ac")
+		So(v, ShouldEqual, 6572)
+		So(err, ShouldBeNil)
+
+		// octal string
+		v, err = stringutil.ParseFloat("0o1312")
+		So(v, ShouldEqual, 714)
+		So(err, ShouldBeNil)
+		v, err = stringutil.ParseFloat("-0O1312")
+		So(v, ShouldEqual, -714)
+		So(err, ShouldBeNil)
+
+		// binary string
+		v, err = stringutil.ParseFloat("0b1011")
+		So(v, ShouldEqual, 11)
+		So(err, ShouldBeNil)
+		v, err = stringutil.ParseFloat("-0B1011")
+		So(v, ShouldEqual, -11)
+		So(err, ShouldBeNil)
+
+		// e
+		v, err = stringutil.ParseFloat("11e10")
+		So(v, ShouldEqual, 110000000000)
+		So(err, ShouldBeNil)
+
+		v, err = stringutil.ParseFloat("110e-1")
+		So(v, ShouldEqual, 11)
+		So(err, ShouldBeNil)
+
+		v, err = stringutil.ParseFloat("11e-1")
+		So(v, ShouldEqual, 1.1)
+		So(err, ShouldBeNil)
+	})
+
+}
+
+func ExampleParseFloat() {
+	// hex string
+	v, err := stringutil.ParseFloat("-0x19ac")
+	fmt.Println(v, err)
+
+	v, err = stringutil.ParseFloat("0X19ac")
+	fmt.Println(v, err)
+
+	// octal string
+	v, err = stringutil.ParseFloat("0o1312")
+	fmt.Println(v, err)
+	v, err = stringutil.ParseFloat("-0O1312")
+	fmt.Println(v, err)
+
+	// binary string
+	v, err = stringutil.ParseFloat("0b1011")
+	fmt.Println(v, err)
+	v, err = stringutil.ParseFloat("-0B1011")
+	fmt.Println(v, err)
+
+	// e
+	v, err = stringutil.ParseFloat("11e10")
+	fmt.Println(v, err)
+
+	v, err = stringutil.ParseFloat("110e-1")
+	fmt.Println(v, err)
+
+	v, err = stringutil.ParseFloat("11e-1")
+	fmt.Println(v, err)
+
+	// Output:
+	// 	-6572 <nil>
+	// 6572 <nil>
+	// 714 <nil>
+	// -714 <nil>
+	// 11 <nil>
+	// -11 <nil>
+	// 1.1e+11 <nil>
+	// 11 <nil>
+	// 1.1 <nil>
 }
