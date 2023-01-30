@@ -18,16 +18,16 @@ need go 1.18
 
 API包|说明|文档
 --|--|--
-arrayutil|数组处理|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/arrayutil)
-concurrent|并发操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/concurrent)
-concurrent/syncx| 同步应用(pool, map)|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/concurrent/syncx)
-containerx|容器操作 | [heap](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/heapx) [list](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/listx) [map](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/mapx) [queue](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/queue) [ring](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/ringx) [set](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/set) [stack](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/container/stack)
-hashx|hash操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/hashx)
-maputil|map操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/maputil)
-reflectutil|反射操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/reflectutil)
-stringutil|字符串操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/stringutil)
-unsafex|unsafe包扩展应用|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/unsafex)
-timeutil|时间处理|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.1/timeutil)
+arrayutil|数组处理|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/arrayutil)
+concurrent|并发操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/concurrent)
+concurrent/syncx| 同步应用(pool, map)|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/concurrent/syncx)
+containerx|容器操作 | [heap](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/container/heapx) [list](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/container/listx) [map](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/container/mapx) [queue](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/container/queue) [ring](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/container/ringx) [set](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/container/set) [stack](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/container/stack)
+hashx|hash操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/hashx)
+maputil|map操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/maputil)
+reflectutil|反射操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/reflectutil)
+stringutil|字符串操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/stringutil)
+unsafex|unsafe包扩展应用|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/unsafex)
+timeutil|时间处理|[doc](https://pkg.go.dev/github.com/jhunters/goassist@v1.0.2/timeutil)
 
 ## License
 goassist is [Apache 2.0 licensed](./LICENSE).
