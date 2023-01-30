@@ -9,8 +9,6 @@ goassist is provides utility apis for gopher for more easy to use.
 [![Godoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/jhunters/goassist)
 [![LICENSE](https://img.shields.io/github/license/jhunters/goassist.svg?style=flat-square)](https://github.com/jhunters/goassist/blob/master/LICENSE)
 
-# goassist
-utility api for golang
 
 # Version
 need go 1.18
