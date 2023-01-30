@@ -24,11 +24,11 @@ func timedFunc[E any](t time.Duration, ret E) E {
 }
 
 func panicFunc() {
-	panic("throws panic manual")
+	panic("throws panic manually")
 }
 
 func panicFunc2[E any](ret E) E {
-	panic("throws panic manual")
+	panic("throws panic manually")
 }
 
 func TestAsyncGo(t *testing.T) {

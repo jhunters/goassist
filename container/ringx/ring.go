@@ -1,3 +1,4 @@
+// ringx package provides enhanced ring container apis
 package ringx
 
 import (
@@ -206,15 +207,23 @@ func (r *Ring[E]) Do(f func(E)) {
 	}
 }
 
+// Iterate to watch all element in ring
 func (r *Ring[E]) Iterate(f func(E) bool) {
 	if r != nil {
-		f(r.Value)
+		if !f(r.Value) {
+			return
+		}
 		for p := r.Next(); p != r; p = p.next {
 			if !f(p.Value) {
 				return
 			}
 		}
 	}
+}
+
+// Range has same function to Iterate
+func (r *Ring[E]) Range(f func(E) bool) {
+	r.Iterate(f)
 }
 
 // Min to find the minimum one in the list

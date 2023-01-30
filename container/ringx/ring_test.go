@@ -1,6 +1,7 @@
 package ringx_test
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -67,6 +68,45 @@ func TestNewRing(t *testing.T) {
 			So(rp, ShouldNotBeNil)
 		})
 	})
+}
+
+func ExampleNewRingOf() {
+	r := ringx.NewRingOf("a", "b", "c", "d", "e")
+	fmt.Println(r.Len())
+
+	r.Do(func(s string) {
+		fmt.Println(s)
+	})
+
+	// move to prev
+	r = r.Prev()
+	fmt.Println(r.Value)
+
+	// link
+	r = r.Link(ringx.NewRingOf("1", "2", "3"))
+	fmt.Println(r.Len())
+
+	r.Do(func(s string) {
+		fmt.Println(s)
+	})
+
+	// Output:
+	// 5
+	// a
+	// b
+	// c
+	// d
+	// e
+	// e
+	// 8
+	// a
+	// b
+	// c
+	// d
+	// e
+	// 1
+	// 2
+	// 3
 }
 
 func TestMinMax(t *testing.T) {
