@@ -45,9 +45,12 @@ func ExampleNewHeap() {
 
 	player := h.Pop()
 	fmt.Println(player.level)
+	player = h.Pop()
+	fmt.Println(player.level)
 
 	// Output:
 	// 1
+	// 2
 }
 
 func TestHeapCopy(t *testing.T) {
@@ -67,4 +70,23 @@ func TestHeapCopy(t *testing.T) {
 		player = h2.Pop()
 		So(player, ShouldNotBeNil)
 	})
+}
+
+// An IntHeap is a min-heap of ints.
+type IntHeap []int
+
+// This example inserts several ints into an IntHeap, checks the minimum,
+// and removes them in order of priority.
+func Example_intHeap() {
+	h := heapx.NewHeap(IntHeap{2, 1, 5}, func(p1, p2 int) int {
+		return p1 - p2
+	})
+
+	h.Push(3)
+
+	for h.Len() > 0 {
+		fmt.Printf("%d ", h.Pop())
+	}
+	// Output:
+	// 1 2 3 5
 }
