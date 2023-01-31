@@ -92,3 +92,341 @@ func TestToPrt(t *testing.T) {
 	})
 
 }
+
+func TestIsNumber(t *testing.T) {
+	Convey("TestIsNumber", t, func() {
+		Convey("hex", func() {
+			isNumber := conv.IsNumber("0x12")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = conv.IsNumber("0xac")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = conv.IsNumber("0x")
+			So(isNumber, ShouldBeFalse)
+
+			isNumber = conv.IsNumber("0x093g")
+			So(isNumber, ShouldBeFalse)
+		})
+		Convey("octal", func() {
+			isNumber := conv.IsNumber("0o10")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = conv.IsNumber("0O17")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = conv.IsNumber("0o18")
+			So(isNumber, ShouldBeFalse)
+
+			isNumber = conv.IsNumber("0O093g")
+			So(isNumber, ShouldBeFalse)
+		})
+		Convey("binary", func() {
+			isNumber := conv.IsNumber("0b10")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = conv.IsNumber("0B11")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = conv.IsNumber("0b18")
+			So(isNumber, ShouldBeFalse)
+
+			isNumber = conv.IsNumber("0B093g")
+			So(isNumber, ShouldBeFalse)
+		})
+		Convey("common", func() {
+			isNumber := conv.IsNumber("-12.11")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = conv.IsNumber("19.1")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = conv.IsNumber("-12.1.1")
+			So(isNumber, ShouldBeFalse)
+
+			isNumber = conv.IsNumber("12e1")
+			So(isNumber, ShouldBeTrue)
+
+			isNumber = conv.IsNumber("12e-9")
+			So(isNumber, ShouldBeTrue)
+		})
+
+	})
+
+}
+
+func TestParseInt(t *testing.T) {
+	Convey("TestParseInt", t, func() {
+		// hex string
+		v, err := conv.ParseInt("-0x19ac")
+		So(v, ShouldEqual, -6572)
+		So(err, ShouldBeNil)
+
+		v, err = conv.ParseInt("0X19ac")
+		So(v, ShouldEqual, 6572)
+		So(err, ShouldBeNil)
+
+		// octal string
+		v, err = conv.ParseInt("0o1312")
+		So(v, ShouldEqual, 714)
+		So(err, ShouldBeNil)
+
+		v, err = conv.ParseInt("-0O1312")
+		So(v, ShouldEqual, -714)
+		So(err, ShouldBeNil)
+
+		// binary string
+		v, err = conv.ParseInt("0b1011")
+		So(v, ShouldEqual, 11)
+		So(err, ShouldBeNil)
+
+		v, err = conv.ParseInt("-0B1011")
+		So(v, ShouldEqual, -11)
+		So(err, ShouldBeNil)
+
+		// e
+		v, err = conv.ParseInt("11e10")
+		So(v, ShouldEqual, 110000000000)
+		So(err, ShouldBeNil)
+
+		v, err = conv.ParseInt("110e-1")
+		So(v, ShouldEqual, 11)
+		So(err, ShouldBeNil)
+
+		v, err = conv.ParseInt("11e-1")
+		So(v, ShouldEqual, 1)
+		So(err, ShouldBeNil)
+
+		// invalid int number
+		v, err = conv.ParseInt("11ee-1")
+		So(v, ShouldEqual, -1)
+		So(err, ShouldNotBeNil)
+
+		v, err = conv.ParseInt("--11e-1")
+		So(v, ShouldEqual, -1)
+		So(err, ShouldNotBeNil)
+		v, err = conv.ParseInt("-+11e-1")
+		So(v, ShouldEqual, -1)
+		So(err, ShouldNotBeNil)
+		v, err = conv.ParseInt("1.1e1")
+		So(v, ShouldEqual, -1)
+		So(err, ShouldNotBeNil)
+	})
+
+}
+func ExampleParseInt() {
+	// hex string
+	v, err := conv.ParseInt("-0x19ac")
+	fmt.Println(v, err)
+
+	v, err = conv.ParseInt("0X19ac")
+	fmt.Println(v, err)
+
+	// octal string
+	v, err = conv.ParseInt("0o1312")
+	fmt.Println(v, err)
+	v, err = conv.ParseInt("-0O1312")
+	fmt.Println(v, err)
+
+	// binary string
+	v, err = conv.ParseInt("0b1011")
+	fmt.Println(v, err)
+	v, err = conv.ParseInt("-0B1011")
+	fmt.Println(v, err)
+
+	// e
+	v, err = conv.ParseInt("11e10")
+	fmt.Println(v, err)
+
+	v, err = conv.ParseInt("110e-1")
+	fmt.Println(v, err)
+
+	v, err = conv.ParseInt("11e-1")
+	fmt.Println(v, err)
+
+	// Output:
+	// 	-6572 <nil>
+	// 6572 <nil>
+	// 714 <nil>
+	// -714 <nil>
+	// 11 <nil>
+	// -11 <nil>
+	// 110000000000 <nil>
+	// 11 <nil>
+	// 1 <nil>
+
+}
+func TestParseFloat(t *testing.T) {
+
+	Convey("TestParseFloat", t, func() {
+		// hex string
+		v, err := conv.ParseFloat("-0x19ac")
+		So(v, ShouldEqual, -6572)
+		So(err, ShouldBeNil)
+
+		v, err = conv.ParseFloat("0X19ac")
+		So(v, ShouldEqual, 6572)
+		So(err, ShouldBeNil)
+
+		// octal string
+		v, err = conv.ParseFloat("0o1312")
+		So(v, ShouldEqual, 714)
+		So(err, ShouldBeNil)
+		v, err = conv.ParseFloat("-0O1312")
+		So(v, ShouldEqual, -714)
+		So(err, ShouldBeNil)
+
+		// binary string
+		v, err = conv.ParseFloat("0b1011")
+		So(v, ShouldEqual, 11)
+		So(err, ShouldBeNil)
+		v, err = conv.ParseFloat("-0B1011")
+		So(v, ShouldEqual, -11)
+		So(err, ShouldBeNil)
+
+		// e
+		v, err = conv.ParseFloat("11e10")
+		So(v, ShouldEqual, 110000000000)
+		So(err, ShouldBeNil)
+
+		v, err = conv.ParseFloat("110e-1")
+		So(v, ShouldEqual, 11)
+		So(err, ShouldBeNil)
+
+		v, err = conv.ParseFloat("11e-1")
+		So(v, ShouldEqual, 1.1)
+		So(err, ShouldBeNil)
+	})
+
+}
+
+func ExampleParseFloat() {
+	// hex string
+	v, err := conv.ParseFloat("-0x19ac")
+	fmt.Println(v, err)
+
+	v, err = conv.ParseFloat("0X19ac")
+	fmt.Println(v, err)
+
+	// octal string
+	v, err = conv.ParseFloat("0o1312")
+	fmt.Println(v, err)
+	v, err = conv.ParseFloat("-0O1312")
+	fmt.Println(v, err)
+
+	// binary string
+	v, err = conv.ParseFloat("0b1011")
+	fmt.Println(v, err)
+	v, err = conv.ParseFloat("-0B1011")
+	fmt.Println(v, err)
+
+	// e
+	v, err = conv.ParseFloat("11e10")
+	fmt.Println(v, err)
+
+	v, err = conv.ParseFloat("110e-1")
+	fmt.Println(v, err)
+
+	v, err = conv.ParseFloat("11e-1")
+	fmt.Println(v, err)
+
+	// Output:
+	// 	-6572 <nil>
+	// 6572 <nil>
+	// 714 <nil>
+	// -714 <nil>
+	// 11 <nil>
+	// -11 <nil>
+	// 1.1e+11 <nil>
+	// 11 <nil>
+	// 1.1 <nil>
+}
+
+func TestAppend(t *testing.T) {
+	Convey("TestAppend", t, func() {
+		b10 := []byte("int:")
+		b10 = conv.Append(b10, -42)
+		So(string(b10), ShouldEqual, "int:-42")
+
+		// append bool
+		b := []byte("bool:")
+		b = conv.Append(b, true)
+		So(string(b), ShouldEqual, "bool:true")
+
+		// append float
+		b32 := []byte("float32:")
+		b32 = conv.Append(b32, 3.1415926535)
+		So(string(b32), ShouldEqual, "float32:3.1415926535")
+
+		b64 := []byte("float64:")
+		b64 = conv.Append(b64, 3.1415926535)
+		So(string(b64), ShouldEqual, "float64:3.1415926535")
+
+		// append quote
+		b = []byte("quote:")
+		b = conv.Append(b, `"Fran & Freddie's Diner"`)
+		So(string(b), ShouldEqual, `quote:"Fran & Freddie's Diner"`)
+	})
+
+}
+func TestAppendString(t *testing.T) {
+	Convey("TestAppendString", t, func() {
+		b10 := "int:"
+		b10 = conv.AppendString(b10, -42)
+		So(string(b10), ShouldEqual, "int:-42")
+
+		// append bool
+		b := "bool:"
+		b = conv.AppendString(b, true)
+		So(string(b), ShouldEqual, "bool:true")
+
+		// append float
+		b32 := "float32:"
+		b32 = conv.AppendString(b32, 3.1415926535)
+		So(string(b32), ShouldEqual, "float32:3.1415926535")
+
+		b64 := "float64:"
+		b64 = conv.AppendString(b64, 3.1415926535)
+		So(string(b64), ShouldEqual, "float64:3.1415926535")
+
+		// append quote
+		b = "quote:"
+		b = conv.AppendString(b, `"Fran & Freddie's Diner"`)
+		So(string(b), ShouldEqual, `quote:"Fran & Freddie's Diner"`)
+	})
+
+}
+
+func ExampleAppend() {
+	// append int
+	b10 := []byte("int:")
+	b10 = conv.Append(b10, -42)
+	fmt.Println(string(b10))
+
+	// append bool
+	b := []byte("bool:")
+	b = conv.Append(b, true)
+	fmt.Println(string(b))
+
+	// append float
+	b32 := []byte("float32:")
+	b32 = conv.Append(b32, 3.1415926535)
+	fmt.Println(string(b32))
+
+	b64 := []byte("float64:")
+	b64 = conv.Append(b64, 3.1415926535)
+	fmt.Println(string(b64))
+
+	// append quote
+	b = []byte("quote:")
+	b = conv.Append(b, `"Fran & Freddie's Diner"`)
+	fmt.Println(string(b))
+
+	// Output:
+	// int:-42
+	// bool:true
+	// float32:3.1415926535
+	// float64:3.1415926535
+	// quote:"Fran & Freddie's Diner"
+
+}
