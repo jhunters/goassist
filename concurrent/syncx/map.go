@@ -10,6 +10,7 @@ import (
 // Map is like a Go map[interface{}]interface{} but is safe for concurrent use
 // by multiple goroutines without additional locking or coordination.
 // Loads, stores, and deletes run in amortized constant time.
+// By generics feature supports, all api will be more readable and safty.
 //
 // The Map type is specialized. Most code should use a plain Go map instead,
 // with separate locking or coordination, for better type safety and to make it
