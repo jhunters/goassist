@@ -1,5 +1,5 @@
 /*
- * Package arrayx to provides utility api for array operation
+ * Package arrayutil provides utility api for array operation
  */
 package arrayutil
 

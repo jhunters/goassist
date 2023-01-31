@@ -1,3 +1,6 @@
+/*
+ * Package base to defines const and base types
+ */
 package base
 
 type (

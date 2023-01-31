@@ -1,3 +1,4 @@
+// set package provides set feature apis. note not safety in concurrent operation.
 package set
 
 import (
@@ -15,14 +16,14 @@ func NewSet[K comparable]() *Set[K] {
 	return &Set[K]{mp: make(map[K]base.Null)}
 }
 
-// Add add key into set if key exist return false and nothing changes
-func (m *Set[K]) Add(key K) bool {
-	_, ok := m.mp[key]
+// Add add key into set if target exist return false and nothing changes
+func (m *Set[K]) Add(target K) bool {
+	_, ok := m.mp[target]
 	if ok {
 		return false
 	}
 
-	m.mp[key] = base.Empty
+	m.mp[target] = base.Empty
 	return true
 }
 

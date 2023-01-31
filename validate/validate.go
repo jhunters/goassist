@@ -1,3 +1,6 @@
+/*
+ * Package validate to provides utility api for validation
+ */
 package validate
 
 import "regexp"

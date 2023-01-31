@@ -1,3 +1,4 @@
+// listx package provides enhanced list container apis. note not safety in concurrent operation.
 package listx
 
 import (

@@ -1,3 +1,6 @@
+/*
+ * Package unsafex to provides utility api for applying unsafe package
+ */
 package unsafex
 
 import (

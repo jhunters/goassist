@@ -1,3 +1,4 @@
+// heapx package provides enhanced list heap apis. note not safety in concurrent operation.
 package heapx
 
 import (

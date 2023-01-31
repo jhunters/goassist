@@ -1,3 +1,4 @@
+// stack package provides stack(FILO) feature apis. note not safety in concurrent operation.
 package stack
 
 import "sync"

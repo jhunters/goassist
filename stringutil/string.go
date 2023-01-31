@@ -1,9 +1,6 @@
 /*
- * @Author: Malin Xie
- * @Description:
- * @Date: 2022-02-08 14:12:42
+ * Package stringutil to provides utility api for string operation
  */
-
 package stringutil
 
 import (

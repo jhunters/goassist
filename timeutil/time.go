@@ -1,3 +1,6 @@
+/*
+ * Package timeutil to provides utility api for time operation
+ */
 package timeutil
 
 import "time"

@@ -1,8 +1,7 @@
-// ringx package provides enhanced ring container apis
 package ringx
 
 import (
-	"sort"
+	"sort" // ringx package provides enhanced ring container apis. note not safety in concurrent operation.
 
 	"github.com/jhunters/goassist/base"
 )

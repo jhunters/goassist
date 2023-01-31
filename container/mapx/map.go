@@ -1,3 +1,4 @@
+// mapx package provides enhanced map container apis. note not safety in concurrent operation.
 package mapx
 
 import (

@@ -1,3 +1,4 @@
+// queue package provides queue(FIFO) feature apis. note not safety in concurrent operation.
 package queue
 
 import (
