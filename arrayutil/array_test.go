@@ -677,3 +677,24 @@ func TestFilter(t *testing.T) {
 
 	})
 }
+
+func TestInsert(t *testing.T) {
+	Convey("TestInsert", t, func() {
+		sortedIntArray := arrayutil.Clone(sortedIntArray)
+		arr := arrayutil.Insert(sortedIntArray, 0, 0)
+		So(arr, ShouldResemble, append([]int{0}, sortedIntArray...))
+
+		arr = arrayutil.Insert(sortedIntArray, 5, 0)
+		So(arr, ShouldResemble, []int{1, 2, 3, 4, 5, 0, 6, 7, 8, 9, 10})
+
+		arr = arrayutil.Insert(sortedIntArray, 10, 0)
+		So(arr, ShouldResemble, []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0})
+
+		// invalid index
+		arr = arrayutil.Insert(sortedIntArray, -1, 0)
+		So(arr, ShouldResemble, sortedIntArray)
+
+		arr = arrayutil.Insert(sortedIntArray, len(sortedIntArray)+1, 0)
+		So(arr, ShouldResemble, sortedIntArray)
+	})
+}

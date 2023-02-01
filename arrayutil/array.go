@@ -541,6 +541,21 @@ func Clone[E any](data []E) []E {
 	return ret
 }
 
+// Insert target value in array, if index < 0 or > len(data) will do noting
+func Insert[E any](data []E, index int, v E) []E {
+	if index < 0 || index > len(data) {
+		return data
+	}
+	if index == len(data) {
+		return append(data, v)
+	}
+	var empty E
+	ret := append(data, empty)
+	copy(ret[index+1:], ret[index:])
+	ret[index] = v
+	return ret
+}
+
 // Equals to compare two value is equal
 func Equals[E generic.Ordered](e1, e2 E) bool {
 	return e1 == e2
