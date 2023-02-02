@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"reflect"
 	"testing"
 	"unsafe"
 
@@ -46,26 +45,6 @@ func TestArrayMappingToStruct(t *testing.T) {
 		binary.LittleEndian.PutUint64(arr, 1000)
 		So(1000, ShouldEqual, result.age)
 	})
-}
-
-func TestSliceStringConvert(t *testing.T) {
-
-	s := "hello world"
-
-	sh := (*reflect.StringHeader)(unsafe.Pointer(&s))
-
-	bh := reflect.SliceHeader{
-		Data: sh.Data,
-		Len:  sh.Len,
-		Cap:  sh.Len,
-	}
-
-	fmt.Println(*(*[]byte)(unsafe.Pointer(&bh)))
-	// // 把string的引用指向 ret的空间
-	// *(*string)(unsafe.Pointer(&ret)) = value
-
-	// // 设置slice的Cap值 ，用unsafe.Add操作，执行偏移操作 16个字节
-	// *(*int)(unsafe.Add(unsafe.Pointer(&ret), uintptr(8)*2)) = len(value)
 }
 
 func TestStringToSlice(t *testing.T) {
