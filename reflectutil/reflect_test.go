@@ -165,18 +165,24 @@ type VIP struct {
 	Name string
 }
 
-func TestInteface(t *testing.T) {
-	vip := VIP{"matthew"}
-	structV := reflect.ValueOf(vip)
-	v2 := structV.Field(0) // 获取index=0字段的值
-	x2 := v2.Interface()
-	i2, ok2 := x2.(string)
-	fmt.Printf("%s %v\n", i2, ok2) // matthew, true
+func TestGetValue(t *testing.T) {
+	Convey("TestGetValue", t, func() {
+		vip := VIP{"matthew"}
+		structV := reflect.ValueOf(vip)
+		v2 := structV.Field(0) // 获取index=0字段的值
+		x2 := v2.Interface()
+		i2, ok2 := x2.(string)
+		So(i2, ShouldEqual, "matthew")
+		So(ok2, ShouldBeTrue)
 
-	name, b := reflectutil.GetValue[string](&vip, "Name")
-	fmt.Println(name, b)
+		name, b := reflectutil.GetValue[string](&vip, "Name")
+		So(name, ShouldEqual, "matthew")
+		So(b, ShouldBeTrue)
 
-	nameset := "string"
-	name, b = reflectutil.GetValue[string](&nameset, "name")
-	fmt.Println(name, b)
+		nameset := "string"
+		name, b = reflectutil.GetValue[string](&nameset, "name")
+		So(name, ShouldBeEmpty)
+		So(b, ShouldBeFalse)
+	})
+
 }

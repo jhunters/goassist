@@ -86,3 +86,30 @@ func TestValueSizeof(t *testing.T) {
 		So(sz, ShouldEqual, 8)
 	})
 }
+
+type VIP struct {
+	Name string
+}
+
+func TestCopy(t *testing.T) {
+	Convey("TestCopy", t, func() {
+		s := &VIP{}
+		s1 := unsafex.Copy(s)
+		s.Name = "matt"
+		So(s1.Name, ShouldBeEmpty)
+	})
+}
+
+func ExampleCopy() {
+
+	s := struct {
+		Name string
+	}{}
+	s.Name = "hello"
+	s2 := unsafex.Copy(&s) // to a new value
+	s2.Name = "world"      // 传递给 s2, 但 s2 已经是新创建的
+	fmt.Println(s.Name)
+
+	// Output:
+	// hello
+}
