@@ -698,3 +698,33 @@ func TestInsert(t *testing.T) {
 		So(arr, ShouldResemble, sortedIntArray)
 	})
 }
+
+func ExampleInsert() {
+
+	sortedIntArray = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+
+	// invalid index
+	arr := arrayutil.Insert(sortedIntArray, -1, 0)
+	fmt.Println(arr)
+
+	arr = arrayutil.Insert(sortedIntArray, len(sortedIntArray)+1, 0)
+	fmt.Println(arr)
+
+	// insert by index
+	arr = arrayutil.Insert(sortedIntArray, 0, 0) // insert at head
+	fmt.Println(arr)
+
+	arr = arrayutil.Insert(sortedIntArray, 5, 0) // insert
+	fmt.Println(arr)
+
+	arr = arrayutil.Insert(sortedIntArray, len(arr), 0) // insert at tail
+	fmt.Println(arr)
+
+	// Output:
+	// [1 2 3 4 5 6 7 8 9 10]
+	// [1 2 3 4 5 6 7 8 9 10]
+	// [0 1 2 3 4 5 6 7 8 9 10]
+	// [0 1 2 3 4 0 5 6 7 8 9 10]
+	// [0 1 2 3 4 0 5 6 7 8 9 10 0]
+
+}
