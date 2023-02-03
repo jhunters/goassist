@@ -717,14 +717,14 @@ func ExampleInsert() {
 	arr = arrayutil.Insert(sortedIntArray, 5, 0) // insert
 	fmt.Println(arr)
 
-	arr = arrayutil.Insert(sortedIntArray, len(arr), 0) // insert at tail
+	arr = arrayutil.Insert(sortedIntArray, len(sortedIntArray), 0) // insert at tail
 	fmt.Println(arr)
 
 	// Output:
 	// [1 2 3 4 5 6 7 8 9 10]
 	// [1 2 3 4 5 6 7 8 9 10]
 	// [0 1 2 3 4 5 6 7 8 9 10]
-	// [0 1 2 3 4 0 5 6 7 8 9 10]
-	// [0 1 2 3 4 0 5 6 7 8 9 10 0]
+	// [1 2 3 4 5 0 6 7 8 9 10]
+	// [1 2 3 4 5 6 7 8 9 10 0]
 
 }
