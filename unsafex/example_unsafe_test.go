@@ -19,11 +19,11 @@ func ExampleMappingToArray() {
 
 	dr := []Data{{1, 1}, {2, 2}}
 	bytes = unsafex.MappingToArray(dr)
-	fmt.Println(bytes)
+	fmt.Println(len(bytes))
 
 	// Output:
 	// [1 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0]
-	// [128 161 9 0 192 0 0 0 2 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0]
+	// 24
 }
 
 func ExampleArrayMapping() {
