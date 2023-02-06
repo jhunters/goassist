@@ -25,6 +25,22 @@ func ArrayMapping[T any](bytes []byte) *T {
 	return ret
 }
 
+// Slice returns a slice whose underlying array starts at ptr
+func Slice[T, R any](ptr *T, size int) []R {
+	ret := (*[Max_Size]R)(unsafe.Pointer(ptr))[:size]
+	return ret
+}
+
+// Offset return the converted target value by point offset of starting ptr
+func OffsetValue[T, R any](ptr *T, offsetN int) *R {
+	var r R
+	return (*R)(unsafeIndex(unsafe.Pointer(ptr), 0, ValueSizeof(r), offsetN))
+}
+
+func unsafeIndex(base unsafe.Pointer, offset uintptr, elemsz uintptr, n int) unsafe.Pointer {
+	return unsafe.Pointer(uintptr(base) + offset + uintptr(n)*elemsz)
+}
+
 // ValueSizeof to cal real value size
 func ValueSizeof(v any) uintptr {
 	typ := reflect.TypeOf(v)

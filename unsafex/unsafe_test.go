@@ -92,3 +92,65 @@ func ExampleCopy() {
 	// Output:
 	// hello
 }
+
+type AllInt struct {
+	V1 int
+	V2 int
+	V3 int
+	V4 int
+	V5 int
+}
+
+func TestSlice(t *testing.T) {
+	v := &AllInt{1, 2, 3, 4, 5}
+
+	// convert AllInt struct's field value to  int slice
+	nv := unsafex.Slice[AllInt, int](v, 5)
+	fmt.Println(nv)
+
+	// convert AllInt struct's field value to  int slice
+	nv = unsafex.Slice[AllInt, int](v, 2)
+	fmt.Println(nv)
+
+}
+
+func ExampleSlice() {
+	v := &AllInt{1, 2, 3, 4, 5}
+
+	// convert AllInt struct's field value to  int slice
+	nv := unsafex.Slice[AllInt, int](v, 5)
+	fmt.Println(nv)
+
+	// convert AllInt struct's field value to  int slice
+	nv = unsafex.Slice[AllInt, int](v, 2)
+	fmt.Println(nv)
+
+	// Output:
+	// [1 2 3 4 5]
+	// [1 2]
+}
+
+func TestOffsetValue(t *testing.T) {
+
+	v := &AllInt{1, 2, 3, 4, 5}
+
+	nv := unsafex.OffsetValue[AllInt, int](v, 2)
+	fmt.Println(*nv)
+
+}
+
+func ExampleOffsetValue() {
+	v := &AllInt{1, 2, 3, 4, 5}
+
+	nv := unsafex.OffsetValue[AllInt, int](v, 2)
+	fmt.Println(*nv)
+
+	// Output:
+	// 3
+}
+
+// func TestSliceData(t *testing.T) {
+
+// 	s := []int{1, 2, 3}
+// 	unsafe.SliceData()
+// }
