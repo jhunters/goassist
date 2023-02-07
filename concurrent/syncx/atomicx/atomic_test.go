@@ -110,32 +110,166 @@ func ExampleNewAtomicInt() {
 func TestCompareAndSet(t *testing.T) {
 
 	Convey("TestCompareAndSet", t, func() {
-		atomInt := atomicx.NewAtomicInt(conv.ToPtr[int64](0))
 
-		v := atomInt.Get()
-		So(v, ShouldBeZeroValue)
+		Convey("int64", func() {
+			atomInt := atomicx.NewAtomicInt(conv.ToPtr[int64](0))
 
-		b := atomInt.CompareAndSet(0, 10)
-		So(b, ShouldBeTrue)
-		So(atomInt.Get(), ShouldEqual, 10)
+			v := atomInt.Get()
+			So(v, ShouldBeZeroValue)
 
-		b = atomInt.CompareAndSet(0, 20)
-		So(b, ShouldBeFalse)
-		So(atomInt.Get(), ShouldEqual, 10)
+			b := atomInt.CompareAndSet(0, 10)
+			So(b, ShouldBeTrue)
+			So(atomInt.Get(), ShouldEqual, 10)
+
+			b = atomInt.CompareAndSet(0, 20)
+			So(b, ShouldBeFalse)
+			So(atomInt.Get(), ShouldEqual, 10)
+		})
+
+		Convey("int32", func() {
+			atomInt := atomicx.NewAtomicInt(conv.ToPtr[int32](0))
+
+			v := atomInt.Get()
+			So(v, ShouldBeZeroValue)
+
+			b := atomInt.CompareAndSet(0, 10)
+			So(b, ShouldBeTrue)
+			So(atomInt.Get(), ShouldEqual, 10)
+
+			b = atomInt.CompareAndSet(0, 20)
+			So(b, ShouldBeFalse)
+			So(atomInt.Get(), ShouldEqual, 10)
+		})
+
+		Convey("uint32", func() {
+			atomInt := atomicx.NewAtomicInt(conv.ToPtr[uint32](0))
+
+			v := atomInt.Get()
+			So(v, ShouldBeZeroValue)
+
+			b := atomInt.CompareAndSet(0, 10)
+			So(b, ShouldBeTrue)
+			So(atomInt.Get(), ShouldEqual, 10)
+
+			b = atomInt.CompareAndSet(0, 20)
+			So(b, ShouldBeFalse)
+			So(atomInt.Get(), ShouldEqual, 10)
+		})
+
+		Convey("uint64", func() {
+			atomInt := atomicx.NewAtomicInt(conv.ToPtr[uint64](0))
+
+			v := atomInt.Get()
+			So(v, ShouldBeZeroValue)
+
+			b := atomInt.CompareAndSet(0, 10)
+			So(b, ShouldBeTrue)
+			So(atomInt.Get(), ShouldEqual, 10)
+
+			b = atomInt.CompareAndSet(0, 20)
+			So(b, ShouldBeFalse)
+			So(atomInt.Get(), ShouldEqual, 10)
+		})
+
+		Convey("uintptr", func() {
+			atomInt := atomicx.NewAtomicInt(conv.ToPtr[uintptr](0))
+
+			v := atomInt.Get()
+			So(v, ShouldBeZeroValue)
+
+			b := atomInt.CompareAndSet(0, 10)
+			So(b, ShouldBeTrue)
+			So(atomInt.Get(), ShouldEqual, 10)
+
+			b = atomInt.CompareAndSet(0, 20)
+			So(b, ShouldBeFalse)
+			So(atomInt.Get(), ShouldEqual, 10)
+		})
+
+		Convey("uint64", func() {
+			atomInt := atomicx.NewAtomicInt(conv.ToPtr[uint64](0))
+
+			v := atomInt.Get()
+			So(v, ShouldBeZeroValue)
+
+			b := atomInt.CompareAndSet(0, 10)
+			So(b, ShouldBeTrue)
+			So(atomInt.Get(), ShouldEqual, 10)
+
+			b = atomInt.CompareAndSet(0, 20)
+			So(b, ShouldBeFalse)
+			So(atomInt.Get(), ShouldEqual, 10)
+		})
 
 	})
 }
 
 func TestIncrementAndGet(t *testing.T) {
 	Convey("TestIncrementAndGet", t, func() {
-		atomInt := atomicx.NewAtomicInt(conv.ToPtr[int64](0))
+		Convey("int64", func() {
+			atomInt := atomicx.NewAtomicInt(conv.ToPtr[int64](0))
 
-		v := atomInt.Get()
-		So(v, ShouldBeZeroValue)
+			v := atomInt.Get()
+			So(v, ShouldBeZeroValue)
 
-		v = atomInt.IncrementAndGet()
-		So(v, ShouldEqual, 1)
-		So(atomInt.Get(), ShouldEqual, 1)
+			v = atomInt.IncrementAndGet()
+			So(v, ShouldEqual, 1)
+			So(atomInt.Get(), ShouldEqual, 1)
+		})
+
+		Convey("int32", func() {
+			atomInt := atomicx.NewAtomicInt(conv.ToPtr[int32](0))
+
+			v := atomInt.Get()
+			So(v, ShouldBeZeroValue)
+
+			v = atomInt.IncrementAndGet()
+			So(v, ShouldEqual, 1)
+			So(atomInt.Get(), ShouldEqual, 1)
+		})
+
+		Convey("uint64", func() {
+			atomInt := atomicx.NewAtomicInt(conv.ToPtr[uint64](0))
+
+			v := atomInt.Get()
+			So(v, ShouldBeZeroValue)
+
+			v = atomInt.IncrementAndGet()
+			So(v, ShouldEqual, 1)
+			So(atomInt.Get(), ShouldEqual, 1)
+		})
+
+		Convey("uint32", func() {
+			atomInt := atomicx.NewAtomicInt(conv.ToPtr[uint32](0))
+
+			v := atomInt.Get()
+			So(v, ShouldBeZeroValue)
+
+			v = atomInt.IncrementAndGet()
+			So(v, ShouldEqual, 1)
+			So(atomInt.Get(), ShouldEqual, 1)
+		})
+
+		Convey("uintptr", func() {
+			atomInt := atomicx.NewAtomicInt(conv.ToPtr[uintptr](0))
+
+			v := atomInt.Get()
+			So(v, ShouldBeZeroValue)
+
+			v = atomInt.IncrementAndGet()
+			So(v, ShouldEqual, 1)
+			So(atomInt.Get(), ShouldEqual, 1)
+		})
 
 	})
+}
+
+func TestSet(t *testing.T) {
+	Convey("TestSet", t, func() {
+
+		atomInt := atomicx.NewAtomicInt(conv.ToPtr[int64](0))
+		atomInt.Set(100)
+		So(atomInt.Get(), ShouldEqual, 100)
+	})
+
 }
