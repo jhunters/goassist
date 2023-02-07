@@ -31,6 +31,11 @@ func Slice[T, R any](ptr *T, size int) []R {
 	return ret
 }
 
+// As to convert type by unsafe way
+func As[E, R any](ptr *E) *R {
+	return (*R)(unsafe.Pointer(ptr))
+}
+
 // Offset return the converted target value by point offset of starting ptr
 func OffsetValue[T, R any](ptr *T, offsetN int) *R {
 	var r R

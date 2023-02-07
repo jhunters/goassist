@@ -149,8 +149,19 @@ func ExampleOffsetValue() {
 	// 3
 }
 
-// func TestSliceData(t *testing.T) {
+func ExampleAs() {
+	var ui64 uint64 = 10
+	// convert uint64 to int64
+	var v *int64 = unsafex.As[uint64, int64](&ui64)
+	fmt.Println(*v)
 
-// 	s := []int{1, 2, 3}
-// 	unsafe.SliceData()
-// }
+	var f64 float64 = 100
+	// convert float64 to int64
+	v = unsafex.As[float64, int64](&f64)
+	fmt.Println(*v) // will get a unsafe return
+
+	// Output:
+	// 10
+	// 4636737291354636288
+
+}
