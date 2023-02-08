@@ -6,7 +6,9 @@
 package stringutil_test
 
 import (
+	"fmt"
 	"testing"
+	"unsafe"
 
 	"github.com/jhunters/goassist/stringutil"
 	. "github.com/smartystreets/goconvey/convey"
@@ -150,7 +152,7 @@ func TestAbbreviate(t *testing.T) {
 		So(err, ShouldBeNil)
 		So(s, ShouldEqual, "...ghij...")
 
-		s, err = stringutil.Abbreviate("abcdefghij", "abra", 0, 4)
+		_, err = stringutil.Abbreviate("abcdefghij", "abra", 0, 4)
 		So(err, ShouldNotBeNil)
 	})
 
@@ -165,4 +167,112 @@ func TestAbbreviateMiddle(t *testing.T) {
 		So(s, ShouldEqual, "abc")
 	})
 
+}
+
+func TestSubstringBefore(t *testing.T) {
+	Convey("TestSubstringBefore", t, func() {
+		s := "hello world to beijin"
+		separator := "wor"
+
+		// exist
+		ns := stringutil.SubstringBefore(s, separator)
+		So(ns, ShouldEqual, "hello ")
+
+		ns = stringutil.SubstringBefore(s, "notexist")
+		So(ns, ShouldEqual, "")
+
+		s = "hello world hello world"
+		ns = stringutil.SubstringBefore(s, separator)
+		So(ns, ShouldEqual, "hello ")
+	})
+
+}
+
+func ExampleSubstringBefore() {
+	s := "hello world to beijin"
+	separator := "wor"
+
+	// exist
+	ns := stringutil.SubstringBefore(s, separator)
+	fmt.Println(ns)
+
+	s = "hello world hello world"
+	ns = stringutil.SubstringBefore(s, separator)
+	fmt.Println(ns)
+
+	// Output:
+	// hello
+	// hello
+}
+func TestSubstringBeforeLast(t *testing.T) {
+	Convey("TestSubstringBefore", t, func() {
+		s := "hello world to beijin"
+		separator := "wor"
+
+		// exist
+		ns := stringutil.SubstringBeforeLast(s, separator)
+		So(ns, ShouldEqual, "hello ")
+
+		ns = stringutil.SubstringBeforeLast(s, "notexist")
+		So(ns, ShouldEqual, s)
+
+		s = "hello world hello world"
+		ns = stringutil.SubstringBeforeLast(s, separator)
+		So(ns, ShouldEqual, "hello world hello ")
+	})
+
+}
+
+func ExampleSubstringBeforeLast() {
+	s := "helloworldtobeijin"
+	separator := "wor"
+
+	// exist
+	ns := stringutil.SubstringBeforeLast(s, separator)
+	fmt.Println(ns)
+
+	ns = stringutil.SubstringBeforeLast(s, "notexist")
+	fmt.Println(ns)
+
+	s = "helloworldhelloworld"
+	ns = stringutil.SubstringBeforeLast(s, separator)
+	fmt.Println(ns)
+
+	// Output:
+	// hello
+	// helloworldtobeijin
+	// helloworldhello
+}
+
+func TestStringSlice(t *testing.T) {
+	Convey("TestStringSlice", t, func() {
+		s := "hello world"
+		arr := stringutil.StringToSlice(s)
+		So(len(arr), ShouldEqual, len(s))
+		So(string(arr), ShouldEqual, s)
+
+		ns := stringutil.SliceToString(arr)
+		So(len(arr), ShouldEqual, len(ns))
+		So(string(arr), ShouldEqual, ns)
+
+		narr := stringutil.StringToSlice(s)
+		So(unsafe.Pointer(&narr[0]), ShouldEqual, unsafe.Pointer(&arr[0]))
+	})
+}
+
+func TestRepeat(t *testing.T) {
+	Convey("TestRepeat", t, func() {
+		s := stringutil.Repeat(97, 10)
+		So(s, ShouldEqual, "aaaaaaaaaa")
+	})
+}
+
+func TestIsEmptyOrBlank(t *testing.T) {
+	Convey("TestIsEmptyOrBlank", t, func() {
+		So(stringutil.IsEmpty(""), ShouldBeTrue)
+		So(stringutil.IsEmpty(" "), ShouldBeFalse)
+		So(stringutil.IsBlank(""), ShouldBeTrue)
+		So(stringutil.IsBlank(" "), ShouldBeTrue)
+		So(stringutil.IsBlank(" a"), ShouldBeFalse)
+	})
 }
