@@ -1,5 +1,5 @@
 <p align="center">
-goassist is provides utility apis for gopher for more easy to use.
+goassist is provides utility apis for gopher more easily to use.
 </p>
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/jhunters/goassist)](https://goreportcard.com/report/github.com/jhunters/goassist)
