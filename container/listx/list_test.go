@@ -442,3 +442,35 @@ func ExampleNewList() {
 	// java
 	// python
 }
+
+func TestInsertAndMove(t *testing.T) {
+	arr1 := []string{"10", "20", "30", "40", "50"}
+	l := listx.NewListOf(arr1...)
+
+	Convey("test ", t, func() {
+		fe := l.Front()
+		So(fe.Value, ShouldEqual, "10") // 10, 20, 30, 40, 50
+
+		// move to back
+		l.MoveToBack(fe) // 20, 30, 40, 50, 10
+
+		fe = l.Front()
+		So(fe.Value, ShouldEqual, "20")
+
+		be := l.Back()
+		So(be.Value, ShouldEqual, "10")
+
+		e := l.PushFront("1") // 1, 20, 30, 40, 50, 10
+		So(e.Value, ShouldEqual, "1")
+
+		l.MoveAfter(e, be) // 20, 30, 40, 50, 10, 1
+		be = l.Back()
+		So(be.Value, ShouldEqual, "1")
+
+		be2 := l.PushBack("100") // 20, 30, 40, 50, 10, 1, 100
+
+		l.MoveBefore(be2, be) // 20, 30, 40, 50, 10, 100, 1
+		So(l.BackValue(), ShouldEqual, "1")
+
+	})
+}
