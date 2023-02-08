@@ -447,7 +447,7 @@ func TestInsertAndMove(t *testing.T) {
 	arr1 := []string{"10", "20", "30", "40", "50"}
 	l := listx.NewListOf(arr1...)
 
-	Convey("test ", t, func() {
+	Convey("test insert and move", t, func() {
 		fe := l.Front()
 		So(fe.Value, ShouldEqual, "10") // 10, 20, 30, 40, 50
 
@@ -471,6 +471,12 @@ func TestInsertAndMove(t *testing.T) {
 
 		l.MoveBefore(be2, be) // 20, 30, 40, 50, 10, 100, 1
 		So(l.BackValue(), ShouldEqual, "1")
+
+		l.InsertBefore("200", be2) // 20, 30, 40, 50, 10, 200, 100, 1
+
+		v, exist := l.Get(5)
+		So(v, ShouldEqual, "200")
+		So(exist, ShouldBeTrue)
 
 	})
 }
