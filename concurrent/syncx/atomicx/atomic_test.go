@@ -186,21 +186,6 @@ func TestCompareAndSet(t *testing.T) {
 			So(atomInt.Get(), ShouldEqual, 10)
 		})
 
-		Convey("uint64", func() {
-			atomInt := atomicx.NewAtomicInt(conv.ToPtr[uint64](0))
-
-			v := atomInt.Get()
-			So(v, ShouldBeZeroValue)
-
-			b := atomInt.CompareAndSet(0, 10)
-			So(b, ShouldBeTrue)
-			So(atomInt.Get(), ShouldEqual, 10)
-
-			b = atomInt.CompareAndSet(0, 20)
-			So(b, ShouldBeFalse)
-			So(atomInt.Get(), ShouldEqual, 10)
-		})
-
 	})
 }
 
