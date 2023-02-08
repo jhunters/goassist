@@ -192,16 +192,19 @@ func removeContional[E any](data []E, key E, equal base.EQL[E], all bool) ([]E, 
 	if size == 0 {
 		return data, false
 	}
+	ret := make([]E, 0, size)
 	for i := 0; i < size; i++ {
 		if equal(data[i], key) {
-			data = remove(data, i)
 			if !all {
-				return data, true
+				ret = append(ret, data[i+1:]...)
+				return ret, true
 			}
+		} else {
+			ret = append(ret, data[i])
 		}
 	}
 
-	return data, false
+	return ret, true
 }
 
 func remove[E any](data []E, i int) []E {

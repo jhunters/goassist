@@ -6,13 +6,11 @@
 package arrayutil_test
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"reflect"
 	"testing"
 
 	"github.com/jhunters/goassist/arrayutil"
+	"github.com/jhunters/goassist/conv"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -632,6 +630,18 @@ func TestDisjunctionOrdered(t *testing.T) {
 	})
 }
 
+func TestSubstract(t *testing.T) {
+	Convey("TestSubstract", t, func() {
+		arr1 := arrayutil.AsList(1, 2, 3, 4, 5, 6)
+		arr2 := arrayutil.AsList(1, 3, 5)
+		arr3 := arrayutil.Substract(arr1, arr2, func(s1, s2 int) bool {
+			return s1 == s2
+		})
+		So(len(arr3), ShouldEqual, 3)
+		So(arr3, ShouldResemble, []int{2, 4, 6})
+	})
+}
+
 func TestSubtractOrdered(t *testing.T) {
 	Convey("Test SubtractOrdered", t, func() {
 		result := arrayutil.SubstractOrdered(strArray, strArray2)
@@ -732,36 +742,80 @@ func ExampleInsert() {
 
 }
 
-func TestStructOf(t *testing.T) {
-	typ := reflect.StructOf([]reflect.StructField{
-		{
-			Name: "Height",
-			Type: reflect.TypeOf(float64(0)),
-			Tag:  `json:"height"`,
-		},
-		{
-			Name: "Age",
-			Type: reflect.TypeOf(int(0)),
-			Tag:  `json:"age"`,
-		},
+func TestAsList(t *testing.T) {
+	Convey("TestAsList", t, func() {
+		// test input nil  will return nil
+		arr := arrayutil.AsList[*string]()
+		So(arr, ShouldBeNil)
+
+		arr = arrayutil.AsList(conv.ToPtr("hello"), conv.ToPtr("world"))
+		So(len(arr), ShouldEqual, 2)
+		So(*arr[0], ShouldEqual, "hello")
+
 	})
+}
 
-	v := reflect.New(typ).Elem()
-	v.Field(0).SetFloat(0.4)
-	v.Field(1).SetInt(2)
-	s := v.Addr().Interface()
+func TestContainsAny(t *testing.T) {
+	Convey("TestContainsAny", t, func() {
+		// contains
+		arr1 := arrayutil.AsList(1, 3, 5, 7, 9)
+		arr2 := arrayutil.AsList(3, 4, 6)
+		exist := arrayutil.ContainsAny(arr1, arr2, func(i1, i2 int) bool { return i1 == i2 })
+		So(exist, ShouldBeTrue)
 
-	w := new(bytes.Buffer)
-	if err := json.NewEncoder(w).Encode(s); err != nil {
-		panic(err)
-	}
+		// not contains
+		arr2 = arrayutil.AsList(2, 4, 6)
+		exist = arrayutil.ContainsAny(arr1, arr2, func(i1, i2 int) bool { return i1 == i2 })
+		So(exist, ShouldBeFalse)
+	})
+}
 
-	fmt.Printf("value: %+v\n", s)
-	fmt.Printf("json:  %s", w.Bytes())
+func TestContainsAnyOrdered(t *testing.T) {
+	Convey("TestContainsAny", t, func() {
+		// contains
+		arr1 := arrayutil.AsList(1, 3, 5, 7, 9)
+		arr2 := arrayutil.AsList(3, 4, 6)
+		exist := arrayutil.ContainsAnyOrdered(arr1, arr2)
+		So(exist, ShouldBeTrue)
 
-	r := bytes.NewReader([]byte(`{"height":1.5,"age":10}`))
-	if err := json.NewDecoder(r).Decode(s); err != nil {
-		panic(err)
-	}
-	fmt.Printf("value: %+v\n", s)
+		// not contains
+		arr2 = arrayutil.AsList(2, 4, 6)
+		exist = arrayutil.ContainsAnyOrdered(arr1, arr2)
+		So(exist, ShouldBeFalse)
+	})
+}
+
+func TestRemoves(t *testing.T) {
+
+	Convey("TestRemoves", t, func() {
+		arr1 := arrayutil.AsList(3, 5, 7, 9, 3, 5, 1)
+		Convey("test remove", func() {
+			arr, b := arrayutil.Remove(arr1, 1, func(i1, i2 int) bool { return i1 == i2 })
+			So(arrayutil.ContainsOrdered(arr, 1), ShouldBeFalse)
+			So(b, ShouldBeTrue)
+
+			arr, b = arrayutil.Remove(arr1, 3, func(i1, i2 int) bool { return i1 == i2 })
+			So(arrayutil.ContainsOrdered(arr, 3), ShouldBeTrue)
+			So(b, ShouldBeTrue)
+
+			arr, b = arrayutil.RemoveAll(arr1, 5, func(i1, i2 int) bool { return i1 == i2 })
+			So(arrayutil.ContainsOrdered(arr, 5), ShouldBeFalse)
+			So(b, ShouldBeTrue)
+		})
+
+		Convey("test remove ordered", func() {
+			arr, b := arrayutil.RemoveOrdered(arr1, 1)
+			So(arrayutil.ContainsOrdered(arr, 1), ShouldBeFalse)
+			So(b, ShouldBeTrue)
+
+			arr, b = arrayutil.RemoveOrdered(arr1, 3)
+			So(arrayutil.ContainsOrdered(arr, 3), ShouldBeTrue)
+			So(b, ShouldBeTrue)
+
+			arr, b = arrayutil.RemoveAllOrdered(arr1, 5)
+			So(arrayutil.ContainsOrdered(arr, 5), ShouldBeFalse)
+			So(b, ShouldBeTrue)
+		})
+
+	})
 }
