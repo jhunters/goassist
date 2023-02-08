@@ -817,5 +817,10 @@ func TestRemoves(t *testing.T) {
 			So(b, ShouldBeTrue)
 		})
 
+		Convey("test remove index", func() {
+			arr := arrayutil.RemoveIndex(arr1, 3)
+			So(len(arr), ShouldEqual, 6)
+			So(arr, ShouldResemble, []int{3, 5, 7, 3, 5, 1})
+		})
 	})
 }

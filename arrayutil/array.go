@@ -207,7 +207,8 @@ func removeContional[E any](data []E, key E, equal base.EQL[E], all bool) ([]E, 
 	return ret, true
 }
 
-func remove[E any](data []E, i int) []E {
+// RemoveIndex remove element by index
+func RemoveIndex[E any](data []E, i int) []E {
 	size := len(data)
 	if i >= size || i < 0 { // out of index, do nothing
 		return data
@@ -579,8 +580,6 @@ func AsList[E any](e ...E) []E {
 		return nil
 	}
 	ret := make([]E, len(e))
-	for i := 0; i < len(e); i++ {
-		ret[i] = e[i]
-	}
+	copy(ret, e)
 	return ret
 }
