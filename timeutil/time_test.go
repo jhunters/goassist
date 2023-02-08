@@ -1,7 +1,6 @@
 package timeutil_test
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -24,6 +23,16 @@ func TestAdd(t *testing.T) {
 	Convey("Test add minutes", t, func() {
 		dayAfterbdate := time.Date(2015, 10, 31, 02, 21, 20, 0, time.Now().Local().Location())
 		retDate := timeutil.AddMinutes(bdate, 1)
+		So(retDate, ShouldEqual, dayAfterbdate)
+	})
+	Convey("Test add months", t, func() {
+		dayAfterbdate := time.Date(2015, 12, 31, 02, 20, 20, 0, time.Now().Local().Location())
+		retDate := timeutil.AddMonths(bdate, 2)
+		So(retDate, ShouldEqual, dayAfterbdate)
+	})
+	Convey("Test add years", t, func() {
+		dayAfterbdate := time.Date(2017, 10, 31, 02, 20, 20, 0, time.Now().Local().Location())
+		retDate := timeutil.AddYears(bdate, 2)
 		So(retDate, ShouldEqual, dayAfterbdate)
 	})
 }
@@ -104,12 +113,41 @@ func TestFormat(t *testing.T) {
 	})
 }
 
-func TestTimers(t *testing.T) {
-
-	ti := time.NewTimer(1 * time.Second)
-
-	fmt.Println(<-ti.C)
-
-	ti.Stop()
-
+func TestSetS(t *testing.T) {
+	bdate := time.Date(2015, 10, 31, 02, 20, 20, 0, time.Now().Local().Location())
+	Convey("Test Set years", t, func() {
+		dayAfterbdate := time.Date(2000, 10, 31, 02, 20, 20, 0, time.Now().Local().Location())
+		retDate := timeutil.SetYears(bdate, 2000)
+		So(retDate, ShouldEqual, dayAfterbdate)
+	})
+	Convey("Test Set months", t, func() {
+		dayAfterbdate := time.Date(2015, 1, 31, 02, 20, 20, 0, time.Now().Local().Location())
+		retDate := timeutil.SetMonths(bdate, 1)
+		So(retDate, ShouldEqual, dayAfterbdate)
+	})
+	Convey("Test Set days", t, func() {
+		dayAfterbdate := time.Date(2015, 10, 1, 02, 20, 20, 0, time.Now().Local().Location())
+		retDate := timeutil.SetDays(bdate, 1)
+		So(retDate, ShouldEqual, dayAfterbdate)
+	})
+	Convey("Test Set hours", t, func() {
+		dayAfterbdate := time.Date(2015, 10, 31, 8, 20, 20, 0, time.Now().Local().Location())
+		retDate := timeutil.SetHours(bdate, 8)
+		So(retDate, ShouldEqual, dayAfterbdate)
+	})
+	Convey("Test Set minutes", t, func() {
+		dayAfterbdate := time.Date(2015, 10, 31, 02, 8, 20, 0, time.Now().Local().Location())
+		retDate := timeutil.SetMinutes(bdate, 8)
+		So(retDate, ShouldEqual, dayAfterbdate)
+	})
+	Convey("Test Set seconds", t, func() {
+		dayAfterbdate := time.Date(2015, 10, 31, 02, 20, 8, 0, time.Now().Local().Location())
+		retDate := timeutil.SetSeconds(bdate, 8)
+		So(retDate, ShouldEqual, dayAfterbdate)
+	})
+	Convey("Test Set millseconds", t, func() {
+		dayAfterbdate := time.Date(2015, 10, 31, 02, 20, 20, 5000, time.Now().Local().Location())
+		retDate := timeutil.SetMilliSeconds(bdate, 5)
+		So(retDate, ShouldEqual, dayAfterbdate)
+	})
 }
