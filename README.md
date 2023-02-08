@@ -13,6 +13,9 @@ goassist is provides utility apis for gopher more easily to use.
 # Go Required Version
 need go 1.18
 
+# Install
+
+go get github.com/jhunters/goassist
 
 # API List
 
