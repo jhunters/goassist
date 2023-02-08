@@ -2,7 +2,6 @@ package reflectutil
 
 import (
 	"bytes"
-	"fmt"
 	"reflect"
 )
 
@@ -17,20 +16,6 @@ func NewDeepEquals(x interface{}) *DeepEquals {
 
 type DeepEquals struct {
 	x interface{}
-}
-
-func (m *DeepEquals) Description() string {
-	xDesc := fmt.Sprintf("%v", m.x)
-	xValue := reflect.ValueOf(m.x)
-
-	// Special case: fmt.Sprintf presents nil slices as "[]", but
-	// reflect.DeepEqual makes a distinction between nil and empty slices. Make
-	// this less confusing.
-	if xValue.Kind() == reflect.Slice && xValue.IsNil() {
-		xDesc = "<nil slice>"
-	}
-
-	return fmt.Sprintf("deep equals: %s", xDesc)
 }
 
 func (m *DeepEquals) Matches(c interface{}) bool {
@@ -49,12 +34,7 @@ func (m *DeepEquals) Matches(c interface{}) bool {
 	if ct == byteSliceType && !cValue.IsNil() && !xValue.IsNil() {
 		xBytes := m.x.([]byte)
 		cBytes := c.([]byte)
-
-		if bytes.Equal(cBytes, xBytes) {
-			return true
-		}
-
-		return false
+		return bytes.Equal(cBytes, xBytes)
 	}
 
 	// Defer to the reflect package.

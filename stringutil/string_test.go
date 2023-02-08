@@ -189,14 +189,14 @@ func TestSubstringBefore(t *testing.T) {
 }
 
 func ExampleSubstringBefore() {
-	s := "hello world to beijin"
+	s := "helloworld to beijin"
 	separator := "wor"
 
 	// exist
 	ns := stringutil.SubstringBefore(s, separator)
 	fmt.Println(ns)
 
-	s = "hello world hello world"
+	s = "helloworld hello world"
 	ns = stringutil.SubstringBefore(s, separator)
 	fmt.Println(ns)
 
