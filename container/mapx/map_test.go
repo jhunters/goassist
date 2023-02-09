@@ -8,38 +8,6 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-type MapPojo struct {
-	Name string
-}
-
-func (mp *MapPojo) CompareTo(v *MapPojo) int {
-	return strings.Compare(mp.Name, v.Name)
-}
-
-func newMapPojo(name string) *MapPojo {
-	return &MapPojo{name}
-}
-
-func createMap() *mapx.Map[string, *MapPojo] {
-	mp := mapx.NewMap[string, *MapPojo]()
-	mp.Put("key1", newMapPojo("hello"))
-	mp.Put("key2", newMapPojo("world"))
-	mp.Put("key3", newMapPojo("to"))
-	mp.Put("key4", newMapPojo("you"))
-	mp.Put("key5", newMapPojo("!"))
-	return mp
-}
-
-func createMap2() *mapx.Map[string, *MapPojo] {
-	mp := mapx.NewMap[string, *MapPojo]()
-	mp.Put("key1", newMapPojo("2"))
-	mp.Put("key2", newMapPojo("3"))
-	mp.Put("key3", newMapPojo("4"))
-	mp.Put("key4", newMapPojo("1"))
-	mp.Put("key5", newMapPojo("5"))
-	return mp
-}
-
 func TestNewMap(t *testing.T) {
 	Convey("TestNewMap", t, func() {
 		Convey("empty map", func() {
