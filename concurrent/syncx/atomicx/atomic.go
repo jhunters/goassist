@@ -1,3 +1,4 @@
+// Package atomicx provides utility api for sync atomic operation.
 package atomicx
 
 import (
