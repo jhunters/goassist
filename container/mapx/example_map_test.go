@@ -62,10 +62,14 @@ func ExampleNewMap() {
 	key, exist = mp.ExistValue(newMapPojo("to"))
 	fmt.Println(key, exist)
 
+	exist = mp.Remove("key3")
+	fmt.Println(exist)
+
 	// Output:
 	// to true
 	// 5
 	// key5 !
 	// key4 you
 	// key3 true
+	// true
 }
