@@ -430,3 +430,73 @@ func ExampleAppend() {
 	// quote:"Fran & Freddie's Diner"
 
 }
+
+func TestParseBool(t *testing.T) {
+
+	Convey("TestParseBool", t, func() {
+
+		// case for parsed return true
+		b, err := conv.ParseBool(1)
+		So(b, ShouldBeTrue)
+		So(err, ShouldBeNil)
+
+		b, err = conv.ParseBool("1")
+		So(b, ShouldBeTrue)
+		So(err, ShouldBeNil)
+
+		b, err = conv.ParseBool("true")
+		So(b, ShouldBeTrue)
+		So(err, ShouldBeNil)
+
+		b, err = conv.ParseBool("True")
+		So(b, ShouldBeTrue)
+		So(err, ShouldBeNil)
+
+		b, err = conv.ParseBool("TRUE")
+		So(b, ShouldBeTrue)
+		So(err, ShouldBeNil)
+
+		b, err = conv.ParseBool("tRUE")
+		So(b, ShouldBeTrue)
+		So(err, ShouldBeNil)
+
+		// case for parsed return false
+		b, err = conv.ParseBool(0)
+		So(b, ShouldBeFalse)
+		So(err, ShouldBeNil)
+
+		b, err = conv.ParseBool("0")
+		So(b, ShouldBeFalse)
+		So(err, ShouldBeNil)
+
+		b, err = conv.ParseBool("false")
+		So(b, ShouldBeFalse)
+		So(err, ShouldBeNil)
+
+		b, err = conv.ParseBool("False")
+		So(b, ShouldBeFalse)
+		So(err, ShouldBeNil)
+
+		b, err = conv.ParseBool("FALSE")
+		So(b, ShouldBeFalse)
+		So(err, ShouldBeNil)
+
+		b, err = conv.ParseBool("FaLSe")
+		So(b, ShouldBeFalse)
+		So(err, ShouldBeNil)
+
+		// case for parsed failed
+		b, err = conv.ParseBool(2)
+		So(b, ShouldBeFalse)
+		So(err, ShouldNotBeNil)
+
+		b, err = conv.ParseBool("100")
+		So(b, ShouldBeFalse)
+		So(err, ShouldNotBeNil)
+
+		b, err = conv.ParseBool("abc")
+		So(b, ShouldBeFalse)
+		So(err, ShouldNotBeNil)
+	})
+
+}

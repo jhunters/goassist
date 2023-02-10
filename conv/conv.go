@@ -6,6 +6,7 @@ package conv
 import (
 	"fmt"
 	"math"
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -281,4 +282,26 @@ func Append[E any](dst []byte, e E) []byte {
 // AppendString  convert e to string and appends to str
 func AppendString[E any](str string, e E) string {
 	return string(Append([]byte(str), e))
+}
+
+// ParseBool It accepts 1, t, T, TRUE(captital ignore), 0, f, F, FALSE(captital ignore).
+func ParseBool[E string | generic.Signed](e E) (bool, error) {
+	val := reflect.ValueOf(e)
+
+	switch val.Kind() {
+	case reflect.String:
+		s := val.String()
+		s = strings.ToLower(s)
+		return strconv.ParseBool(s)
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		i := val.Int()
+		if i == 0 {
+			return false, nil
+		} else if i == 1 {
+			return true, nil
+		}
+		return false, fmt.Errorf("%d is not a bool int ", i)
+	}
+	// should not go here
+	panic(fmt.Sprintf("invalid value type, %s", val.Kind().String()))
 }
