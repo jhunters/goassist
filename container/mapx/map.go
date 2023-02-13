@@ -214,3 +214,29 @@ func selectByCompareKey[K comparable, V any](mp *Map[K, V], compare base.CMP[K])
 	})
 	return ret, value
 }
+
+// Equal test and return if all keys and values are some to
+func (m *Map[K, V]) Equals(mp *Map[K, V], eql base.EQL[V]) bool {
+	if m == mp {
+		return true
+	}
+
+	if m.Size() != mp.Size() {
+		return false
+	}
+
+	neq := true
+	m.Range(func(k K, v V) bool {
+		nv, exist := mp.Get(k)
+		if !exist {
+			neq = false
+			return false
+		}
+		if !eql(v, nv) {
+			neq = false
+			return false
+		}
+		return true
+	})
+	return neq
+}

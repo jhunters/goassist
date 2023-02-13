@@ -290,6 +290,32 @@ func (m *Map[K, V]) Copy() *Map[K, V] {
 	return ret
 }
 
+// Equal test and return if all keys and values are some to
+func (m *Map[K, V]) Equals(mp *Map[K, V], eql base.EQL[V]) bool {
+	if m == mp {
+		return true
+	}
+
+	if m.Size() != mp.Size() {
+		return false
+	}
+
+	neq := true
+	m.Range(func(k K, v V) bool {
+		nv, exist := mp.Load(k)
+		if !exist {
+			neq = false
+			return false
+		}
+		if !eql(v, nv) {
+			neq = false
+			return false
+		}
+		return true
+	})
+	return neq
+}
+
 // MinValue to return min value in the map
 func (m *Map[K, V]) MinValue(compare base.CMP[V]) (key K, v V) {
 	return selectByCompareValue(m, func(o1, o2 V) int {

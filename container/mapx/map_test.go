@@ -178,3 +178,22 @@ func TestMapMinMaxKey(t *testing.T) {
 	})
 
 }
+
+func TestEqual(t *testing.T) {
+	Convey("TestEqual", t, func() {
+		mp1 := createMap()
+		mp2 := createMap()
+		So(mp1.Equals(mp2, func(mp1, mp2 *MapPojo) bool {
+			return mp1.CompareTo(mp2) == 0
+		}), ShouldBeTrue)
+	})
+
+	Convey("Test not Equal", t, func() {
+		mp1 := createMap()
+		mp2 := createMap2()
+		So(mp1.Equals(mp2, func(mp1, mp2 *MapPojo) bool {
+			return mp1.CompareTo(mp2) == 0
+		}), ShouldBeFalse)
+	})
+
+}
