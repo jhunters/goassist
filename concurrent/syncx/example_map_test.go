@@ -26,10 +26,13 @@ func ExampleNewMapByInitial() {
 	}
 
 	mp := syncx.NewMapByInitial(mmp)
+	visitedCount := 0
 	mp.Range(func(s string, mep *MapExamplePojo) bool {
 		// visit all elements here
+		visitedCount++
 		return true
 	})
+	fmt.Println(visitedCount)
 
 	fmt.Println(mp.Size())
 	fmt.Println(mp.Exist("key1"))
@@ -46,6 +49,7 @@ func ExampleNewMapByInitial() {
 	fmt.Println(v.Name, loaded)
 
 	// Output:
+	// 2
 	// 2
 	// true
 	// key2 true
