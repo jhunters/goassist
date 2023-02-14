@@ -35,7 +35,38 @@ func NewAtomicInt[E AtomicInteger](v *E) *AtomicInt[E] {
 
 // Get the current value.
 func (ai *AtomicInt[E]) Get() E {
-	return *ai.value
+	return ai.Load()
+}
+
+// Load the current value
+func (ai *AtomicInt[E]) Load() E {
+	val := reflect.ValueOf(*ai.value)
+
+	switch val.Kind() {
+	case reflect.Int32:
+		var old *int32 = unsafex.As[E, int32](ai.value)
+		v := atomic.LoadInt32(old)
+		return *unsafex.As[int32, E](&v)
+	case reflect.Int64:
+		var old *int64 = unsafex.As[E, int64](ai.value)
+		v := atomic.LoadInt64(old)
+		return *unsafex.As[int64, E](&v)
+	case reflect.Uint32:
+		var old *uint32 = unsafex.As[E, uint32](ai.value)
+		v := atomic.LoadUint32(old)
+		return *unsafex.As[uint32, E](&v)
+	case reflect.Uint64:
+		var old *uint64 = unsafex.As[E, uint64](ai.value)
+		v := atomic.LoadUint64(old)
+		return *unsafex.As[uint64, E](&v)
+	case reflect.Uintptr:
+		var old *uintptr = unsafex.As[E, uintptr](ai.value)
+		v := atomic.LoadUintptr(old)
+		return *unsafex.As[uintptr, E](&v)
+	}
+
+	// should not go here
+	panic(fmt.Sprintf("invalid value type, %s", val.Kind().String()))
 }
 
 func (ai *AtomicInt[E]) AddandGet(v E) E {
@@ -99,8 +130,39 @@ func (ai *AtomicInt[E]) CompareAndSet(expect, update E) bool {
 }
 
 // Set the value
-func (ai *AtomicInt[E]) Set(update E) {
-	ai.GetAndSet(update)
+func (ai *AtomicInt[E]) Set(value E) {
+	ai.Store(value)
+}
+
+// Store the value
+func (ai *AtomicInt[E]) Store(value E) {
+	val := reflect.ValueOf(*ai.value)
+
+	switch val.Kind() {
+	case reflect.Int32:
+		var old *int32 = unsafex.As[E, int32](ai.value)
+		atomic.StoreInt32(old, int32(value))
+		return
+	case reflect.Int64:
+		var old *int64 = unsafex.As[E, int64](ai.value)
+		atomic.StoreInt64(old, int64(value))
+		return
+	case reflect.Uint32:
+		var old *uint32 = unsafex.As[E, uint32](ai.value)
+		atomic.StoreUint32(old, uint32(value))
+		return
+	case reflect.Uint64:
+		var old *uint64 = unsafex.As[E, uint64](ai.value)
+		atomic.StoreUint64(old, uint64(value))
+		return
+	case reflect.Uintptr:
+		var old *uintptr = unsafex.As[E, uintptr](ai.value)
+		atomic.StoreUintptr(old, uintptr(value))
+		return
+	}
+
+	// should not go here
+	panic(fmt.Sprintf("invalid value type, %s", val.Kind().String()))
 }
 
 // CompareAndSet  executes the compare-and-swap operation for an new value.

@@ -211,12 +211,14 @@ func TestIncrementAndGet(t *testing.T) {
 	})
 }
 
-func TestSet(t *testing.T) {
-	Convey("TestSet", t, func() {
-
+func TestSetGet(t *testing.T) {
+	Convey("TestSetGet", t, func() {
 		atomInt := atomicx.NewAtomicInt(conv.ToPtr[int64](0))
 		atomInt.Set(100)
 		So(atomInt.Get(), ShouldEqual, 100)
+
+		atomInt.Store(200)
+		So(atomInt.Load(), ShouldEqual, 200)
 	})
 
 }
