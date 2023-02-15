@@ -1,6 +1,7 @@
 package set_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/jhunters/goassist/container/set"
@@ -129,4 +130,29 @@ func TestSetToArray(t *testing.T) {
 			So(s.Exist(v), ShouldBeTrue)
 		}
 	})
+}
+
+func ExampleNewSet() {
+	// create a new set
+	st := set.NewSet[string]()
+	fmt.Println(st.IsEmpty())
+
+	ok := st.Add("v1")
+	fmt.Println(ok) // true
+
+	ok = st.Add("v1")
+	fmt.Println(ok, st.Size())
+
+	exist := st.Exist("v1")
+	fmt.Println(exist) // true
+
+	exist = st.Remove("v1")
+	fmt.Println(exist) // true
+
+	// Output:
+	// true
+	// true
+	// false 1
+	// true
+	// true
 }
