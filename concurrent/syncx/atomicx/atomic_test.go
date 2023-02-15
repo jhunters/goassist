@@ -1,6 +1,7 @@
 package atomicx_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/jhunters/goassist/concurrent/syncx/atomicx"
@@ -221,4 +222,9 @@ func TestSetGet(t *testing.T) {
 		So(atomInt.Load(), ShouldEqual, 200)
 	})
 
+}
+
+func TestXxx(t *testing.T) {
+	g := 0x00FF
+	fmt.Println(g)
 }

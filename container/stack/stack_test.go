@@ -1,9 +1,11 @@
 package stack_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/jhunters/goassist/container/stack"
+	"github.com/jhunters/goassist/conv"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -81,4 +83,45 @@ func TestStackCopy(t *testing.T) {
 		So(cs.Cap(), ShouldEqual, s.Cap())
 		So(cs.Size(), ShouldEqual, s.Size())
 	})
+}
+
+func ExampleNewStack() {
+	// event bus send event as FILO mode
+	eventBus := stack.NewStack[*string]()
+	fmt.Println(eventBus.IsEmpty())
+
+	eventBus.Push(conv.ToPtr("Sig No 109"))
+	eventBus.Push(conv.ToPtr("Sig No 282"))
+
+	fmt.Println(eventBus.Size())
+	fmt.Println(*eventBus.Pop())
+	fmt.Println(*eventBus.Pop())
+
+	// Output:
+	// true
+	// 2
+	// Sig No 282
+	// Sig No 109
+}
+
+func ExampleNewStackSize() {
+	// event bus send event as FILO mode
+	eventBus := stack.NewStackSize[*string](10)
+	fmt.Println(eventBus.IsEmpty())
+
+	eventBus.Push(conv.ToPtr("Sig No 109"))
+	eventBus.Push(conv.ToPtr("Sig No 282"))
+
+	fmt.Println(eventBus.Size())
+	fmt.Println(eventBus.Cap())
+	fmt.Println(*eventBus.Pop())
+	fmt.Println(*eventBus.Pop())
+
+	// Output:
+	// true
+	// 2
+	// 8
+	// Sig No 282
+	// Sig No 109
+
 }
