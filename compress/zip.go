@@ -89,7 +89,7 @@ func ZipDir(dir, zipfile, password string) error {
 		if err != nil {
 			log.Fatal(err)
 		}
-		_, err = io.Copy(w, bytes.NewReader(data))
+		io.Copy(w, bytes.NewReader(data))
 	})
 
 	zipw.Flush()
