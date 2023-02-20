@@ -36,7 +36,7 @@ func Abbreviate(str, abbrevMarker string, offset, maxWidth int) (string, error) 
 	minAbbrevWidthOffset := abbrevMarkerLength + abbrevMarkerLength + 1
 
 	if maxWidth < minAbbrevWidth {
-		return str, fmt.Errorf("Minimum abbreviation width is %d", minAbbrevWidth)
+		return str, fmt.Errorf("minimum abbreviation width is %d", minAbbrevWidth)
 	}
 	l := len(str)
 	if l <= maxWidth {
@@ -52,7 +52,7 @@ func Abbreviate(str, abbrevMarker string, offset, maxWidth int) (string, error) 
 		return SubString(str, 0, maxWidth-abbrevMarkerLength) + abbrevMarker, nil
 	}
 	if maxWidth < minAbbrevWidthOffset {
-		return str, fmt.Errorf("Minimum abbreviation width with offset is %d", minAbbrevWidthOffset)
+		return str, fmt.Errorf("minimum abbreviation width with offset is %d", minAbbrevWidthOffset)
 	}
 	if offset+maxWidth-abbrevMarkerLength < l {
 		ns, err := Abbreviate(SubString(str, offset, -1), abbrevMarker, 0, maxWidth-abbrevMarkerLength)
