@@ -276,3 +276,50 @@ func TestIsEmptyOrBlank(t *testing.T) {
 		So(stringutil.IsBlank(" a"), ShouldBeFalse)
 	})
 }
+
+func TestExapnd(t *testing.T) {
+	Convey("TestExapnd", t, func() {
+
+		Convey("TestExapnd simple", func() {
+
+			v, err := stringutil.Expand("dfsdfsd ${ab} ${sdabc} fsdfsd", "${", "}", func(key string) string {
+				So(key, ShouldBeIn, []string{"ab", "sdabc"})
+				return key
+			})
+			So(err, ShouldBeNil)
+			So(v, ShouldEqual, "dfsdfsd ab sdabc fsdfsd")
+		})
+		Convey("TestExapnd recursive", func() {
+
+			v, err := stringutil.Expand("dfsdfsd ${sd${ab}c} fsdfsd", "${", "}", func(key string) string {
+				So(key, ShouldBeIn, []string{"ab", "sdabc"})
+				return key
+			})
+			So(err, ShouldBeNil)
+			So(v, ShouldEqual, "dfsdfsd sdabc fsdfsd")
+		})
+	})
+}
+
+func ExampleExpand() {
+	// Expand simple expression
+	v, err := stringutil.Expand("dfsdfsd ${ab} ${sdabc} fsdfsd", "${", "}", func(key string) string {
+		// just return key directly
+		return key
+	})
+	if err == nil {
+		fmt.Println(v)
+	}
+
+	v, err = stringutil.Expand("dfsdfsd #{sd#{ab}c} fsdfsd", "#{", "}", func(key string) string {
+		// just return key directly
+		return key
+	})
+	if err == nil {
+		fmt.Println(v)
+	}
+
+	// Output:
+	// dfsdfsd ab sdabc fsdfsd
+	// dfsdfsd sdabc fsdfsd
+}

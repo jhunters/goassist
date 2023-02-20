@@ -11,6 +11,8 @@ import (
 	"unsafe"
 
 	"github.com/jhunters/goassist/arrayutil"
+	"github.com/jhunters/goassist/base"
+	"github.com/jhunters/goassist/container/set"
 	"github.com/jhunters/goassist/unsafex"
 )
 
@@ -189,6 +191,7 @@ func SubstringBefore(s string, separator string) string {
 	return string(s[:pos])
 }
 
+// SubstringBeforeLast  Gets the substring before the last occurrence of a separator
 func SubstringBeforeLast(s string, separator string) string {
 	if len(s) == 0 {
 		return s
@@ -203,6 +206,20 @@ func SubstringBeforeLast(s string, separator string) string {
 		return s
 	}
 	return string(s[:pos])
+}
+
+// SubstringMatch to returns whether the given string matches the given substring
+func SubstringMatch(s string, index int, sub string) bool {
+	if index+len(sub) > len(s) {
+		return false
+	}
+
+	for i := 0; i < len(sub); i++ {
+		if s[index+i] != sub[i] {
+			return false
+		}
+	}
+	return true
 }
 
 // fulfill string by repeat target count of byte
@@ -270,4 +287,103 @@ func Wrap(s string, wrap string) string {
 	copy(b[len(s)+len(wrap):], b2)
 
 	return unsafex.SliceToString(b)
+}
+
+// Expand to solve place holder value with prefix and suffix and replace by 'fn' call back function
+func Expand(s, prefix, suffix string, fn base.Func[string, string]) (string, error) {
+	if IsBlank(prefix) || IsBlank(suffix) {
+		return EMPTY_STRING, fmt.Errorf("invalid prefix or suffix")
+	}
+
+	startIndex := strings.Index(s, prefix)
+	if startIndex == -1 {
+		return s, nil
+	}
+
+	visitedPlaceholders := set.NewSet[string]()
+
+	for startIndex != -1 {
+		endIndex := findPlaceholderEndIndex(s, startIndex, prefix, suffix)
+		if endIndex != -1 {
+			placeholder := SubString(s, startIndex+len(prefix), endIndex)
+			originalPlaceholder := placeholder
+
+			if !visitedPlaceholders.Add(originalPlaceholder) {
+				return EMPTY_STRING, fmt.Errorf("circular placeholder reference %s in property definitions", originalPlaceholder)
+			}
+
+			// Recursive invocation, parsing placeholders contained in the placeholder key.
+			placeholder, err := Expand(placeholder, prefix, suffix, fn)
+			if err != nil {
+				return EMPTY_STRING, err
+			}
+
+			// Now obtain the value for the fully resolved key...
+			propVal := fn(placeholder)
+			if !IsBlank(propVal) {
+				propVal, err := Expand(propVal, prefix, suffix, fn)
+				if err != nil {
+					return EMPTY_STRING, err
+				}
+				s = ReplaceByOffset(s, startIndex, endIndex+len(suffix), propVal)
+				offset := startIndex + len(propVal)
+				sub := string([]byte(s)[offset:])
+				startIndex = strings.Index(sub, prefix)
+				if startIndex != -1 {
+					startIndex += offset
+				}
+			} else {
+				offset := endIndex + len(prefix)
+				sub := string([]byte(s)[offset:])
+				startIndex = strings.Index(sub, prefix)
+				if startIndex != -1 {
+					startIndex += offset
+				}
+			}
+			visitedPlaceholders.Remove(originalPlaceholder)
+		} else {
+			startIndex = -1
+		}
+
+	}
+
+	return s, nil
+}
+
+func ReplaceByOffset(s string, begin, end int, replace string) string {
+	sz := len(s)
+	if begin > sz || end+1 > sz {
+		return s
+	}
+	if begin > end {
+		return s
+	}
+
+	bb := []byte(s)
+	b1 := bb[:begin]
+	ret := string(b1) + replace
+	b2 := bb[end:]
+	return ret + string(b2)
+}
+
+func findPlaceholderEndIndex(buf string, startIndex int, prefix, suffix string) int {
+	index := startIndex + len(prefix)
+	withinNestedPlaceholder := 0
+	for index < len(buf) {
+		if SubstringMatch(buf, index, suffix) {
+			if withinNestedPlaceholder > 0 {
+				withinNestedPlaceholder--
+				index = index + len(suffix)
+			} else {
+				return index
+			}
+		} else if SubstringMatch(buf, index, prefix) {
+			withinNestedPlaceholder++
+			index = index + len(prefix)
+		} else {
+			index++
+		}
+	}
+
+	return -1
 }
