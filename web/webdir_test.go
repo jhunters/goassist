@@ -34,5 +34,5 @@ func ExampleWebDir() {
 	// router := gin.Default()
 	// router.StaticFS("/", webdir)
 
-	// router.Run(":8
+	// router.Run(":8080")
 }
