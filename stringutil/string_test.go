@@ -303,23 +303,27 @@ func TestExapnd(t *testing.T) {
 
 func ExampleExpand() {
 	// Expand simple expression
-	v, err := stringutil.Expand("dfsdfsd ${ab} ${sdabc} fsdfsd", "${", "}", func(key string) string {
+	v, err := stringutil.Expand("please send mail to ${name} at ${address}!", "${", "}", func(placeholderKey string) string {
+		mp := map[string]string{"name": "matt", "address": "shanghai pudong"}
+
 		// just return key directly
-		return key
+		return mp[placeholderKey]
 	})
 	if err == nil {
 		fmt.Println(v)
 	}
 
-	v, err = stringutil.Expand("dfsdfsd #{sd#{ab}c} fsdfsd", "#{", "}", func(key string) string {
+	// Expand recursive expression
+	v, err = stringutil.Expand("please send mail to #{to#{name}} at #{address}", "#{", "}", func(placeholderKey string) string {
+		mp := map[string]string{"name": "matt", "tomatt": "matt's company", "address": "shanghai pudong"}
 		// just return key directly
-		return key
+		return mp[placeholderKey]
 	})
 	if err == nil {
 		fmt.Println(v)
 	}
 
 	// Output:
-	// dfsdfsd ab sdabc fsdfsd
-	// dfsdfsd sdabc fsdfsd
+	// please send mail to matt at shanghai pudong!
+	// please send mail to matt's company at shanghai pudong
 }

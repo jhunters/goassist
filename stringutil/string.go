@@ -274,6 +274,19 @@ func IsBlank(s string) bool {
 	return false
 }
 
+// IndexFromOffset to return index of sub from Index
+func IndexFromOffset(s, sub string, fromIndex int) int {
+	if fromIndex < 0 || fromIndex+len(sub) >= len(s) {
+		return -1
+	}
+	left := SubString(s, fromIndex, len(s))
+	index := strings.Index(left, sub)
+	if index != -1 {
+		index += fromIndex
+	}
+	return index
+}
+
 // Wrap Wraps a String with another String.
 func Wrap(s string, wrap string) string {
 	if IsEmpty(s) || IsEmpty(wrap) {
@@ -327,18 +340,10 @@ func Expand(s, prefix, suffix string, fn base.Func[string, string]) (string, err
 				}
 				s = ReplaceByOffset(s, startIndex, endIndex+len(suffix), propVal)
 				offset := startIndex + len(propVal)
-				sub := string([]byte(s)[offset:])
-				startIndex = strings.Index(sub, prefix)
-				if startIndex != -1 {
-					startIndex += offset
-				}
+				startIndex = IndexFromOffset(s, prefix, offset)
 			} else {
 				offset := endIndex + len(prefix)
-				sub := string([]byte(s)[offset:])
-				startIndex = strings.Index(sub, prefix)
-				if startIndex != -1 {
-					startIndex += offset
-				}
+				startIndex = IndexFromOffset(s, prefix, offset)
 			}
 			visitedPlaceholders.Remove(originalPlaceholder)
 		} else {
@@ -350,9 +355,10 @@ func Expand(s, prefix, suffix string, fn base.Func[string, string]) (string, err
 	return s, nil
 }
 
+// ReplaceByOffset to replace sub string by offset begin and end index
 func ReplaceByOffset(s string, begin, end int, replace string) string {
 	sz := len(s)
-	if begin > sz || end+1 > sz {
+	if begin > sz || end > sz {
 		return s
 	}
 	if begin > end {
