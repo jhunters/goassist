@@ -305,8 +305,6 @@ func ExampleExpand() {
 	// Expand simple expression
 	v, err := stringutil.Expand("please send mail to ${name} at ${address}!", "${", "}", func(placeholderKey string) string {
 		mp := map[string]string{"name": "matt", "address": "shanghai pudong"}
-
-		// just return key directly
 		return mp[placeholderKey]
 	})
 	if err == nil {
@@ -316,7 +314,6 @@ func ExampleExpand() {
 	// Expand recursive expression
 	v, err = stringutil.Expand("please send mail to #{to#{name}} at #{address}", "#{", "}", func(placeholderKey string) string {
 		mp := map[string]string{"name": "matt", "tomatt": "matt's company", "address": "shanghai pudong"}
-		// just return key directly
 		return mp[placeholderKey]
 	})
 	if err == nil {
