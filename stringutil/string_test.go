@@ -298,6 +298,15 @@ func TestExapnd(t *testing.T) {
 			So(err, ShouldBeNil)
 			So(v, ShouldEqual, "dfsdfsd sdabc fsdfsd")
 		})
+
+		Convey("TestExapnd no match", func() {
+
+			v, err := stringutil.Expand("dfsdfsd ${sd${ab}c} fsdfsd", "#{", "}", func(key string) string {
+				return key
+			})
+			So(err, ShouldBeNil)
+			So(v, ShouldEqual, "dfsdfsd ${sd${ab}c} fsdfsd")
+		})
 	})
 }
 
