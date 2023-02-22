@@ -32,6 +32,8 @@ reflectutil|反射操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist/r
 stringutil|字符串操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist/stringutil)
 unsafex|unsafe包扩展应用|[doc](https://pkg.go.dev/github.com/jhunters/goassist/unsafex)
 timeutil|时间处理|[doc](https://pkg.go.dev/github.com/jhunters/goassist/timeutil)
+web|http文件处理|[doc](https://pkg.go.dev/github.com/jhunters/goassist/web)
+netutil|net工具类|[doc](https://pkg.go.dev/github.com/jhunters/goassist/netutil)
 
 ## License
 goassist is [Apache 2.0 licensed](./LICENSE).
