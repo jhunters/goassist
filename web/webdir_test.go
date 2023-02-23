@@ -4,9 +4,11 @@ import (
 	"embed"
 	"log"
 	"net/http"
+	"testing"
 	"time"
 
 	"github.com/jhunters/goassist/web"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 //go:embed web_test/*
@@ -35,4 +37,23 @@ func ExampleWebDir() {
 	// router.StaticFS("/", webdir)
 
 	// router.Run(":8080")
+}
+
+func TestWebDir(t *testing.T) {
+	Convey("TestWebDir", t, func() {
+		// web could use WebDir to develop by embed mode or direct mode(files modify aware on running)
+		webdir := web.WebDir{Prefix: "./web_test", EmbedPrefix: "./web_test", Content: content, Embbed: true} // embed mode files modify not aware on runing
+
+		mutex := http.NewServeMux()
+		mutex.Handle("/", http.FileServer(webdir)) // visit http://localhost:8080/web.html
+		server := &http.Server{Addr: ":8080", Handler: mutex}
+		go func() {
+			time.Sleep(2 * time.Second)
+			server.Close()
+		}()
+
+		err := server.ListenAndServe()
+		So(err, ShouldNotBeNil)
+	})
+
 }
