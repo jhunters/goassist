@@ -118,16 +118,28 @@ func TestDelete(t *testing.T) {
 		So(bbuf.String(), ShouldEqual, " world")
 
 		// test delete end with
-		origin = []byte("hello world")
 		bbuf = bytex.NewByteBuffer(origin)
 		bbuf.Delete(5, 15)
 		So(bbuf.String(), ShouldEqual, "hello")
 
 		// test delete out of index
-		origin = []byte("hello world")
 		bbuf = bytex.NewByteBuffer(origin)
 		bbuf.Delete(-1, 15)
 
+	})
+
+	Convey("Test DeleteIndex", t, func() {
+		origin := []byte("hello world")
+		bbuf := bytex.NewByteBuffer(origin)
+
+		bbuf.DeleteIndex(-1)
+		So(bbuf.String(), ShouldEqual, "hello world")
+
+		bbuf.DeleteIndex(0)
+		So(bbuf.String(), ShouldEqual, "ello world")
+
+		bbuf.DeleteIndex(bbuf.Len() - 1)
+		So(bbuf.String(), ShouldEqual, "ello worl")
 	})
 
 }
@@ -142,6 +154,43 @@ func TestReverse(t *testing.T) {
 		So(bbuf.Bytes(), ShouldResemble, []byte("dlrow olleh"))
 	})
 
+}
+
+func TestCap(t *testing.T) {
+	Convey("TestCap", t, func() {
+		bb := make([]byte, 0, 100)
+		bbuf := bytex.NewByteBuffer(bb)
+		So(bbuf.Cap(), ShouldEqual, 100)
+		So(bbuf.Len(), ShouldEqual, 0)
+		bbuf.WriteString("1234567890")
+		So(bbuf.Cap(), ShouldEqual, 100)
+		So(bbuf.Len(), ShouldEqual, 10)
+		bbuf.Truncate(0)
+		So(bbuf.Cap(), ShouldEqual, 100)
+		So(bbuf.Len(), ShouldEqual, 0)
+	})
+
+}
+
+func TestComplexUsage(t *testing.T) {
+	Convey("TestComplexUsage", t, func() {
+		origin := []byte("hello world")
+		bbuf := bytex.NewByteBuffer(origin)
+		b, err := bbuf.ReadByte()
+		So(b, ShouldEqual, 'h')
+		So(err, ShouldBeNil)
+
+		// insert one and reset offset
+		bbuf.Insert(bbuf.Len(), []byte("!"))
+		b, err = bbuf.ReadByte()
+		So(b, ShouldEqual, 'e')
+		So(err, ShouldBeNil)
+
+		bb, err := bbuf.ReadBytes('w')
+		So(string(bb), ShouldEqual, "llo w")
+		So(err, ShouldBeNil)
+		fmt.Println(bb, err)
+	})
 }
 
 func ExampleNewByteBuffer() {
@@ -174,14 +223,60 @@ func ExampleNewByteBuffer() {
 	}
 	fmt.Println(bb)
 
-	origin = []byte("hello world")
 	bbuf = bytex.NewByteBuffer(origin)
 	// test detele start
 	bbuf.Delete(0, 6)
 	fmt.Println(bbuf)
 
-	origin = []byte("hello world")
 	bbuf = bytex.NewByteBuffer(origin)
+	bbuf.Reverse()
+	fmt.Println(bbuf)
+
+	// Output:
+	// hyesllo world
+	// htestyesllo world
+	// 9
+	// [101 115 116]
+	// world
+	// dlrow olleh
+}
+
+func ExampleNewByteBufferString() {
+	origin := "hello world"
+	bbuf := bytex.NewByteBufferString(origin)
+	err := bbuf.ReplaceByOffset(1, 2, []byte("yes"))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(bbuf)
+
+	// insert
+	err = bbuf.Insert(1, []byte("test"))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(bbuf)
+
+	// index
+	idx := bbuf.Index([]byte("lo wo"))
+	fmt.Println(idx)
+
+	// SubBytes
+	bb, err := bbuf.SubBytes(2, 5)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(bb)
+
+	bbuf = bytex.NewByteBufferString(origin)
+	// test detele start
+	bbuf.Delete(0, 6)
+	fmt.Println(bbuf)
+
+	bbuf = bytex.NewByteBufferString(origin)
 	bbuf.Reverse()
 	fmt.Println(bbuf)
 

@@ -13,7 +13,14 @@ type ByteBuffer struct {
 
 // NewByteBuffer return a new ByteBuffer
 func NewByteBuffer(bb []byte) *ByteBuffer {
-	ret := &ByteBuffer{*bytes.NewBuffer(bb)}
+	cp := arrayutil.Clone(bb)
+	ret := &ByteBuffer{*bytes.NewBuffer(cp)}
+	return ret
+}
+
+// NewByteBufferString return a new ByteBuffer
+func NewByteBufferString(s string) *ByteBuffer {
+	ret := &ByteBuffer{*bytes.NewBuffer([]byte(s))}
 	return ret
 }
 
@@ -33,6 +40,11 @@ func (bbuf *ByteBuffer) Delete(begin, end int) {
 	copy(ret, bb)
 	ret = append(ret, bbuf.Bytes()[end:]...)
 	bbuf.reset(ret)
+}
+
+// Delete one byte at index offset. note: this operation will reset offset
+func (bbuf *ByteBuffer) DeleteIndex(index int) {
+	bbuf.Delete(index, index+1)
 }
 
 // ReplaceByOffset to replace sub slice by offset index. note: this operation will reset offset
@@ -63,12 +75,12 @@ func (bbuf *ByteBuffer) reset(value []byte) error {
 	return err
 }
 
-// Index returns the index of the first instance of sub in s, or -1 if sub is not present in s. note: this operation will reset offset
+// Index returns the index of the first instance of sub in s, or -1 if sub is not present in s.
 func (bbuf *ByteBuffer) Index(sub []byte) int {
 	return bytes.Index(bbuf.Bytes(), sub)
 }
 
-// Index returns the index of the fromIndex index instance of sub in s, or -1 if sub is not present in s. note: this operation will reset offset
+// Index returns the index of the fromIndex index instance of sub in s, or -1 if sub is not present in s.
 func (bbuf *ByteBuffer) IndexOffset(sub []byte, fromIndex int) int {
 	if fromIndex < 0 || fromIndex+len(sub) >= bbuf.Len() {
 		return -1
@@ -81,7 +93,7 @@ func (bbuf *ByteBuffer) IndexOffset(sub []byte, fromIndex int) int {
 	return index
 }
 
-// Insert the sub slice into the target offset.note: this operation will reset offset
+// Insert the sub slice into the target offset. note: this operation will reset offset
 func (bbuf *ByteBuffer) Insert(offset int, sub []byte) (err error) {
 	if offset < 0 || offset > bbuf.Len() {
 		return fmt.Errorf("out of index, offset=%d", offset)
@@ -100,7 +112,7 @@ func (bbuf *ByteBuffer) Insert(offset int, sub []byte) (err error) {
 	return bbuf.reset(ret)
 }
 
-// SubString a string that is a substring of this string.note: this operation will reset offset
+// SubString a string that is a substring of this string.
 func (bbuf *ByteBuffer) SubBytes(beginIndex, endIndex int) ([]byte, error) {
 	if beginIndex < 0 || beginIndex > bbuf.Len() {
 		return nil, fmt.Errorf("out of index")
@@ -112,8 +124,9 @@ func (bbuf *ByteBuffer) SubBytes(beginIndex, endIndex int) ([]byte, error) {
 	return bbuf.Bytes()[beginIndex:endIndex], nil
 }
 
-// Reverse the order to slice
+// Reverse the order to slice. note: this operation will reset offset
 func (bbuf *ByteBuffer) Reverse() {
 	bb := bbuf.Bytes()
 	arrayutil.Reverse(bb)
+	bbuf.reset(bb)
 }
