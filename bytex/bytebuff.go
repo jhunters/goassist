@@ -13,8 +13,7 @@ type ByteBuffer struct {
 
 // NewByteBuffer return a new ByteBuffer
 func NewByteBuffer(bb []byte) *ByteBuffer {
-	ret := &ByteBuffer{}
-	ret.reset(bb)
+	ret := &ByteBuffer{*bytes.NewBuffer(bb)}
 	return ret
 }
 

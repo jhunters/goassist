@@ -118,11 +118,13 @@ func TestDelete(t *testing.T) {
 		So(bbuf.String(), ShouldEqual, " world")
 
 		// test delete end with
+		origin = []byte("hello world")
 		bbuf = bytex.NewByteBuffer(origin)
 		bbuf.Delete(5, 15)
 		So(bbuf.String(), ShouldEqual, "hello")
 
 		// test delete out of index
+		origin = []byte("hello world")
 		bbuf = bytex.NewByteBuffer(origin)
 		bbuf.Delete(-1, 15)
 
@@ -172,11 +174,13 @@ func ExampleNewByteBuffer() {
 	}
 	fmt.Println(bb)
 
+	origin = []byte("hello world")
 	bbuf = bytex.NewByteBuffer(origin)
 	// test detele start
 	bbuf.Delete(0, 6)
 	fmt.Println(bbuf)
 
+	origin = []byte("hello world")
 	bbuf = bytex.NewByteBuffer(origin)
 	bbuf.Reverse()
 	fmt.Println(bbuf)
