@@ -19,9 +19,11 @@ const (
 
 // Sort sort array object, sort order type is decided by cmp function.
 // example code:
-// type Student struct {
-//	Name string
-// }
+//
+//	type Student struct {
+//		Name string
+//	}
+//
 //	students := []Student{{"xml"}, {"matthew"}, {"matt"}, {"xiemalin"}}
 //	Sort(students, func(e1, e2 Student) int {
 //		return strings.Compare(e1.Name, e2.Name)
@@ -66,7 +68,8 @@ func Shuffle[E any](data []E) {
 }
 
 // ShuffleRandom randomly permute the specified array using the specified source of
-//  randomness.
+//
+//	randomness.
 func ShuffleRandom[E any](data []E, r *rand.Rand) {
 	size := len(data)
 	for i := 0; i < size; i++ {
@@ -319,7 +322,8 @@ func Filter[E any](data []E, evaluate base.Evaluate[E]) []E {
 }
 
 // IndexOfSubArrayReturns the starting position of the first occurrence of the specified
-//  target array within the specified source array
+//
+//	target array within the specified source array
 func IndexOfSubArray[E any](data, sub []E, euqal base.EQL[E]) int {
 	s1, s2 := len(data), len(sub)
 	if s2 == 0 {
@@ -342,13 +346,15 @@ func IndexOfSubArray[E any](data, sub []E, euqal base.EQL[E]) int {
 }
 
 // IndexOfSubOrderedArray the starting position of the first occurrence of the specified
-//  target array within the specified source array
+//
+//	target array within the specified source array
 func IndexOfSubOrderedArray[E generic.Ordered](data, sub []E) int {
 	return IndexOfSubArray(data, sub, Equals[E])
 }
 
 // LastIndexOfSubArray the last starting position of the first occurrence of the specified
-//  target array within the specified source array
+//
+//	target array within the specified source array
 func LastIndexOfSubArray[E any](data, sub []E, euqal base.EQL[E]) int {
 	s1, s2 := len(data), len(sub)
 	if s2 == 0 {
@@ -373,7 +379,8 @@ func LastIndexOfSubArray[E any](data, sub []E, euqal base.EQL[E]) int {
 }
 
 // LastIndexOfSubArray the last starting position of the first occurrence of the specified
-//  target array within the specified source array
+//
+//	target array within the specified source array
 func LastIndexOfSubOrderedArray[E generic.Ordered](data, sub []E) int {
 	return LastIndexOfSubArray(data, sub, Equals[E])
 }
@@ -432,8 +439,8 @@ func getFreq[E generic.Ordered](key E, mapa map[E]int) int {
 	return v
 }
 
-//  UnionOrdered returns a array containing the union
-//  of the given array.
+// UnionOrdered returns a array containing the union
+// of the given array.
 func UnionOrdered[E generic.Ordered](data, other []E) []E {
 	ret := make([]E, 0)
 
@@ -451,8 +458,8 @@ func UnionOrdered[E generic.Ordered](data, other []E) []E {
 	return ret
 }
 
-//  IntersectionOrdered returns a array containing the intersection
-//  of the given array.
+// IntersectionOrdered returns a array containing the intersection
+// of the given array.
 func IntersectionOrdered[E generic.Ordered](data, other []E) []E {
 	ret := make([]E, 0)
 
@@ -470,8 +477,8 @@ func IntersectionOrdered[E generic.Ordered](data, other []E) []E {
 	return ret
 }
 
-//  DisjunctionOrdered returns a array containing the exclusive disjunction
-//  (symmetric difference) of the given array
+// DisjunctionOrdered returns a array containing the exclusive disjunction
+// (symmetric difference) of the given array
 func DisjunctionOrdered[E generic.Ordered](data, other []E) []E {
 	ret := make([]E, 0)
 
@@ -526,8 +533,9 @@ func getCardinalityMap[E generic.Ordered](data []E) map[E]int {
 }
 
 // CompareTo Compares this object with the specified object for order.  Returns a
-//    negative integer, zero, or a positive integer as this object is less
-//     than, equal to, or greater than the specified object.
+//
+//	negative integer, zero, or a positive integer as this object is less
+//	 than, equal to, or greater than the specified object.
 func CompareTo[E generic.Ordered](e1, e2 E) int {
 	if e1 > e2 {
 		return 1
@@ -540,7 +548,7 @@ func CompareTo[E generic.Ordered](e1, e2 E) int {
 // Clone Copies all of the elements and return a new array
 func Clone[E any](data []E) []E {
 	size := len(data)
-	ret := make([]E, size)
+	ret := make([]E, size, cap(data))
 	copy(ret, data)
 	return ret
 }
