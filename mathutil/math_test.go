@@ -132,3 +132,26 @@ func TestAbs(t *testing.T) {
 	})
 
 }
+
+func TestPow(t *testing.T) {
+	Convey("TestPow", t, func() {
+		// Pow
+		var f32 float32 = 2.3
+		v := mathutil.Pow(f32, 10)
+		So(v, ShouldEqual, 4142.6504)
+
+		var f64 float64 = 2.3
+		v1 := mathutil.Pow(f64, 10)
+		So(v1, ShouldEqual, 4142.651121364896)
+
+		var i16 int16 = -5
+		v2 := mathutil.Pow(i16, 5)
+		So(v2, ShouldEqual, -3125) // should care overflow by int16
+
+		// Pow10
+
+		v3 := mathutil.Pow10[int64](3)
+		So(v3, ShouldEqual, 1000)
+	})
+
+}
