@@ -11,7 +11,7 @@ func TestValidateEmail(t *testing.T) {
 
 	Convey("TestValidateEmail", t, func() {
 
-		Convey("validate email success", func() {
+		Convey("validate email with correct format", func() {
 
 			qqmail := "191988332@qq.com"
 			isValid := validate.ValidateEmail(qqmail)
@@ -23,7 +23,7 @@ func TestValidateEmail(t *testing.T) {
 
 		})
 
-		Convey("validate email rfc success", func() {
+		Convey("validate email rfc with correct format", func() {
 
 			qqmail := "191988332@qq.com"
 			isValid := validate.ValidateEmailRFC(qqmail)
@@ -35,7 +35,7 @@ func TestValidateEmail(t *testing.T) {
 
 		})
 
-		Convey("validate email fail", func() {
+		Convey("validate email with bad format", func() {
 			noName := "@qq.com"
 			isValid := validate.ValidateEmail(noName)
 			So(isValid, ShouldBeFalse)
@@ -49,7 +49,7 @@ func TestValidateEmail(t *testing.T) {
 			So(isValid, ShouldBeFalse)
 		})
 
-		Convey("validate email rfc fail", func() {
+		Convey("validate email rfc with bad format", func() {
 			noName := "@qq.com"
 			isValid := validate.ValidateEmailRFC(noName)
 			So(isValid, ShouldBeFalse)
