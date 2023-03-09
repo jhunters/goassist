@@ -8,6 +8,7 @@ func IsByteType(v any) bool {
 	return typ.Kind() == reflect.Uint8
 }
 
+// TypeOfName return the type name of v
 func TypeOfName[E any](v E) string {
 	t := reflect.TypeOf(v)
 	return t.Name()

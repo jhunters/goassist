@@ -69,6 +69,7 @@ func (ai *AtomicInt[E]) Load() E {
 	panic(fmt.Sprintf("invalid value type, %s", val.Kind().String()))
 }
 
+// AddandGet add value and return added value
 func (ai *AtomicInt[E]) AddandGet(v E) E {
 	val := reflect.ValueOf(*ai.value)
 
