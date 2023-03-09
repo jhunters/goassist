@@ -28,15 +28,18 @@ type CustomListener struct {
 	sessionChan chan NetInfo
 }
 
+// Accept to get net.Conn from listener proxy or block if no connection
 func (l *CustomListener) Accept() (net.Conn, error) {
 	conn := <-l.sessionChan
 	return conn.conn, conn.err
 }
 
+// Close close listener proxy
 func (l *CustomListener) Close() error {
 	return l.listenerProxy.Close()
 }
 
+// Addr return net.Addr from listener proxy
 func (l *CustomListener) Addr() net.Addr {
 	return l.listenerProxy.Addr()
 }
@@ -80,7 +83,7 @@ func NewCustomListenerSelectorByListener(l net.Listener, headsize uint8, matchMo
 	return selector, nil
 }
 
-// RegisterListener
+// RegisterListener register a listener by magic code
 func (server *CustomListenerSelector) RegisterListener(headMagiccode string) (net.Listener, error) {
 	if len(headMagiccode) != int(server.headSize) && server.matchMode == Equal_Mode {
 		return nil, fmt.Errorf("error head magic code '%s', size should be '%d'", headMagiccode, server.headSize)
@@ -90,7 +93,7 @@ func (server *CustomListenerSelector) RegisterListener(headMagiccode string) (ne
 	return listener, nil
 }
 
-// RegisterDefaultListener
+// RegisterDefaultListener to return default listener
 func (server *CustomListenerSelector) RegisterDefaultListener() net.Listener {
 	return server.defaultListener
 }
