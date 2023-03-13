@@ -52,6 +52,20 @@ func timeoutF(timeout time.Duration) (<-chan time.Time, func()) {
 // AsyncGo execute target function by goroutine. if panic happened will wrap error object and return false
 // if just time out will return ok(false), err(nil)
 func AsyncGo(f base.Call, timeout time.Duration) (ok bool, err error) {
+	if timeout <= 0 { // no timeout need
+		ok = true
+		return
+	}
+	tout, cancel := timeoutF(timeout)
+	defer cancel()
+
+	return AsyncGoWithEvent(f, tout)
+
+}
+
+// AsyncGo execute target function by goroutine. if panic happened will wrap error object and return false
+// if just time out will return ok(false), err(nil)
+func AsyncGoWithEvent[E any](f base.Call, toevent <-chan E) (ok bool, err error) {
 	ch := make(chan error, 1)
 	go func(ch chan<- error) {
 		defer panicCatch(ch)
@@ -59,26 +73,36 @@ func AsyncGo(f base.Call, timeout time.Duration) (ok bool, err error) {
 		close(ch)
 	}(ch)
 
-	if timeout <= 0 { // no timeout need
-		ok = true
-		return
-	}
-
-	tout, cancel := timeoutF(timeout)
-	defer cancel()
 	select {
 	case e := <-ch:
 		ok = (e == nil)
 		err = e
-	case <-tout:
+	case <-toevent:
 		ok = false
 	}
 	return
+
 }
 
 // AsyncCall execute target function by goroutine and has a generic returned parameter. if panic happened will wrap error object and return future(nil)
 // if just time out will return future(func), err(nil)
 func AsyncCall[E any](f base.Supplier[E], timeout time.Duration) (future base.Supplier[E], err error) {
+
+	if timeout <= 0 { // no timeout need
+		future = func() E {
+			return f()
+		}
+		return
+	}
+
+	tout, cancel := timeoutF(timeout)
+	defer cancel()
+	return AsyncCallWithEvent(f, tout)
+}
+
+// AsyncCall execute target function by goroutine and has a generic returned parameter. if panic happened will wrap error object and return future(nil)
+// if just time out will return future(func), err(nil)
+func AsyncCallWithEvent[E, T any](f base.Supplier[E], toevent <-chan T) (future base.Supplier[E], err error) {
 	ret := make(chan E, 1)
 	future = func() E {
 		return <-ret
@@ -91,20 +115,14 @@ func AsyncCall[E any](f base.Supplier[E], timeout time.Duration) (future base.Su
 		close(ch)
 	}(ch)
 
-	if timeout <= 0 { // no timeout need
-		return
-	}
-
-	tout, cancel := timeoutF(timeout)
-	defer cancel()
 	select {
 	case e := <-ch:
 		err = e
 		if e != nil {
 			future = nil
 		}
-	case <-tout:
-		err = fmt.Errorf("AsyncCall execute timeout. expect %v", timeout)
+	case <-toevent:
+		err = fmt.Errorf("AsyncCall execute timeout")
 	}
 	return
 }

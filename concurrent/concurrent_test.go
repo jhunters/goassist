@@ -40,7 +40,7 @@ func TestAsyncGo(t *testing.T) {
 			ch <- timedFunc(100*time.Millisecond, var_s)
 		}, time.Second)
 
-		took := time.Now().Sub(now)
+		took := time.Since(now)
 		So(f, ShouldBeTrue)
 		So(err, ShouldBeNil)
 		So(<-ch, ShouldEqual, var_s)
@@ -55,13 +55,13 @@ func TestAsyncGo(t *testing.T) {
 			ch <- timedFunc(2*time.Second, var_pojo)
 		}, time.Second)
 
-		took := time.Now().Sub(now)
+		took := time.Since(now)
 		So(f, ShouldBeFalse)
 		So(err, ShouldBeNil)
 		So(took, ShouldBeGreaterThan, 900*time.Millisecond)
 		So(took, ShouldBeLessThan, 2*time.Second)
 		So(<-ch, ShouldResemble, var_pojo)
-		took = time.Now().Sub(now)
+		took = time.Since(now)
 		So(took, ShouldBeGreaterThan, 2*time.Second)
 	})
 
@@ -100,7 +100,7 @@ func TestAsyncCall(t *testing.T) {
 			return timedFunc(100*time.Millisecond, var_s)
 		}, time.Second)
 
-		took := time.Now().Sub(now)
+		took := time.Since(now)
 		So(f, ShouldNotBeNil)
 		So(err, ShouldBeNil)
 		So(f(), ShouldEqual, var_s)
@@ -114,13 +114,13 @@ func TestAsyncCall(t *testing.T) {
 			return timedFunc(2*time.Second, var_pojo)
 		}, time.Second)
 
-		took := time.Now().Sub(now)
+		took := time.Since(now)
 		So(f, ShouldNotBeNil)
 		So(err, ShouldNotBeNil)
 		So(took, ShouldBeGreaterThan, 1*time.Second)
 		So(took, ShouldBeLessThan, 2*time.Second)
 		So(f(), ShouldResemble, var_pojo)
-		took = time.Now().Sub(now)
+		took = time.Since(now)
 		So(took, ShouldBeGreaterThan, 2*time.Second)
 	})
 
@@ -161,7 +161,7 @@ func ExampleAsyncCall() {
 
 	// Output:
 	// [matt pudong] <nil>
-	// [matt pudong] AsyncCall execute timeout. expect 1s
+	// [matt pudong] AsyncCall execute timeout
 	// [matt pudong] <nil>
 
 }
