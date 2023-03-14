@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jhunters/goassist/bytex"
+	"github.com/jhunters/goassist/container/listx"
 	"github.com/jhunters/goassist/generic"
 	"github.com/jhunters/goassist/stringutil"
 )
@@ -18,7 +20,124 @@ const (
 	Binary = 2
 	Octal  = 10
 	Hex    = 16
+
+	// fixed unit value to  '亿' or '万'
+	FixedUnitValue = 4
+
+	CH_ZERO   = '零'
+	CH_TEN    = '十'
+	CH_ONE    = '一'
+	RUNE_ONE  = '1'
+	RUNE_ZERO = '0'
 )
+
+var (
+	Chinese_Uint_Number map[rune]int
+	Chinese_Number      map[rune]byte
+
+	Chinese_Unit []rune
+)
+
+type CNum struct {
+	num       byte
+	unit      int
+	fixedunit int
+}
+
+func init() {
+
+	// define chinese number  unit=size
+	Chinese_Uint_Number = map[rune]int{}
+	Chinese_Uint_Number['亿'] = 8
+	Chinese_Uint_Number['万'] = 4
+	Chinese_Uint_Number['千'] = 3
+	Chinese_Uint_Number['百'] = 2
+	Chinese_Uint_Number[CH_TEN] = 1
+
+	Chinese_Number = map[rune]byte{}
+	Chinese_Number['一'] = RUNE_ONE
+	Chinese_Number['二'] = '2'
+	Chinese_Number['三'] = '3'
+	Chinese_Number['四'] = '4'
+	Chinese_Number['五'] = '5'
+	Chinese_Number['六'] = '6'
+	Chinese_Number['七'] = '7'
+	Chinese_Number['七'] = '7'
+	Chinese_Number['八'] = '8'
+	Chinese_Number['九'] = '9'
+	Chinese_Number[CH_ZERO] = RUNE_ZERO
+}
+
+// CItoa convert chinese number to asc number string
+func CItoa(chinesenum string) (string, error) {
+	if stringutil.IsBlank(chinesenum) {
+		return stringutil.EMPTY_STRING, fmt.Errorf("invalid chinese number. %s", chinesenum)
+	}
+
+	ls := listx.NewList[CNum]()
+	nums := []rune(chinesenum)
+	unit := 1
+	fixedunit := 0
+	biggestUnit := 0
+	hasNumBeforeUnit := false
+	for i := len(nums) - 1; i >= 0; i-- {
+		num := nums[i]
+		if v, ok := Chinese_Number[num]; ok {
+			cNum := CNum{v, unit, fixedunit}
+			ls.PushFront(cNum)
+			hasNumBeforeUnit = true
+		} else if v, ok := Chinese_Uint_Number[num]; ok {
+			if v >= FixedUnitValue {
+				if biggestUnit < v {
+					biggestUnit = v
+					fixedunit = v // just ajust to fixed unit
+				} else {
+					// if just like '万亿' add num unit
+					fixedunit += v
+				}
+				unit = 1
+			} else {
+				unit = v + 1
+				// check if miss num before unit, so we check next one
+				i2 := i - 1
+				if i2 >= 0 {
+					if v, ok := Chinese_Uint_Number[nums[i2]]; ok {
+						if v < FixedUnitValue {
+							cNum := CNum{RUNE_ONE, unit, fixedunit} // add one as default unit value
+							ls.PushFront(cNum)
+						}
+					} else if nums[i2] == CH_ZERO {
+						cNum := CNum{RUNE_ONE, unit, fixedunit} // add one as default unit value
+						ls.PushFront(cNum)
+					}
+				}
+
+			}
+			hasNumBeforeUnit = false
+		} else {
+			return stringutil.EMPTY_STRING, fmt.Errorf("invalid chinese number. %s", chinesenum)
+		}
+	}
+
+	numStr := fmt.Sprintf("%0"+Itoa(unit+fixedunit)+"d", 0)
+	buf := bytex.NewByteBufferString(numStr)
+
+	// fix if has no num before unit, just like as '十' or '十五'
+	if !hasNumBeforeUnit {
+		ls.PushFront(CNum{RUNE_ONE, unit, fixedunit})
+	}
+
+	ls.Range(func(c CNum) bool {
+		if c.num != RUNE_ZERO {
+			offset := len(numStr) - c.unit - c.fixedunit
+			buf.ReplaceByOffset(offset, offset+1, []byte{c.num})
+		}
+
+		return true
+	})
+
+	return buf.String(), nil
+}
 
 // Itoa formate integer and float value to string type
 func Itoa[E generic.Integer | generic.Float](i E) string {
@@ -173,7 +292,7 @@ func IsNumber(str string) bool {
 // ParseInt to parse string to int
 func ParseInt(str string) (int, error) {
 	if !IsNumber(str) && !strings.Contains(str, ".") {
-		return -1, fmt.Errorf("string '%s' is not a valid int number.", str)
+		return -1, fmt.Errorf("string '%s' is not a valid int number", str)
 	}
 
 	chars := []byte(str)
@@ -225,7 +344,7 @@ func ParseInt(str string) (int, error) {
 // ParseFloat to parse string to float64
 func ParseFloat(str string) (float64, error) {
 	if !IsNumber(str) {
-		return -1, fmt.Errorf("string '%s' is not a valid int number.", str)
+		return -1, fmt.Errorf("string '%s' is not a valid int number", str)
 	}
 
 	chars := []byte(str)
@@ -258,7 +377,7 @@ func ParseFloat(str string) (float64, error) {
 	s := strings.ToLower(string(chars[start:]))
 	if strings.Contains(s, "e") {
 		splits := strings.Split(s, "e")
-		v, err := strconv.ParseFloat(splits[0], 10)
+		v, err := strconv.ParseFloat(splits[0], 64)
 		if err != nil {
 			return -1, err
 		}

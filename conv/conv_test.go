@@ -500,3 +500,116 @@ func TestParseBool(t *testing.T) {
 	})
 
 }
+
+func TestCitoa(t *testing.T) {
+
+	Convey("TestCitoa", t, func() {
+
+		numStr, err := conv.CItoa("一千万零一百一十五")
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "10000115")
+
+		numStr, err = conv.CItoa("一亿零五百万零一十五")
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "105000015")
+
+		numStr, err = conv.CItoa("一千零一百一十五")
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "1115")
+
+		numStr, err = conv.CItoa("一千一十一")
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "1011")
+
+		numStr, err = conv.CItoa("一千零十一")
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "1011")
+
+		numStr, err = conv.CItoa("十一")
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "11")
+
+		numStr, err = conv.CItoa("一万零百")
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "10100")
+
+		numStr, err = conv.CItoa("一百十一")
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "111")
+
+		numStr, err = conv.CItoa("五百万亿零十一")
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "500000000000011")
+
+		numStr, err = conv.CItoa("八")
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "8")
+
+		numStr, err = conv.CItoa("零")
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "0")
+
+		numStr, err = conv.CItoa("一亿二千三百五十万零一十五")
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "123500015")
+
+		numStr, err = conv.CItoa("一千万零一百亿")
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "1000010000000000")
+
+	})
+
+	Convey("TestCitoa failed", t, func() {
+		numStr, err := conv.CItoa("一q千万零一百一十五")
+		So(err, ShouldNotBeNil)
+		So(numStr, ShouldBeEmpty)
+
+	})
+
+}
+
+func ExampleCItoa() {
+	numStr, err := conv.CItoa("一千万零一百一十五")
+	if err == nil {
+		fmt.Println(numStr)
+	}
+
+	numStr, err = conv.CItoa("五百万亿零十一")
+	if err == nil {
+		fmt.Println(numStr)
+	}
+
+	numStr, err = conv.CItoa("一亿二千三百五十万零一十五")
+	if err == nil {
+		fmt.Println(numStr)
+	}
+
+	numStr, err = conv.CItoa("一千万零一百亿")
+	if err == nil {
+		fmt.Println(numStr)
+	}
+
+	numStr, err = conv.CItoa("八")
+	if err == nil {
+		fmt.Println(numStr)
+	}
+
+	numStr, err = conv.CItoa("零")
+	if err == nil {
+		fmt.Println(numStr)
+	}
+
+	numStr, err = conv.CItoa("十五")
+	if err == nil {
+		fmt.Println(numStr)
+	}
+
+	// Output:
+	// 10000115
+	// 500000000000011
+	// 123500015
+	// 1000010000000000
+	// 8
+	// 0
+	// 15
+}
