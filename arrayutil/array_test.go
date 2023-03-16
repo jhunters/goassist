@@ -7,6 +7,7 @@ package arrayutil_test
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/jhunters/goassist/arrayutil"
@@ -154,6 +155,15 @@ func TestReverse(t *testing.T) {
 	})
 }
 
+func ExampleReverse() {
+	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	arrayutil.Reverse(slice)
+	fmt.Println(slice)
+
+	// Output:
+	// [10 9 8 7 6 5 4 3 2 1]
+}
+
 func TestBinarySearch(t *testing.T) {
 	Convey("Test BinarySearch", t, func() {
 
@@ -202,6 +212,15 @@ func ExampleBinarySearch() {
 	fmt.Println(offset, sortedPersons[offset].Age)
 	//output:
 	//0 90
+}
+
+func ExampleBinarySearchOrdered() {
+	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	offset := arrayutil.BinarySearchOrdered(slice, 2)
+
+	fmt.Println(offset, slice[offset])
+	//output:
+	//1 2
 }
 
 func TestBinarySearchOrdered(t *testing.T) {
@@ -261,6 +280,17 @@ func TestMax(t *testing.T) {
 	})
 }
 
+func ExampleMax() {
+	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	v, pos := arrayutil.Max(slice, func(i, i2 int) int {
+		return i - i2
+	})
+	fmt.Println(v, pos)
+
+	// Output:
+	// 10 9
+}
+
 func TestMaxOrdered(t *testing.T) {
 	Convey("Test MaxOrdered", t, func() {
 
@@ -274,6 +304,15 @@ func TestMaxOrdered(t *testing.T) {
 		So(biggestInt, ShouldEqual, 10)
 		So(pos, ShouldEqual, len(sortedIntArray)-1)
 	})
+}
+
+func ExampleMaxOrdered() {
+	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	v, pos := arrayutil.MaxOrdered(slice)
+	fmt.Println(v, pos)
+
+	// Output:
+	// 10 9
 }
 
 func TestMin(t *testing.T) {
@@ -302,6 +341,15 @@ func TestMin(t *testing.T) {
 	})
 }
 
+func ExampleMin() {
+	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	v, pos := arrayutil.Min(slice, func(i, i2 int) int { return i - i2 })
+	fmt.Println(v, pos)
+
+	// Output:
+	// 1 0
+}
+
 func TestMinOrdered(t *testing.T) {
 	Convey("Test MinOrdered", t, func() {
 
@@ -315,6 +363,15 @@ func TestMinOrdered(t *testing.T) {
 		So(biggestInt, ShouldEqual, 1)
 		So(pos, ShouldEqual, 0)
 	})
+}
+
+func ExampleMinOrdered() {
+	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	v, pos := arrayutil.MinOrdered(slice)
+	fmt.Println(v, pos)
+
+	// Output:
+	// 1 0
 }
 
 func TestRelaceAll(t *testing.T) {
@@ -340,6 +397,15 @@ func TestRelaceAll(t *testing.T) {
 	})
 }
 
+func ExampReplaceAll() {
+	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	arrayutil.ReplaceAll(slice, 5, 10, func(i, i2 int) bool { return i == i2 })
+	fmt.Println(slice)
+
+	// Output:
+	// [1 2 3 4 10 6 7 8 9 10]
+}
+
 func TestRelaceOrderedAll(t *testing.T) {
 	Convey("Test RelaceOrderedAll", t, func() {
 
@@ -357,6 +423,24 @@ func TestRelaceOrderedAll(t *testing.T) {
 	})
 }
 
+func ExampleReplaceAll() {
+	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	arrayutil.ReplaceAll(slice, 5, 10, func(i, i2 int) bool { return i == i2 })
+	fmt.Println(slice)
+
+	// Output:
+	// [1 2 3 4 10 6 7 8 9 10]
+}
+
+func ExampleReplaceOrderedAll() {
+	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	arrayutil.ReplaceOrderedAll(slice, 5, 10)
+	fmt.Println(slice)
+
+	// Output:
+	// [1 2 3 4 10 6 7 8 9 10]
+}
+
 func TestCreateAndFill(t *testing.T) {
 	Convey("Test CreateAndFill", t, func() {
 		strArray := arrayutil.CreateAndFill(10, "name")
@@ -371,6 +455,14 @@ func TestCreateAndFill(t *testing.T) {
 		})
 
 	})
+}
+
+func ExampleCreateAndFill() {
+	strArray := arrayutil.CreateAndFill(10, 1)
+	fmt.Println(strArray)
+
+	// Output:
+	// [1 1 1 1 1 1 1 1 1 1]
 }
 
 func TestIndexOfSubArray(t *testing.T) {
@@ -437,6 +529,15 @@ func TestIndexOfSubArray(t *testing.T) {
 	})
 }
 
+func ExampleIndexOfSubArray() {
+	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	pos := arrayutil.IndexOfSubArray(slice, []int{2, 3, 4}, func(i, i2 int) bool { return i == i2 })
+	fmt.Println(pos)
+
+	// Output:
+	// 1
+}
+
 func TestIndexOfSubOrderedArray(t *testing.T) {
 	Convey("Test IndexOfSubOrderedArray", t, func() {
 		strArray := arrayutil.Clone(strArray)
@@ -445,12 +546,30 @@ func TestIndexOfSubOrderedArray(t *testing.T) {
 	})
 }
 
+func ExampleIndexOfSubOrderedArray() {
+	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	pos := arrayutil.IndexOfSubOrderedArray(slice, []int{2, 3, 4})
+	fmt.Println(pos)
+
+	// Output:
+	// 1
+}
+
 func TestLastIndexOfSubOrderedArray(t *testing.T) {
 	Convey("Test LastIndexOfSubOrderedArray", t, func() {
 		strArray := arrayutil.Clone(strArray)
 		index := arrayutil.LastIndexOfSubOrderedArray(strArray, []string{"xml"})
 		So(index, ShouldEqual, 3)
 	})
+}
+
+func ExampleLastIndexOfSubOrderedArray() {
+	slice := []int{1, 2, 3, 4, 5, 6, 2, 3, 4, 10}
+	pos := arrayutil.LastIndexOfSubOrderedArray(slice, []int{2, 3, 4})
+	fmt.Println(pos)
+
+	// Output:
+	// 6
 }
 
 func TestLastIndexOfSubArray(t *testing.T) {
@@ -517,6 +636,15 @@ func TestLastIndexOfSubArray(t *testing.T) {
 	})
 }
 
+func ExampleLastIndexOfSubArray() {
+	slice := []int{1, 2, 3, 4, 5, 6, 2, 3, 4, 10}
+	pos := arrayutil.LastIndexOfSubArray(slice, []int{2, 3, 4}, func(i, i2 int) bool { return i == i2 })
+	fmt.Println(pos)
+
+	// Output:
+	// 6
+}
+
 func TestDisJoint(t *testing.T) {
 	Convey("Test DisJoint", t, func() {
 
@@ -539,12 +667,42 @@ func TestDisJoint(t *testing.T) {
 	})
 }
 
+func ExampleDisjoint() {
+	slice := []int{1, 2, 3, 4, 5, 6, 2, 3, 4, 10}
+	subSlice := []int{2, 4, 6}
+	exist := arrayutil.Disjoint(slice, subSlice, func(i, i2 int) bool { return i == i2 })
+	fmt.Println(exist)
+
+	subSlice = []int{11, 14, 16}
+	exist = arrayutil.Disjoint(slice, subSlice, func(i, i2 int) bool { return i == i2 })
+	fmt.Println(exist)
+
+	// Output:
+	// false
+	// true
+}
+
 func TestDisJointOrdered(t *testing.T) {
 	Convey("Test DisjointOrdered", t, func() {
 		hasNoSame := arrayutil.DisjointOrdered(strArray, strArray)
 		So(hasNoSame, ShouldBeFalse)
 
 	})
+}
+
+func ExampleDisjointOrdered() {
+	slice := []int{1, 2, 3, 4, 5, 6, 2, 3, 4, 10}
+	subSlice := []int{2, 4, 6}
+	exist := arrayutil.DisjointOrdered(slice, subSlice)
+	fmt.Println(exist)
+
+	subSlice = []int{11, 14, 16}
+	exist = arrayutil.DisjointOrdered(slice, subSlice)
+	fmt.Println(exist)
+
+	// Output:
+	// false
+	// true
 }
 
 func TestRotate(t *testing.T) {
@@ -568,6 +726,15 @@ func TestRotate(t *testing.T) {
 	})
 }
 
+func ExampleRotate() {
+	slice := []string{"t", "a", "n", "k", "s"}
+	arrayutil.Rotate(slice, 1)
+	fmt.Println(slice)
+
+	// Output:
+	// [s t a n k]
+}
+
 func TestContainsOrdered(t *testing.T) {
 	Convey("Test ContainsOrdered", t, func() {
 		strArray := arrayutil.Clone(strArray)
@@ -578,6 +745,24 @@ func TestContainsOrdered(t *testing.T) {
 		contains = arrayutil.ContainsOrdered(strArray, "notexist")
 		So(contains, ShouldBeFalse)
 	})
+}
+
+func ExampleContains() {
+	slice := []string{"t", "a", "n", "k", "s"}
+	exist := arrayutil.Contains(slice, "a", func(s1, s2 string) bool { return strings.EqualFold(s1, s2) })
+	fmt.Println(exist)
+
+	// Output:
+	// true
+}
+
+func ExampleContainsOrdered() {
+	slice := []string{"t", "a", "n", "k", "s"}
+	exist := arrayutil.ContainsOrdered(slice, "a")
+	fmt.Println(exist)
+
+	// Output:
+	// true
 }
 
 func TestEqualWithOrdered(t *testing.T) {
@@ -593,6 +778,15 @@ func TestEqualWithOrdered(t *testing.T) {
 	})
 }
 
+func ExampleEqualWithOrdered() {
+	slice := []string{"t", "a", "n", "k", "s"}
+	equals := arrayutil.EqualWithOrdered(slice, slice)
+	fmt.Println(equals)
+
+	// Output:
+	// true
+}
+
 func TestIntersectionOrdered(t *testing.T) {
 	Convey("Test IntersectionOrdered", t, func() {
 		result := arrayutil.IntersectionOrdered(strArray, strArray2)
@@ -602,6 +796,16 @@ func TestIntersectionOrdered(t *testing.T) {
 		expected := []string{"xiemalin", "xml", "xml"}
 		So(result, ShouldResemble, expected)
 	})
+}
+
+func ExampleIntersectionOrdered() {
+	slice := []string{"t", "a", "n", "k", "s"}
+	slice2 := []string{"a", "b", "s"}
+	slice3 := arrayutil.IntersectionOrdered(slice, slice2)
+	fmt.Println(slice3)
+
+	// Output:
+	// [s a]
 }
 
 func TestUnionOrdered(t *testing.T) {
@@ -617,6 +821,16 @@ func TestUnionOrdered(t *testing.T) {
 	})
 }
 
+func ExampleUnionOrdered() {
+	slice := []string{"t", "a", "n", "k", "s"}
+	slice2 := []string{"a", "b", "s"}
+	slice3 := arrayutil.UnionOrdered(slice, slice2)
+	fmt.Println(slice3)
+
+	// Output:
+	// [a n k s t b]
+}
+
 func TestDisjunctionOrdered(t *testing.T) {
 	Convey("Test DisjunctionOrdered", t, func() {
 		result := arrayutil.DisjunctionOrdered(strArray, strArray2)
@@ -628,6 +842,16 @@ func TestDisjunctionOrdered(t *testing.T) {
 		So(result, ShouldResemble, expected)
 
 	})
+}
+
+func ExampleDisjunctionOrdered() {
+	slice := []string{"t", "a", "n", "k", "s"}
+	slice2 := []string{"a", "b", "s"}
+	slice3 := arrayutil.DisjunctionOrdered(slice, slice2)
+	fmt.Println(slice3)
+
+	// Output:
+	// [n k b t]
 }
 
 func TestSubstract(t *testing.T) {
@@ -642,6 +866,16 @@ func TestSubstract(t *testing.T) {
 	})
 }
 
+func ExampleSubstract() {
+	slice := []string{"t", "a", "n", "k", "s"}
+	slice2 := []string{"a", "b", "s"}
+	slice3 := arrayutil.Substract(slice, slice2, func(s1, s2 string) bool { return strings.EqualFold(s1, s2) })
+	fmt.Println(slice3)
+
+	// Output:
+	// [t n k]
+}
+
 func TestSubtractOrdered(t *testing.T) {
 	Convey("Test SubtractOrdered", t, func() {
 		result := arrayutil.SubstractOrdered(strArray, strArray2)
@@ -653,6 +887,16 @@ func TestSubtractOrdered(t *testing.T) {
 		So(result, ShouldResemble, expected)
 
 	})
+}
+
+func ExampleSubstractOrdered() {
+	slice := []string{"t", "a", "n", "k", "s"}
+	slice2 := []string{"a", "b", "s"}
+	slice3 := arrayutil.SubstractOrdered(slice, slice2)
+	fmt.Println(slice3)
+
+	// Output:
+	// [t n k]
 }
 
 func TestFilter(t *testing.T) {
@@ -689,6 +933,15 @@ func TestFilter(t *testing.T) {
 		})
 
 	})
+}
+
+func ExampleFilter() {
+	slice := []string{"t", "a", "n", "k", "s"}
+	sl2 := arrayutil.Filter(slice, func(s1 string) bool { return s1 == "a" || s1 == "k" })
+	fmt.Println(sl2)
+
+	// Output:
+	// [t n s]
 }
 
 func TestInsert(t *testing.T) {
@@ -755,6 +1008,19 @@ func TestAsList(t *testing.T) {
 	})
 }
 
+func ExampleAsList() {
+	// empty list
+	arr := arrayutil.AsList[string]()
+	fmt.Println(arr)
+
+	arr = arrayutil.AsList("hello", "world")
+	fmt.Println(arr)
+
+	// Output:
+	// []
+	// [hello world]
+}
+
 func TestContainsAny(t *testing.T) {
 	Convey("TestContainsAny", t, func() {
 		// contains
@@ -770,6 +1036,17 @@ func TestContainsAny(t *testing.T) {
 	})
 }
 
+func ExampleContainsAny() {
+	arr1 := arrayutil.AsList(1, 3, 5, 7, 9)
+	arr2 := arrayutil.AsList(3, 4, 6)
+	exist := arrayutil.ContainsAny(arr1, arr2, func(i1, i2 int) bool { return i1 == i2 })
+	fmt.Println(exist)
+
+	// Output:
+	// true
+
+}
+
 func TestContainsAnyOrdered(t *testing.T) {
 	Convey("TestContainsAny", t, func() {
 		// contains
@@ -783,6 +1060,17 @@ func TestContainsAnyOrdered(t *testing.T) {
 		exist = arrayutil.ContainsAnyOrdered(arr1, arr2)
 		So(exist, ShouldBeFalse)
 	})
+}
+
+func ExampleContainsAnyOrdered() {
+	arr1 := arrayutil.AsList(1, 3, 5, 7, 9)
+	arr2 := arrayutil.AsList(3, 4, 6)
+	exist := arrayutil.ContainsAnyOrdered(arr1, arr2)
+	fmt.Println(exist)
+
+	// Output:
+	// true
+
 }
 
 func TestRemoves(t *testing.T) {
@@ -825,6 +1113,33 @@ func TestRemoves(t *testing.T) {
 	})
 }
 
+func ExampleRemove() {
+	arr1 := arrayutil.AsList(3, 5, 7, 9, 3, 5, 1)
+	arr, b := arrayutil.Remove(arr1, 1, func(i1, i2 int) bool { return i1 == i2 })
+	fmt.Println(arr, b)
+
+	arr1 = arrayutil.AsList(3, 5, 7, 9, 3, 5, 1)
+	arr, b = arrayutil.Remove(arr1, 5, func(i1, i2 int) bool { return i1 == i2 })
+	fmt.Println(arr, b)
+
+	// Output:
+	// [3 5 7 9 3 5] true
+	// [3 7 9 3 5 1] true
+}
+func ExampleRemoveAll() {
+	arr1 := arrayutil.AsList(3, 5, 7, 9, 3, 5, 1)
+	arr, b := arrayutil.RemoveAll(arr1, 1, func(i1, i2 int) bool { return i1 == i2 })
+	fmt.Println(arr, b)
+
+	arr1 = arrayutil.AsList(3, 5, 7, 9, 3, 5, 1)
+	arr, b = arrayutil.RemoveAll(arr1, 5, func(i1, i2 int) bool { return i1 == i2 })
+	fmt.Println(arr, b)
+
+	// Output:
+	// [3 5 7 9 3 5] true
+	// [3 7 9 3 1] true
+}
+
 func TestJoin(t *testing.T) {
 	Convey("TestJoin", t, func() {
 
@@ -841,4 +1156,13 @@ func TestJoin(t *testing.T) {
 		So(str, ShouldEqual, "hello world !")
 	})
 
+}
+
+func ExampleJoin() {
+	intSlice := []int{1, 2, 3, 4, 5, 6, 7, 8}
+	str := arrayutil.Join(intSlice, "-")
+	fmt.Println(str)
+
+	// Output:
+	// 1-2-3-4-5-6-7-8
 }
