@@ -35,6 +35,18 @@ func TestReverse(t *testing.T) {
 	})
 }
 
+func ExampleReverse() {
+	ret, err := stringutil.Reverse("hello")
+	fmt.Println(ret, err)
+
+	ret, err = stringutil.Reverse("helloｃｈｉｎｅｓｅ")
+	fmt.Println(ret, err)
+
+	// Output:
+	// olleh <nil>
+	// ｅｓｅｎｉｈｃolleh <nil>
+}
+
 func TestCapitalize(t *testing.T) {
 
 	Convey("TestCapitalize", t, func() {
@@ -53,6 +65,22 @@ func TestCapitalize(t *testing.T) {
 	})
 }
 
+func ExampleCapitalize() {
+	ret := stringutil.Capitalize("hello")
+	fmt.Println(ret)
+
+	ret = stringutil.Capitalize("121H")
+	fmt.Println(ret)
+
+	ret = stringutil.Capitalize("HEllo")
+	fmt.Println(ret)
+
+	// Output:
+	// Hello
+	// 121H
+	// HEllo
+}
+
 func TestUncapitalize(t *testing.T) {
 
 	Convey("TestCapitalize", t, func() {
@@ -69,6 +97,18 @@ func TestUncapitalize(t *testing.T) {
 		So(ret, ShouldEqual, "121H")
 	})
 
+}
+
+func ExampleUncapitalize() {
+	ret := stringutil.Uncapitalize("HEllo")
+	fmt.Println(ret)
+
+	ret = stringutil.Uncapitalize("hello")
+	fmt.Println(ret)
+
+	// Output:
+	// hEllo
+	// hello
 }
 
 func TestSubstringAfter(t *testing.T) {
@@ -100,6 +140,20 @@ func TestSubstringAfter(t *testing.T) {
 	})
 }
 
+func ExampleSubstringAfter() {
+	s := "abc"
+	r := stringutil.SubstringAfter(s, "a")
+	fmt.Println(r)
+
+	s = "abcba"
+	r = stringutil.SubstringAfter(s, "b")
+	fmt.Println(r)
+
+	// Output:
+	// bc
+	// cba
+}
+
 func TestSubstringAfterLast(t *testing.T) {
 	Convey("TestSubstringAfter", t, func() {
 		Convey("Test found", func() {
@@ -129,13 +183,34 @@ func TestSubstringAfterLast(t *testing.T) {
 	})
 }
 
+func ExampleSubstringAfterLast() {
+	s := "abc"
+	r := stringutil.SubstringAfterLast(s, "a")
+	fmt.Println(r)
+
+	s = "abcba"
+	r = stringutil.SubstringAfterLast(s, "b")
+	fmt.Println(r)
+
+	// Output:
+	// bc
+	// a
+}
+
 func TestWrap(t *testing.T) {
 	Convey("TestWrap", t, func() {
 		s := stringutil.Wrap("hello", "|")
 		So(s, ShouldEqual, "|hello|")
 
 	})
+}
 
+func ExampleWrap() {
+	s := stringutil.Wrap("hello", "|")
+	fmt.Println(s)
+
+	// Output:
+	// |hello|
 }
 
 func TestAbbreviate(t *testing.T) {
@@ -158,6 +233,22 @@ func TestAbbreviate(t *testing.T) {
 
 }
 
+func ExampleAbbreviate() {
+	s, err := stringutil.Abbreviate("abcdefghijklmno", "---", -1, 10)
+	fmt.Println(s, err)
+
+	s, err = stringutil.Abbreviate("abcdefghijklmno", ",", 0, 10)
+	fmt.Println(s, err)
+
+	s, err = stringutil.Abbreviate("abcdefghijklmno", "...", 6, 10)
+	fmt.Println(s, err)
+
+	// Output:
+	// abcdefg--- <nil>
+	// abcdefghi, <nil>
+	// ...ghij... <nil>
+}
+
 func TestAbbreviateMiddle(t *testing.T) {
 	Convey("TestAbbreviateMiddle", t, func() {
 		s := stringutil.AbbreviateMiddle("abcdef", ".", 4)
@@ -167,6 +258,18 @@ func TestAbbreviateMiddle(t *testing.T) {
 		So(s, ShouldEqual, "abc")
 	})
 
+}
+
+func ExampleAbbreviateMiddle() {
+	s := stringutil.AbbreviateMiddle("abcdef", ".", 4)
+	fmt.Println(s)
+
+	s = stringutil.AbbreviateMiddle("abc", ".", 3)
+	fmt.Println(s)
+
+	// Output:
+	// ab.f
+	// abc
 }
 
 func TestSubstringBefore(t *testing.T) {
@@ -260,11 +363,29 @@ func TestStringSlice(t *testing.T) {
 	})
 }
 
+func ExampleStringToSlice() {
+	s := "hello world"
+	arr := stringutil.StringToSlice(s)
+	fmt.Println(string(arr))
+
+	// Output:
+	// "hello world"
+
+}
+
 func TestRepeat(t *testing.T) {
 	Convey("TestRepeat", t, func() {
 		s := stringutil.Repeat(97, 10)
 		So(s, ShouldEqual, "aaaaaaaaaa")
 	})
+}
+
+func ExampleRepeat() {
+	s := stringutil.Repeat(97, 10)
+	fmt.Println(s)
+
+	// Output:
+	// aaaaaaaaaa
 }
 
 func TestIsEmptyOrBlank(t *testing.T) {
@@ -275,6 +396,26 @@ func TestIsEmptyOrBlank(t *testing.T) {
 		So(stringutil.IsBlank(" "), ShouldBeTrue)
 		So(stringutil.IsBlank(" a"), ShouldBeFalse)
 	})
+}
+
+func ExampleIsEmpty() {
+	fmt.Println(stringutil.IsEmpty(""))
+	fmt.Println(stringutil.IsEmpty(" "))
+
+	// Output:
+	// true
+	// false
+}
+
+func ExampleIsBlank() {
+	fmt.Println(stringutil.IsBlank(""))
+	fmt.Println(stringutil.IsBlank(" "))
+	fmt.Println(stringutil.IsBlank(" a"))
+
+	// Output:
+	// true
+	// true
+	// false
 }
 
 func TestExapnd(t *testing.T) {
