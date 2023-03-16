@@ -77,7 +77,7 @@ func TestTrySend(t *testing.T) {
 		})
 
 		Convey("TestTrySend with no timeout", func() {
-			ch := make(chan string, 0)
+			ch := make(chan string)
 			go func() {
 				concurrent.TrySendChan(s, ch, 0)
 			}()
