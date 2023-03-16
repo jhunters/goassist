@@ -824,3 +824,21 @@ func TestRemoves(t *testing.T) {
 		})
 	})
 }
+
+func TestJoin(t *testing.T) {
+	Convey("TestJoin", t, func() {
+
+		intSlice := []int{1, 2, 3, 4, 5, 6, 7, 8}
+		str := arrayutil.Join(intSlice, "-")
+		So(str, ShouldEqual, "1-2-3-4-5-6-7-8")
+
+		floatSlice := []float32{1.1, 2.2, 5.5}
+		str = arrayutil.Join(floatSlice, ",")
+		So(str, ShouldEqual, "1.1,2.2,5.5")
+
+		strSlice := []string{"hello", "world", "!"}
+		str = arrayutil.Join(strSlice, " ")
+		So(str, ShouldEqual, "hello world !")
+	})
+
+}

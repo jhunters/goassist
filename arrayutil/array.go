@@ -4,6 +4,7 @@
 package arrayutil
 
 import (
+	"fmt"
 	"math/rand"
 	"sort"
 
@@ -589,5 +590,23 @@ func AsList[E any](e ...E) []E {
 	}
 	ret := make([]E, len(e))
 	copy(ret, e)
+	return ret
+}
+
+// Join element as string with split
+func Join[E any](eles []E, split string) string {
+	sz := len(eles)
+	ret := ""
+	if sz == 0 {
+		return ret
+	}
+
+	for i := 0; i < sz; i++ {
+		ret = ret + fmt.Sprintf("%v", eles[i])
+		if i+1 < sz {
+			ret = ret + split
+		}
+	}
+
 	return ret
 }
