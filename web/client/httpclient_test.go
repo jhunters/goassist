@@ -119,13 +119,15 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	for _, headers := range r.MultipartForm.File {
 		for _, header := range headers {
 			log.Printf("recv file: %s\n", header.Filename)
-			name := fmt.Sprintf("file%d_url", FileCount)
+			name := fmt.Sprintf("file%d", FileCount)
 			Result[name] = (header.Filename)
+			FileCount++
 		}
 	}
 	data, err := json.Marshal(Result)
 	if err != nil {
 		log.Printf("%v \n", err)
 	}
+	fmt.Println(string(data))
 	w.Write([]byte(string(data)))
 }

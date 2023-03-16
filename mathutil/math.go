@@ -10,6 +10,7 @@ import (
 	"github.com/jhunters/goassist/generic"
 )
 
+// Max return the max one
 func Max[E generic.Ordered](array ...E) E {
 	if len(array) < 1 {
 		panic("target 'array' cannot be empty.")

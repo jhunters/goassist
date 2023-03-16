@@ -2,13 +2,11 @@ package web
 
 import (
 	"embed"
-	"errors"
 	"io"
 	"io/fs"
 	"net/http"
 	"path"
 	"path/filepath"
-	"strings"
 )
 
 type WebDir struct {
@@ -39,15 +37,11 @@ func (d WebDir) Open(name string) (http.File, error) {
 		return f, nil
 	}
 
-	if filepath.Separator != '/' && strings.ContainsRune(name, filepath.Separator) {
-		return nil, errors.New("http: invalid character in file path")
-	}
 	dir := d.EmbedPrefix
 	if dir == "" {
 		dir = "."
 	}
-	fullName := filepath.Join(dir, filepath.FromSlash(path.Clean("/"+name)))
-	fullName = strings.ReplaceAll(fullName, "\\", "/")
+	fullName := filepath.Join(dir, filepath.FromSlash(path.Clean(name)))
 	f, err := d.Content.Open(fullName) // open from embed.FS
 	if err != nil {
 		return nil, err
