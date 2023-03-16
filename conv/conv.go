@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jhunters/goassist/bytex"
+	"github.com/jhunters/goassist/arrayutil"
 	"github.com/jhunters/goassist/container/listx"
 	"github.com/jhunters/goassist/generic"
 	"github.com/jhunters/goassist/stringutil"
@@ -27,8 +27,8 @@ const (
 	CH_ZERO   = '零'
 	CH_TEN    = '十'
 	CH_ONE    = '一'
-	RUNE_ONE  = '1'
-	RUNE_ZERO = '0'
+	RUNE_ONE  = 1
+	RUNE_ZERO = 0
 )
 
 var (
@@ -56,15 +56,15 @@ func init() {
 
 	Chinese_Number = map[rune]byte{}
 	Chinese_Number['一'] = RUNE_ONE
-	Chinese_Number['二'] = '2'
-	Chinese_Number['三'] = '3'
-	Chinese_Number['四'] = '4'
-	Chinese_Number['五'] = '5'
-	Chinese_Number['六'] = '6'
-	Chinese_Number['七'] = '7'
-	Chinese_Number['七'] = '7'
-	Chinese_Number['八'] = '8'
-	Chinese_Number['九'] = '9'
+	Chinese_Number['二'] = 2
+	Chinese_Number['三'] = 3
+	Chinese_Number['四'] = 4
+	Chinese_Number['五'] = 5
+	Chinese_Number['六'] = 6
+	Chinese_Number['七'] = 7
+	Chinese_Number['七'] = 7
+	Chinese_Number['八'] = 8
+	Chinese_Number['九'] = 9
 	Chinese_Number[CH_ZERO] = RUNE_ZERO
 }
 
@@ -119,8 +119,8 @@ func CItoa(chinesenum string) (string, error) {
 		}
 	}
 
-	numStr := fmt.Sprintf("%0"+Itoa(unit+fixedunit)+"d", 0)
-	buf := bytex.NewByteBufferString(numStr)
+	size := unit + fixedunit
+	numbers := make([]byte, size)
 
 	// fix if has no num before unit, just like as '十' or '十五'
 	if !hasNumBeforeUnit {
@@ -129,14 +129,14 @@ func CItoa(chinesenum string) (string, error) {
 
 	ls.Range(func(c CNum) bool {
 		if c.num != RUNE_ZERO {
-			offset := len(numStr) - c.unit - c.fixedunit
-			buf.ReplaceByOffset(offset, offset+1, []byte{c.num})
+			offset := size - c.unit - c.fixedunit
+			numbers[offset] = c.num + numbers[offset]
 		}
 
 		return true
 	})
 
-	return buf.String(), nil
+	return arrayutil.Join(numbers, stringutil.EMPTY_STRING), nil
 }
 
 // Itoa formate integer and float value to string type
@@ -389,7 +389,7 @@ func ParseFloat(str string) (float64, error) {
 		return v * pow, nil
 	}
 
-	return strconv.ParseFloat(str, 10)
+	return strconv.ParseFloat(str, 64)
 }
 
 // Append convert e to string and appends to dst

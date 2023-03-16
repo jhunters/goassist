@@ -604,6 +604,11 @@ func ExampleCItoa() {
 		fmt.Println(numStr)
 	}
 
+	numStr, err = conv.CItoa("二亿五万万")
+	if err == nil {
+		fmt.Println(numStr)
+	}
+
 	// Output:
 	// 10000115
 	// 500000000000011
@@ -612,4 +617,5 @@ func ExampleCItoa() {
 	// 8
 	// 0
 	// 15
+	// 700000000
 }
