@@ -4,9 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
@@ -35,12 +38,24 @@ func ExamplePostFile() {
 
 }
 
+func newLocalListener() net.Listener {
+	l, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		if l, err = net.Listen("tcp6", "[::1]:0"); err != nil {
+			panic(fmt.Sprintf("httptest: failed to listen on a port: %v", err))
+		}
+	}
+	return l
+}
+
 func TestPostFile(t *testing.T) {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/FileTest", upload)
 
-	server := &http.Server{Addr: ":8080", Handler: mux}
+	listener := newLocalListener()
+
+	server := &http.Server{Handler: mux}
 
 	go func() {
 		time.Sleep(time.Second)
@@ -50,7 +65,8 @@ func TestPostFile(t *testing.T) {
 		}
 
 		var httpClient = &http.Client{}
-		_, err := client.PostFile(httpClient, "http://localhost:8080/FileTest", map[string]string{}, files, map[string]string{})
+		url := "http://" + listener.Addr().String()
+		_, err := client.PostFile(httpClient, url, map[string]string{}, files, map[string]string{})
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -59,7 +75,7 @@ func TestPostFile(t *testing.T) {
 		server.Close()
 
 	}()
-	err := server.ListenAndServe()
+	err := server.Serve(listener)
 	if err != nil {
 		log.Printf("%v", err)
 	}
@@ -130,4 +146,25 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println(string(data))
 	w.Write([]byte(string(data)))
+}
+
+func TestGet(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "Hello, client")
+	}))
+	defer ts.Close()
+
+	var httpClient = &http.Client{}
+	res, err := client.Get(httpClient, ts.URL, map[string]string{}, map[string]string{})
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	greeting, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	res.Body.Close()
+	fmt.Printf("%s", greeting)
 }
