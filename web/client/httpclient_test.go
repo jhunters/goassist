@@ -136,7 +136,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		for _, header := range headers {
 			log.Printf("recv file: %s\n", header.Filename)
 			name := fmt.Sprintf("file%d", FileCount)
-			Result[name] = (header.Filename)
+			Result[name] = header.Filename
 			FileCount++
 		}
 	}

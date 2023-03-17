@@ -802,10 +802,11 @@ func ExampleIntersectionOrdered() {
 	slice := []string{"t", "a", "n", "k", "s"}
 	slice2 := []string{"a", "b", "s"}
 	slice3 := arrayutil.IntersectionOrdered(slice, slice2)
+	arrayutil.SortOrdered(slice3, true)
 	fmt.Println(slice3)
 
 	// Output:
-	// [s a]
+	// [a s]
 }
 
 func TestUnionOrdered(t *testing.T) {
@@ -825,10 +826,11 @@ func ExampleUnionOrdered() {
 	slice := []string{"t", "a", "n", "k", "s"}
 	slice2 := []string{"a", "b", "s"}
 	slice3 := arrayutil.UnionOrdered(slice, slice2)
+	arrayutil.SortOrdered(slice3, true)
 	fmt.Println(slice3)
 
 	// Output:
-	// [a n k s t b]
+	// [a b k n s t]
 }
 
 func TestDisjunctionOrdered(t *testing.T) {
@@ -848,10 +850,11 @@ func ExampleDisjunctionOrdered() {
 	slice := []string{"t", "a", "n", "k", "s"}
 	slice2 := []string{"a", "b", "s"}
 	slice3 := arrayutil.DisjunctionOrdered(slice, slice2)
+	arrayutil.SortOrdered(slice3, true)
 	fmt.Println(slice3)
 
 	// Output:
-	// [n k b t]
+	// [b k n t]
 }
 
 func TestSubstract(t *testing.T) {

@@ -369,7 +369,7 @@ func ExampleStringToSlice() {
 	fmt.Println(string(arr))
 
 	// Output:
-	// "hello world"
+	// hello world
 
 }
 
