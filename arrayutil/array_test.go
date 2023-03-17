@@ -1169,3 +1169,65 @@ func ExampleJoin() {
 	// Output:
 	// 1-2-3-4-5-6-7-8
 }
+
+func TestSwap(t *testing.T) {
+	Convey("TestSwap", t, func() {
+		Convey("TestSwap1", func() {
+			arr := []int{1, 2, 3, 4}
+			arrayutil.Swap(arr, 0, 2, 1)
+			So(arr, ShouldResemble, []int{3, 2, 1, 4})
+		})
+		Convey("TestSwap2", func() {
+			arr := []int{1, 2, 3, 4}
+			arrayutil.Swap(arr, 0, 0, 1)
+			So(arr, ShouldResemble, []int{1, 2, 3, 4})
+		})
+		Convey("TestSwap3", func() {
+			arr := []int{1, 2, 3, 4}
+			arrayutil.Swap(arr, 2, 0, 2)
+			So(arr, ShouldResemble, []int{3, 4, 1, 2})
+		})
+		Convey("TestSwap4", func() {
+			arr := []int{1, 2, 3, 4}
+			arrayutil.Swap(arr, -3, 2, 2)
+			So(arr, ShouldResemble, []int{3, 4, 1, 2})
+		})
+		Convey("TestSwap5", func() {
+			arr := []int{1, 2, 3, 4}
+			arrayutil.Swap(arr, 0, 3, 3)
+			So(arr, ShouldResemble, []int{4, 2, 3, 1})
+		})
+	})
+
+}
+
+func ExampleSwap() {
+	arr := []int{1, 2, 3, 4}
+	arrayutil.Swap(arr, 0, 2, 1)
+	fmt.Println(arr)
+
+	arr = []int{1, 2, 3, 4}
+	arrayutil.Swap(arr, 0, 0, 1)
+	fmt.Println(arr)
+
+	// Output:
+	// [3 2 1 4]
+	// [3 4 1 2]
+}
+
+func TestAddall(t *testing.T) {
+	Convey("TestAddall", t, func() {
+		intArray := []int{1, 2}
+		array := arrayutil.Addall(intArray, 3, 4)
+		So(array, ShouldResemble, []int{1, 2, 3, 4})
+
+		intArray = []int{1, 2}
+		array = arrayutil.Addall(intArray)
+		So(array, ShouldResemble, []int{1, 2})
+
+		intArray = make([]int, 0)
+		array = arrayutil.Addall(intArray, 1, 2)
+		So(array, ShouldResemble, []int{1, 2})
+	})
+
+}

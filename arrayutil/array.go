@@ -610,3 +610,35 @@ func Join[E any](eles []E, split string) string {
 
 	return ret
 }
+
+// Swap a series of elements in the given array.
+func Swap[E any](array []E, offset1, offset2, l int) {
+	if len(array) == 0 || offset1 >= len(array) || offset2 >= len(array) {
+		return
+	}
+	if offset1 < 0 {
+		offset1 = 0
+	}
+	if offset2 < 0 {
+		offset2 = 0
+	}
+	if offset1 == offset2 {
+		return
+	}
+	l = mathutil.Min(mathutil.Min(l, len(array)-offset1), len(array)-offset2)
+	for i := 0; i < l; i++ {
+		array[offset1], array[offset2] = array[offset2], array[offset1]
+		offset1++
+		offset2++
+	}
+}
+
+// Addall add all the elements of the given arrays into a new array.
+func Addall[E any](array []E, eles ...E) []E {
+	ret := make([]E, len(array)+len(eles))
+	copy(ret[:len(array)], array)
+	if len(eles) > 0 {
+		copy(ret[len(array):], eles)
+	}
+	return ret
+}
