@@ -113,7 +113,7 @@ func buildRequestReader(reqParams map[string]string, contentType string, files [
 		// 其他参数列表写入 body
 		for k, v := range reqParams {
 			if err := writer.WriteField(k, v); err != nil {
-				panic(err)
+				return nil, "", err
 			}
 		}
 		if err := writer.Close(); err != nil {
