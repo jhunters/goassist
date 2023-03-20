@@ -136,7 +136,7 @@ func CItoa(chinesenum string) (string, error) {
 		return true
 	})
 
-	// refix vaues
+	// refix every bit if needs carry bit
 	var maxBit byte = 0
 	for i := 0; i < len(numbers); i++ {
 		if numbers[i] > 9 {
