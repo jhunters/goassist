@@ -1212,7 +1212,7 @@ func ExampleSwap() {
 
 	// Output:
 	// [3 2 1 4]
-	// [3 4 1 2]
+	// [1 2 3 4]
 }
 
 func TestAddall(t *testing.T) {
