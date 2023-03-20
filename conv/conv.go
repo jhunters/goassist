@@ -136,6 +136,22 @@ func CItoa(chinesenum string) (string, error) {
 		return true
 	})
 
+	// refix vaues
+	var maxBit byte = 0
+	for i := 0; i < len(numbers); i++ {
+		if numbers[i] > 9 {
+			if i == 0 {
+				maxBit = numbers[i] / 10
+			} else {
+				numbers[i-1] = numbers[i-1] + 1
+			}
+			numbers[i] = numbers[i] % 10
+		}
+	}
+	if maxBit > 0 {
+		numbers = append([]byte{maxBit}, numbers...)
+	}
+
 	return arrayutil.Join(numbers, stringutil.EMPTY_STRING), nil
 }
 

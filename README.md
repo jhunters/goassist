@@ -23,7 +23,7 @@ API包|说明|文档
 --|--|--
 arrayutil|数组处理|[doc](https://pkg.go.dev/github.com/jhunters/goassist/arrayutil)
 concurrent|并发操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist/concurrent)
-concurrent/syncx| 同步应用(pool, map)|[doc](https://pkg.go.dev/github.com/jhunters/goassist/concurrent/syncx)
+concurrent/syncx| 并发同步应用(channel, pool, map)|[doc](https://pkg.go.dev/github.com/jhunters/goassist/concurrent/syncx)
 concurrent/atomicx|原子操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist/concurrent/actomicx)
 containerx|容器操作 | [heap](https://pkg.go.dev/github.com/jhunters/goassist/container/heapx) [list](https://pkg.go.dev/github.com/jhunters/goassist/container/listx) [map](https://pkg.go.dev/github.com/jhunters/goassist/container/mapx) [queue](https://pkg.go.dev/github.com/jhunters/goassist/container/queue) [ring](https://pkg.go.dev/github.com/jhunters/goassist/container/ringx) [set](https://pkg.go.dev/github.com/jhunters/goassist/container/set) [stack](https://pkg.go.dev/github.com/jhunters/goassist/container/stack)
 hashx|hash操作|[doc](https://pkg.go.dev/github.com/jhunters/goassist/hashx)
