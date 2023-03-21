@@ -1,6 +1,7 @@
 package netutil_test
 
 import (
+	"fmt"
 	"net"
 	"testing"
 
@@ -24,4 +25,21 @@ func TestUint32ToIPv4(t *testing.T) {
 		ip := netutil.Uint32ToIPv4(33620095)
 		So(ip.String(), ShouldEqual, "127.0.1.2")
 	})
+}
+
+func ExampleIPv4ToUInt32() {
+	ip := net.IPv4(127, 0, 1, 2)
+	v := netutil.IPv4ToUInt32(ip)
+	fmt.Println(v)
+
+	// Output:
+	// 33620095
+}
+
+func ExampleUint32ToIPv4() {
+	ip := netutil.Uint32ToIPv4(33620095)
+	fmt.Println(ip.String())
+
+	// Output:
+	// 127.0.1.2
 }
