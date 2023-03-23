@@ -1,6 +1,7 @@
 package atomicx_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/jhunters/goassist/concurrent/syncx/atomicx"
@@ -221,4 +222,63 @@ func TestSetGet(t *testing.T) {
 		So(atomInt.Load(), ShouldEqual, 200)
 	})
 
+	Convey("GetAndSet", t, func() {
+		atomInt := atomicx.NewAtomicInt(conv.ToPtr[int64](0))
+		v := atomInt.GetAndSet(1)
+		So(v, ShouldEqual, 0)
+		So(atomInt.Get(), ShouldEqual, 1)
+	})
+
+}
+
+func ExampleAtomicInt_AddandGet() {
+	atomInt := atomicx.NewAtomicInt(conv.ToPtr[int64](100))
+
+	v := atomInt.AddandGet(20)
+	fmt.Println(v)
+
+	v = atomInt.AddandGet(-20)
+	fmt.Println(v)
+
+	// Output:
+	// 120
+	// 100
+}
+
+func ExampleAtomicInt_IncrementAndGet() {
+	atomInt := atomicx.NewAtomicInt(conv.ToPtr[int64](100))
+
+	v := atomInt.IncrementAndGet()
+	fmt.Println(v)
+
+	v = atomInt.IncrementAndGet()
+	fmt.Println(v)
+
+	// Output:
+	// 101
+	// 102
+}
+
+func ExampleAtomicInt_CompareAndSet() {
+	atomInt := atomicx.NewAtomicInt(conv.ToPtr[int64](100))
+
+	update := atomInt.CompareAndSet(100, 101)
+	fmt.Println(update)
+
+	update = atomInt.CompareAndSet(100, 101)
+	fmt.Println(update)
+
+	// Output:
+	// true
+	// false
+}
+
+func ExampleAtomicInt_GetAndSet() {
+	atomInt := atomicx.NewAtomicInt(conv.ToPtr[int64](0))
+	v := atomInt.GetAndSet(1)
+
+	fmt.Println(v, atomInt.Get())
+
+	// Output:
+	// 0 1
 }
