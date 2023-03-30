@@ -7,6 +7,7 @@ import (
 	"github.com/jhunters/goassist/arrayutil"
 )
 
+// A ByteBuffer is composite with bytes.Buffer and provides some utility functions for variable-sized buffer of bytes.
 type ByteBuffer struct {
 	bytes.Buffer
 }
