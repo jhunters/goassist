@@ -12,16 +12,16 @@ import (
 )
 
 type Simple struct {
-	age    int64
-	gender bool
-	other  int64
-	other2 bool
+	Age    int64
+	Gender bool
+	Other  int64
+	Other2 bool
 }
 
 func TestStructMappingToArray(t *testing.T) {
 	Convey("test struct convert to array", t, func() {
 
-		s := Simple{age: 100}
+		s := Simple{Age: 100}
 		size := unsafe.Sizeof(s)
 
 		ret := unsafex.MappingToArray(s)
@@ -29,21 +29,22 @@ func TestStructMappingToArray(t *testing.T) {
 		buff := bytes.NewBuffer(ret)
 		var age int64
 		binary.Read(buff, binary.LittleEndian, &age)
-		So(age, ShouldEqual, s.age)
+		So(age, ShouldEqual, s.Age)
 	})
 }
 
 func TestArrayMappingToStruct(t *testing.T) {
 	Convey("test convert array to struct ", t, func() {
 
-		s := Simple{age: 100}
+		s := Simple{Age: 100}
 		size := unsafe.Sizeof(s)
 
 		arr := make([]byte, size)
 		result := unsafex.ArrayMapping[Simple](arr)
 
 		binary.LittleEndian.PutUint64(arr, 1000)
-		So(1000, ShouldEqual, result.age)
+		So(1000, ShouldEqual, result.Age)
+		So(1000, ShouldEqual, s.Age)
 	})
 }
 

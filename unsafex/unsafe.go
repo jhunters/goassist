@@ -82,7 +82,7 @@ func SliceToString(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
-// Copy a new value. note if has sync.Mutex field will get a warnning
+// Copy a new value. if value is a pointer,so only pointer reference copyied. note if has sync.Mutex field will get a warnning
 func Copy[E any](v *E) *E {
 	n := *v
 	return &n
