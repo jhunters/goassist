@@ -87,12 +87,12 @@ func CItoa(chinesenum string) (string, error) {
 			ls.PushFront(cNum)
 			hasNumBeforeUnit = true
 		} else if v, ok := Chinese_Uint_Number[num]; ok {
-			if v >= FixedUnitValue {
+			if v >= FixedUnitValue { // if just like '万、亿' unit
 				if biggestUnit < v {
 					biggestUnit = v
 					fixedunit = v // just ajust to fixed unit
 				} else {
-					// if just like '万亿' add num unit
+					// if just like '万、亿' add num unit
 					fixedunit += v
 				}
 				unit = 1
