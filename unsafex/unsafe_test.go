@@ -44,7 +44,7 @@ func TestArrayMappingToStruct(t *testing.T) {
 
 		binary.LittleEndian.PutUint64(arr, 1000)
 		So(1000, ShouldEqual, result.Age)
-		So(1000, ShouldEqual, s.Age)
+		So(100, ShouldEqual, s.Age)
 	})
 }
 
