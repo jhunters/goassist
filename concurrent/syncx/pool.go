@@ -14,10 +14,8 @@ type Pool[E any] struct {
 // NewPoolX create a new PoolX
 func NewPool[E any](f base.Supplier[E]) *Pool[E] {
 	p := Pool[E]{New: f}
-	p.internal = sync.Pool{
-		New: func() any {
-			return p.New()
-		},
+	p.internal.New = func() any {
+		return p.New()
 	}
 
 	return &p
