@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"path"
 	"path/filepath"
+	"strings"
 )
 
 type WebDir struct {
@@ -42,6 +43,7 @@ func (d WebDir) Open(name string) (http.File, error) {
 		dir = "."
 	}
 	fullName := filepath.Join(dir, filepath.FromSlash(path.Clean(name)))
+	fullName = strings.ReplaceAll(fullName, "\\", "/")
 	f, err := d.Content.Open(fullName) // open from embed.FS
 	if err != nil {
 		return nil, err
