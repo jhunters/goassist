@@ -16,7 +16,7 @@ var htmlDir embed.FS
 func ExampleTemplateFS() {
 	// web could use TemplateFS to develop by embed mode or direct mode(files modify aware on running)
 	webTemplate := web.TemplateFS{Content: htmlDir, Embbed: false, DelimsLeft: "${{", DelimsRigth: "}}"}
-	templ, err := webTemplate.Parse("./", "web_test/*.html")
+	templ, _, err := webTemplate.Parse("./", "web_test/*.html")
 	if err != nil {
 		return
 	}
@@ -43,7 +43,7 @@ func ExampleTemplateFS() {
 func TestTemplateFS(t *testing.T) {
 	Convey("TestTemplateFS", t, func() {
 		webTemplate := web.TemplateFS{Content: htmlDir, Embbed: false, DelimsLeft: "${{", DelimsRigth: "}}"}
-		templ, err := webTemplate.Parse("./", "web_test/*.html")
+		templ, _, err := webTemplate.Parse("./", "web_test/*.html")
 		So(err, ShouldBeNil)
 
 		data := struct {
@@ -63,7 +63,7 @@ func TestTemplateFS(t *testing.T) {
 
 	Convey("TestTemplateFS embed", t, func() {
 		webTemplate := web.TemplateFS{Content: htmlDir, Embbed: true, DelimsLeft: "${{", DelimsRigth: "}}"}
-		templ, err := webTemplate.Parse("./", "web_test/*.html")
+		templ, _, err := webTemplate.Parse("./", "web_test/*.html")
 		So(err, ShouldBeNil)
 
 		data := struct {
