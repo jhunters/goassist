@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math/rand"
 	"sort"
+	"time"
 
 	"github.com/jhunters/goassist/base"
 	"github.com/jhunters/goassist/generic"
@@ -64,7 +65,7 @@ func (s sortable[E]) Less(i, j int) bool {
 // Shuffle randomly permutes the specified list using a default source of
 // randomness.
 func Shuffle[E any](data []E) {
-	r := rand.New(rand.NewSource(int64(len(data))))
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	ShuffleRandom(data, r)
 }
 
