@@ -34,10 +34,10 @@ func EventStreamHandler(onEvent func(*http.Request, chan<- string)) func(http.Re
 		}
 
 		// 设置响应头信息
-		w.Header().Set("Content-Type", "text/event-stream")
-		w.Header().Set("Cache-Control", "no-cache")
-		w.Header().Set("Connection", "keep-alive")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set(HTTP_HEADER_CONTENT_TYPE, HTTP_HEADER_CONTENT_TYPE_ES)
+		w.Header().Set(HTTP_HEADER_CACHE_CONTROL, HTTP_HEADER_CONTENT_Control_NO_CACHE)
+		w.Header().Set(HTTP_HEADER_CONNECTION, HTTP_HEADER_KEEPALIVE)
+		w.Header().Set(HTTP_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN, "*")
 
 		// 创建字符串通道
 		ch := make(chan string)
