@@ -595,6 +595,9 @@ func TestCAtoi(t *testing.T) {
 		numStr, err = conv.CAtoi(908070605040302010) // 90 8070 6050 4030 2010
 		So(err, ShouldBeNil)
 		So(numStr, ShouldEqual, "九十亿八千零七十万六千零五十亿四千零三十万二千零一十")
+		v, err := conv.CItoa("九十亿八千零七十万六千零五十亿四千零三十万二千零一十")
+		So(err, ShouldBeNil)
+		So("908070605040302010", ShouldEqual, v)
 	})
 }
 

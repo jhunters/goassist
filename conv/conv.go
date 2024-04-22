@@ -168,6 +168,7 @@ func CItoa(chinesenum string) (string, error) {
 	fixedunit := 0
 	biggestUnit := 0
 	hasNumBeforeUnit := false
+	hasWanBefore := false
 	for i := len(nums) - 1; i >= 0; i-- {
 		num := nums[i]
 		if v, ok := Chinese_Number[num]; ok {
@@ -180,9 +181,13 @@ func CItoa(chinesenum string) (string, error) {
 					biggestUnit = v
 					fixedunit = v // just ajust to fixed unit
 				} else { // 未超过最大单位
-					// if just like '万、亿' add num unit
+					// base add num unit
+					if v == CH_YI_BIT && hasWanBefore {
+						v -= CH_WAN_BIT
+					}
 					fixedunit += v
 				}
+				hasWanBefore = v == CH_WAN_BIT
 				unit = 1
 			} else {
 				unit = v + 1
