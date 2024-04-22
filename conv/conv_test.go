@@ -568,6 +568,36 @@ func TestCitoa(t *testing.T) {
 
 }
 
+func TestCAtoi(t *testing.T) {
+	Convey("TestCAtoi", t, func() {
+		numStr, err := conv.CAtoi(0)
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "零")
+		numStr, err = conv.CAtoi(10)
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "一十")
+		numStr, err = conv.CAtoi(20010)
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "二万零一十")
+
+		numStr, err = conv.CAtoi(10000)
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "一万")
+
+		numStr, err = conv.CAtoi(501020010)
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "五亿零一百零二万零一十")
+
+		numStr, err = conv.CAtoi(1501020010)
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "一十五亿零一百零二万零一十")
+
+		numStr, err = conv.CAtoi(908070605040302010) // 90 8070 6050 4030 2010
+		So(err, ShouldBeNil)
+		So(numStr, ShouldEqual, "九十亿八千零七十万六千零五十亿四千零三十万二千零一十")
+	})
+}
+
 func ExampleCItoa() {
 	numStr, err := conv.CItoa("一千万零一百一十五")
 	if err == nil {

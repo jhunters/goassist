@@ -29,11 +29,19 @@ const (
 	CH_ONE    = '一'
 	RUNE_ONE  = 1
 	RUNE_ZERO = 0
+
+	S_ZERO = '0'
+
+	CH_WAN_BIT = 4 // 4 bit for '万'
+	CH_YI_BIT  = 8 // 8 bit for '亿'
 )
 
 var (
 	Chinese_Uint_Number map[rune]int
 	Chinese_Number      map[rune]byte
+
+	Number_Chinese_Uint map[int]rune
+	Number_Chinese      map[rune]rune
 
 	Chinese_Unit []rune
 )
@@ -54,8 +62,15 @@ func init() {
 	Chinese_Uint_Number['百'] = 2
 	Chinese_Uint_Number[CH_TEN] = 1
 
+	Number_Chinese_Uint = map[int]rune{}
+	Number_Chinese_Uint[9] = '亿'
+	Number_Chinese_Uint[5] = '万'
+	Number_Chinese_Uint[3] = '千'
+	Number_Chinese_Uint[2] = '百'
+	Number_Chinese_Uint[1] = CH_TEN
+
 	Chinese_Number = map[rune]byte{}
-	Chinese_Number['一'] = RUNE_ONE
+	Chinese_Number[CH_ONE] = RUNE_ONE
 	Chinese_Number['二'] = 2
 	Chinese_Number['三'] = 3
 	Chinese_Number['四'] = 4
@@ -66,9 +81,82 @@ func init() {
 	Chinese_Number['八'] = 8
 	Chinese_Number['九'] = 9
 	Chinese_Number[CH_ZERO] = RUNE_ZERO
+
+	Number_Chinese = map[rune]rune{}
+	Number_Chinese['1'] = CH_ONE
+	Number_Chinese['2'] = '二'
+	Number_Chinese['3'] = '三'
+	Number_Chinese['4'] = '四'
+	Number_Chinese['5'] = '五'
+	Number_Chinese['6'] = '六'
+	Number_Chinese['7'] = '七'
+	Number_Chinese['8'] = '八'
+	Number_Chinese['9'] = '九'
+	Number_Chinese['0'] = CH_ZERO
+
+}
+
+// CAtoi 函数将传入的数字 uint 转换为中文大写表示，并返回转换后的字符串和 error。
+// 如果 num 为 0，则直接返回 "零" 和 nil。
+func CAtoi(num uint) (string, error) {
+	if num == 0 {
+		return string(CH_ZERO), nil
+	}
+	numStr := fmt.Sprintf("%d", num)
+	nums := []rune(numStr)
+
+	ret := ""
+	cbit := 0
+	cunitbit := 0
+
+	isZero := false
+	isFirstNoneZero := false
+	for i := len(nums) - 1; i >= 0; i-- {
+		n := nums[i]
+
+		if n == S_ZERO {
+			isZero = true
+			if cbit == CH_WAN_BIT { // 进万 （或亿)
+				ret = string(Number_Chinese_Uint[(cunitbit%2+1)*4+1]) + ret
+				isFirstNoneZero = false
+			}
+		} else {
+			if isFirstNoneZero && isZero {
+				if cbit == 0 {
+					ret = string(CH_TEN) + ret
+				} else {
+					ret = string(CH_ZERO) + ret
+				}
+			}
+
+			isZero = false
+			isFirstNoneZero = true
+
+			if v, ok := Number_Chinese_Uint[cbit]; ok && !isZero {
+				ret = string(v) + ret
+			}
+
+			if cbit == CH_WAN_BIT { // 进万 （或亿)
+				ret = string(Number_Chinese_Uint[(cunitbit%2+1)*4+1]) + ret
+			}
+			ret = string(Number_Chinese[n]) + ret
+		}
+		if cbit == CH_WAN_BIT { // 进万 （或亿)
+			cbit = 0
+			cunitbit++
+		}
+
+		cbit++
+	}
+
+	return ret, nil
 }
 
 // CItoa convert chinese number to asc number string
+// CItoa 函数将中文数字转换为阿拉伯数字，并返回结果和可能存在的错误。
+// 参数chinesenum：需要转换的中文数字。
+// 返回值string：转换后的阿拉伯数字。
+// 返回值error：转换过程中可能遇到的错误。
 func CItoa(chinesenum string) (string, error) {
 	if stringutil.IsBlank(chinesenum) {
 		return stringutil.EMPTY_STRING, fmt.Errorf("invalid chinese number. %s", chinesenum)
@@ -91,7 +179,7 @@ func CItoa(chinesenum string) (string, error) {
 				if biggestUnit < v {
 					biggestUnit = v
 					fixedunit = v // just ajust to fixed unit
-				} else {
+				} else { // 未超过最大单位
 					// if just like '万、亿' add num unit
 					fixedunit += v
 				}
