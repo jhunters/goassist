@@ -162,6 +162,10 @@ func CItoa(chinesenum string) (string, error) {
 		return stringutil.EMPTY_STRING, fmt.Errorf("invalid chinese number. %s", chinesenum)
 	}
 
+	if strings.EqualFold(chinesenum, string(CH_ZERO)) {
+		return "0", nil
+	}
+
 	ls := listx.NewList[CNum]()
 	nums := []rune(chinesenum)
 	unit := 1
