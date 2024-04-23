@@ -1,6 +1,7 @@
 package netutil
 
 import (
+	"fmt"
 	"net"
 )
 
@@ -17,6 +18,18 @@ func IPv4ToUInt32(ip net.IP) uint32 {
 	ipInt32 = ipInt32 | uint32(ipv4[3])<<24
 
 	return ipInt32
+}
+
+// IPv4StringToUInt32 将IPv4地址字符串转换为无符号32位整数
+// 参数ip：IPv4地址字符串
+// 返回值1：转换后的无符号32位整数
+// 返回值2：如果转换失败，则返回错误信息
+func IPv4StringToUInt32(ip string) (uint32, error) {
+	ipv4 := net.ParseIP(ip).To4()
+	if ipv4 == nil {
+		return 0, fmt.Errorf("invalid ip: %s", ip)
+	}
+	return IPv4ToUInt32(ipv4), nil
 }
 
 // Uint32ToIPv4 convert unit32 to ipv4
