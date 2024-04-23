@@ -23,11 +23,14 @@ const (
 
 // Abbreviates a String using a given replacement marker
 func Abbreviate(str, abbrevMarker string, offset, maxWidth int) (string, error) {
+	// 如果输入字符串和缩写标记都为空，则直接返回原字符串
 	if IsEmpty(str) && IsEmpty(abbrevMarker) {
 		return str, nil
 	} else if !IsEmpty(str) && abbrevMarker == "" && maxWidth > 0 {
+		// 如果输入字符串不为空，缩写标记为空，且最大宽度大于0，则返回输入字符串的前maxWidth个字符
 		return SubString(str, 0, maxWidth), nil
 	} else if IsEmpty(str) || IsEmpty(abbrevMarker) {
+		// 如果输入字符串或缩写标记为空，则直接返回原字符串
 		return str, nil
 	}
 
@@ -35,25 +38,32 @@ func Abbreviate(str, abbrevMarker string, offset, maxWidth int) (string, error) 
 	minAbbrevWidth := abbrevMarkerLength + 1
 	minAbbrevWidthOffset := abbrevMarkerLength + abbrevMarkerLength + 1
 
+	// 如果最大宽度小于最小缩写宽度，则返回错误提示信息
 	if maxWidth < minAbbrevWidth {
 		return str, fmt.Errorf("minimum abbreviation width is %d", minAbbrevWidth)
 	}
 	l := len(str)
+	// 如果字符串长度小于等于最大宽度，则直接返回原字符串
 	if l <= maxWidth {
 		return str, nil
 	}
+	// 如果偏移量大于字符串长度，则将偏移量设为字符串长度
 	if offset > l {
 		offset = l
 	}
+	// 如果字符串长度减去偏移量小于等于最大宽度减去缩写标记长度，则将偏移量设为字符串长度减去(最大宽度减去缩写标记长度)
 	if l-offset < maxWidth-abbrevMarkerLength {
 		offset = l - (maxWidth - abbrevMarkerLength)
 	}
+	// 如果偏移量小于等于缩写标记长度加1，则返回从字符串开头到最大宽度的字符再加上缩写标记
 	if offset <= abbrevMarkerLength+1 {
 		return SubString(str, 0, maxWidth-abbrevMarkerLength) + abbrevMarker, nil
 	}
+	// 如果最大宽度小于最小缩写宽度加上偏移量，则返回错误提示信息
 	if maxWidth < minAbbrevWidthOffset {
 		return str, fmt.Errorf("minimum abbreviation width with offset is %d", minAbbrevWidthOffset)
 	}
+	// 如果偏移量加上最大宽度减去缩写标记长度小于字符串长度，则返回从偏移量位置到字符串末尾的字符再加上缩写标记
 	if offset+maxWidth-abbrevMarkerLength < l {
 		ns, err := Abbreviate(SubString(str, offset, -1), abbrevMarker, 0, maxWidth-abbrevMarkerLength)
 		if err != nil {
@@ -61,6 +71,7 @@ func Abbreviate(str, abbrevMarker string, offset, maxWidth int) (string, error) 
 		}
 		return abbrevMarker + ns, nil
 	}
+	// 否则返回从字符串末尾到最大宽度的字符再加上缩写标记
 	return abbrevMarker + SubString(str, l-(maxWidth-abbrevMarkerLength), -1), nil
 }
 
