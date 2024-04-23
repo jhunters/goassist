@@ -76,7 +76,7 @@ func TestTrySend(t *testing.T) {
 			So(v, ShouldEqual, <-ch)
 		})
 
-		Convey("TestTrySend with no timeout", func() {
+		Convey("TestTrySend with not set timeout", func() {
 			ch := make(chan string)
 			go func() {
 				concurrent.TrySendChan(s, ch, 0)
