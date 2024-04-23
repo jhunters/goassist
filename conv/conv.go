@@ -106,11 +106,11 @@ func CAtoi(num uint) (string, error) {
 	nums := []rune(numStr)
 
 	ret := ""
-	cbit := 0
-	cunitbit := 0
+	cbit := 0     // 当前位的位数
+	cunitbit := 0 // 当前位的单位，用于处理万位或亿位
 
-	isZero := false
-	isFirstNoneZero := false
+	isZero := false          // 是否为零
+	isFirstNoneZero := false // 是否前一个为非零数字，用于处理连续零，在中文数字中只显示一个零
 	for i := len(nums) - 1; i >= 0; i-- {
 		n := nums[i]
 
