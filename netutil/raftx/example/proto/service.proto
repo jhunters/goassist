@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+option go_package = "kvserver/proto";
+
+service CacheManager {
+	rpc Put(PutRequest) returns (PutResponse) {}
+	rpc Get(GetRequest) returns (GetResponse) {}
+	rpc Del(DelRequest) returns (DelResponse) {}
+	rpc Clear(ClearRequest) returns (ClearResponse) {}
+}
+
+message PutRequest {
+	bytes key = 1;
+	bytes value = 2;
+}
+
+message PutResponse {
+	string error = 1;
+	int32  size = 2;
+}
+
+message GetRequest {
+	bytes key = 1;
+}
+
+message GetResponse {
+	bytes value = 1;
+	string error = 2;
+}
+
+message DelRequest {
+	bytes key = 1;
+}
+
+message DelResponse {
+	bytes value = 1;
+	string error = 2;
+}
+
+message ClearRequest {
+}
+
+message ClearResponse {
+	string error = 1;
+}
