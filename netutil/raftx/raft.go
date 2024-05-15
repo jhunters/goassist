@@ -36,25 +36,43 @@ type Node struct {
 
 // RaftX 实例
 type RaftX struct {
-	config    *raft.Config
-	localip   string
-	localport string
-	dataDir   string
+	// Raft 配置信息
+	config *raft.Config
 
+	// 本地IP地址
+	localip string
+
+	// 本地端口号
+	localport string
+
+	// 数据保存目录, 包括wal日志， snap快照， raft配置文件
+	dataDir string
+
+	// 集群其它节点列表
 	peers []*Node
 
+	// 标记RaftX是否已启动的原子布尔值
 	started atomic.Bool
 
-	healthService     bool
+	// 是否启用健康服务
+	healthService bool
+
+	// 健康服务名称
 	healthServiceName string
 
-	raftadmin         bool
+	// 是否启用Raft管理功能
+	raftadmin bool
+
+	// 是否启用反射服务
 	reflectionService bool
 
+	// 有限状态机（FSM）
 	fsm raft.FSM
 
+	// Raft 实例指针
 	r *raft.Raft
 
+	// 是否为引导Raft集群的标记
 	raftBootstrap bool
 }
 
@@ -250,9 +268,10 @@ func (r *RaftX) Start(s *grpc.Server, fn func(*raft.Raft)) error {
 		}
 	}
 
-	// call back
+	// call back FSM 接口
 	fn(r.r)
 
+	// 启动网络服务监听
 	sock, err := net.Listen("tcp", fmt.Sprintf(":%s", r.localport) /* r.getAddress() */)
 	if err != nil {
 		return fmt.Errorf("failed to listen: %v", err)
