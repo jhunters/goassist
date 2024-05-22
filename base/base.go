@@ -4,9 +4,9 @@
 package base
 
 type (
-	Null struct{}
+	Null struct{} // a struct representing a null value.
 
-	Call func()
+	Call func() // a function type with no parameters and no return value
 
 	// function provides one input argument and one return
 	Func[R, T any] func(T) R
@@ -39,5 +39,5 @@ type (
 )
 
 var (
-	Empty Null // const var for nil usage marker
+	Empty Null // serves as a constant marker for nil usage
 )

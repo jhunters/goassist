@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/raft"
 	boltdb "github.com/hashicorp/raft-boltdb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -229,9 +230,8 @@ func (r *RaftX) Start(s *grpc.Server, fn func(*raft.Raft)) error {
 	}
 
 	// 创建 grpc 传输 transport.Manager 对象， 实现了 raft 接口同步协议实现
-	// insecure.NewCredentials()  <= grpc.WithInsecure()
-	// grpc.WithTransportCredentials(insecure.NewCredentials())
-	tm := transport.New(raft.ServerAddress(r.GetAddress()), []grpc.DialOption{grpc.WithInsecure()})
+	tm := transport.New(raft.ServerAddress(r.GetAddress()),
+		[]grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())})
 
 	// fsm 需要实现日志同步的接口
 	r.r, err = raft.NewRaft(r.config, r.fsm, wal, sdb, fss, tm.Transport())

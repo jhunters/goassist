@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/http/httptest"
 	"time"
 
 	"github.com/jhunters/goassist/web"
@@ -37,4 +38,20 @@ func waitServer(url string) bool {
 		tries--
 	}
 	return false
+}
+
+// ExampleEventStreamHandler 是一个演示函数，用于展示如何使用 web.EventStreamHandler 来处理 Server-Sent Events（服务器发送事件）
+func ExampleEventStreamHandler() {
+	// 定义一个事件流回调函数， 使用流的方式向客户端发送数据
+	eventStream := func(r *http.Request, ch chan<- string) {
+		// write data
+		for i := 0; i < 10; i++ {
+			ch <- fmt.Sprintf("data: %s\n", time.Now().String())
+			time.Sleep(time.Second)
+		}
+		close(ch)
+	}
+
+	ts := httptest.NewServer(http.HandlerFunc(web.EventStreamHandler(eventStream)))
+	defer ts.Close()
 }

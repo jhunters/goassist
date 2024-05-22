@@ -105,13 +105,17 @@ type AllInt struct {
 func TestSlice(t *testing.T) {
 	v := &AllInt{1, 2, 3, 4, 5}
 
-	// convert AllInt struct's field value to  int slice
-	nv := unsafex.Slice[AllInt, int](v, 5)
-	fmt.Println(nv)
+	Convey("TestSlice", t, func() {
 
-	// convert AllInt struct's field value to  int slice
-	nv = unsafex.Slice[AllInt, int](v, 2)
-	fmt.Println(nv)
+		expect := []int{1, 2, 3, 4, 5}
+		// convert AllInt struct's field value to  int slice
+		nv := unsafex.Slice[AllInt, int](v, 5)
+		So(nv, ShouldResemble, expect)
+
+		// convert AllInt struct's field value to  int slice
+		nv = unsafex.Slice[AllInt, int](v, 2)
+		So(nv, ShouldResemble, expect[:2])
+	})
 
 }
 
@@ -135,15 +139,17 @@ func TestOffsetValue(t *testing.T) {
 
 	v := &AllInt{1, 2, 3, 4, 5}
 
-	nv := unsafex.OffsetValue[AllInt, int](v, 2)
-	fmt.Println(*nv)
+	Convey("TestOffsetValue", t, func() {
+		nv := unsafex.OffsetValue[AllInt, int](v, 2)
+		So(nv, ShouldEqual, &v.V3)
+	})
 
 }
 
 func ExampleOffsetValue() {
 	v := &AllInt{1, 2, 3, 4, 5}
 
-	nv := unsafex.OffsetValue[AllInt, int](v, 2)
+	nv := unsafex.OffsetValue[AllInt, int](v, 2) // equal to v[2]
 	fmt.Println(*nv)
 
 	// Output:
