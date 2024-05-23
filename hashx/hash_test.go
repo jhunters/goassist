@@ -1,6 +1,7 @@
 package hashx_test
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/jhunters/goassist/hashx"
@@ -35,5 +36,12 @@ func TestHashcode(t *testing.T) {
 	Convey("Hashcode64", t, func() {
 		hc := hashx.Hashcode64([]byte("nodeA"))
 		So(hc, ShouldBeGreaterThanOrEqualTo, 0)
+	})
+
+	Convey("HashcodeSum", t, func() {
+		hc := hashx.HashcodeSum([]byte("sdfdsfdsfsdfdd"))
+		r, err := json.Marshal(hc)
+		So(err, ShouldBeNil)
+		So(r, ShouldNotBeNil)
 	})
 }

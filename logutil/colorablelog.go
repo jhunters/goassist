@@ -19,6 +19,8 @@ const (
 	YELLOW
 	BLUE
 	RED
+
+	NEW_LINE = "\n"
 )
 
 var (
@@ -142,6 +144,12 @@ func (l *clogger) Write(p []byte) (int, error) {
 	l.writes <- p
 	<-l.done
 	return len(p), nil
+}
+
+// Log 将日志信息 p 写入 clogger 实例中
+// 返回写入的字节数和可能发生的错误
+func (l *clogger) Log(p string) (int, error) {
+	return l.Write([]byte(p + NEW_LINE))
 }
 
 // create logger instance.

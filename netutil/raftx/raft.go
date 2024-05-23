@@ -211,13 +211,13 @@ func (r *RaftX) Start(s *grpc.Server, fn func(*raft.Raft)) error {
 	// 使用 boltdb进行wal日志存储
 	// 1 存储 配置信息 rafe.Configuration 包含集群信息 LogType=LogConfiguration
 	//
-	wal, err := boltdb.NewBoltStore(filepath.Join(baseDir, "logs.dat"))
+	wal, err := boltdb.NewBoltStore(filepath.Join(baseDir, Logs_File))
 	if err != nil {
 		return fmt.Errorf(`boltdb.NewBoltStore(%q): %v`, filepath.Join(baseDir, Logs_File), err)
 	}
 
 	// 使用 boltdb进行 stable 存储 内容包含 最后的投票节点信息LastVoteCand，CurrentTerm LastVoteTerm
-	sdb, err := boltdb.NewBoltStore(filepath.Join(baseDir, "stable.dat"))
+	sdb, err := boltdb.NewBoltStore(filepath.Join(baseDir, Stable_File))
 	if err != nil {
 		return fmt.Errorf(`boltdb.NewBoltStore(%q): %v`, filepath.Join(baseDir, Stable_File), err)
 	}

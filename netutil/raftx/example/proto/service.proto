@@ -7,6 +7,7 @@ service CacheManager {
 	rpc Get(GetRequest) returns (GetResponse) {}
 	rpc Del(DelRequest) returns (DelResponse) {}
 	rpc Clear(ClearRequest) returns (ClearResponse) {}
+	rpc Query(QueryRequest) returns (QueryResponse) {}
 }
 
 message PutRequest {
@@ -42,4 +43,11 @@ message ClearRequest {
 
 message ClearResponse {
 	string error = 1;
+}
+
+message QueryRequest {
+}
+
+message QueryResponse {
+	map<string, bytes> cache = 1;
 }

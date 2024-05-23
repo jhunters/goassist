@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/jhunters/goassist/logutil"
 	"github.com/jhunters/goassist/netutil/raftx"
 	"github.com/jhunters/goassist/netutil/raftx/example/proto"
 
@@ -16,6 +17,11 @@ const (
 	Logs_File = "logs.dat"
 
 	Stable_File = "stable.dat"
+)
+
+var (
+	entryLog  = logutil.CreateLogger("AppendEntryLog", logutil.GREEN)
+	statusLog = logutil.CreateLogger("StatusLog", logutil.YELLOW)
 )
 
 type CacheStatus struct {
@@ -33,6 +39,8 @@ func StartRaft(raftId, raftAddress, raftDir string, raftBootstrap bool, peers []
 
 	// 实现 raft.FSM 接口
 	wt := &cacheTracker{}
+	wt.id = raftId
+	wt.addr = raftAddress
 	wt.cache = &proto.CacheMgr{Cache: make(map[string][]byte)}
 
 	node := &raftx.Node{Id: raftId, Addr: raftAddress}
@@ -62,14 +70,14 @@ func StartRaft(raftId, raftAddress, raftDir string, raftBootstrap bool, peers []
 			raft: r,
 		})
 
-		go watchStatus(r, wt, rfx.GetAddress(), status)
+		go watchStatus(r, wt, status)
 	})
 
 }
 
 // 这段代码用于监控raft的状态和缓存大小。它首先设置一个状态变更时的回调函数并开始一个goroutine，用于监控raft的leader状态和host信息的更新。
 // 同时，它开启了一个定时器ticker，每隔两秒触发一次，用于监控缓存大小的变更并输出到控制台
-func watchStatus(r *raft.Raft, wt *cacheTracker, addr string, status *CacheStatus) {
+func watchStatus(r *raft.Raft, wt *cacheTracker, status *CacheStatus) {
 	ch := make(chan raft.Observation, 1)
 	// 状态变更时回调
 	r.RegisterObserver(raft.NewObserver(ch, true, func(o *raft.Observation) bool {
@@ -81,12 +89,12 @@ func watchStatus(r *raft.Raft, wt *cacheTracker, addr string, status *CacheStatu
 			if r.State() != status.raftState {
 				status.raftState = r.State()
 				// fmt.Print("\x0c", "leader info:", leader)
-				fmt.Println(addr, " leader:", r.State() == raft.Leader)
+				statusLog.Write([]byte(fmt.Sprintf("[%s=%s] leader: %v\n", wt.id, wt.addr, r.State() == raft.Leader)))
 			}
 
 			if r.Leader() != status.raftHost {
 				status.raftHost = r.Leader()
-				fmt.Println(addr, " leader info:", status.raftHost)
+				statusLog.Write([]byte(fmt.Sprintf("[%s=%s] leader info: %s\n", wt.id, wt.addr, status.raftHost)))
 			}
 		}
 	}()
@@ -98,7 +106,7 @@ func watchStatus(r *raft.Raft, wt *cacheTracker, addr string, status *CacheStatu
 		case <-t.C:
 			if len(wt.cache.Cache) != status.cacheSize {
 				status.cacheSize = len(wt.cache.Cache)
-				fmt.Println(addr, " cache size", len(wt.cache.Cache))
+				statusLog.Write([]byte(fmt.Sprintf("[%s=%s] cache size: %d\n", wt.id, wt.addr, len(wt.cache.Cache))))
 			}
 		}
 	}

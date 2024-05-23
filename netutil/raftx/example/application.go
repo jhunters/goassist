@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/jhunters/goassist/maputil"
 	"github.com/jhunters/goassist/netutil/raftx/example/proto"
 
 	"github.com/hashicorp/raft"
@@ -25,6 +26,8 @@ const (
 type cacheTracker struct {
 	mtx   sync.RWMutex
 	cache *proto.CacheMgr
+	addr  string
+	id    string
 }
 
 var _ raft.BatchingFSM = &cacheTracker{} // check cacheTracker struct if implements raft.BatchingFSM interface
@@ -40,8 +43,18 @@ func (f *cacheTracker) processLog(l *raft.Log) interface{} {
 	data := l.Data
 	action := string(l.Extensions)
 
+	if l.Extensions == nil {
+		cfg := raft.DecodeConfiguration(data)
+		for _, s := range cfg.Servers {
+			p := fmt.Sprintf("[%s=%s] server sync log. address=%s, id=%s, suffrage=%d ", f.id, f.addr, s.Address, s.ID, s.Suffrage)
+			PrintlnLog(p)
+		}
+		return nil
+	}
+
 	// println log
-	PrintlnLog(action, data, "index=", l.Index, "term=", l.Term, "type=", l.Type)
+	p := fmt.Sprintf("[%s=%s] action=%s, data=%v, index=%d, term=%d", f.id, f.addr, action, data, l.Index, l.Term)
+	PrintlnLog(p)
 
 	if strings.EqualFold(action, PUT_C) {
 		req := &proto.PutRequest{}
@@ -50,12 +63,17 @@ func (f *cacheTracker) processLog(l *raft.Log) interface{} {
 	} else if strings.EqualFold(action, DEL_C) {
 		req := &proto.GetRequest{}
 		pb.Unmarshal(data, req)
-		delete(f.cache.Cache, string(req.Key))
+		value, exist := f.cache.Cache[string(req.Key)]
+		if exist {
+			delete(f.cache.Cache, string(req.Key))
+		}
+		return value
+
 	} else if strings.EqualFold(action, CLR_C) {
 		f.cache.Cache = make(map[string][]byte)
 	}
 
-	return nil
+	return len(f.cache.Cache)
 }
 
 func (f *cacheTracker) ApplyBatch(logs []*raft.Log) []interface{} {
@@ -76,7 +94,7 @@ func (f *cacheTracker) Snapshot() (raft.FSMSnapshot, error) {
 	defer f.mtx.RUnlock()
 
 	data, err := pb.Marshal(f.cache)
-	return &snapshot{data: data}, err
+	return &snapshot{data: data, id: f.id, addr: f.addr}, err
 }
 
 func (f *cacheTracker) Restore(r io.ReadCloser) error {
@@ -89,12 +107,15 @@ func (f *cacheTracker) Restore(r io.ReadCloser) error {
 
 	err = pb.Unmarshal(b, f.cache)
 
-	PrintlnLog("Load cache from snapshot", "size=", len(f.cache.Cache))
+	p := fmt.Sprintf("[%s=%s] Restore cache from snapshot, size=%d", f.id, f.addr, len(f.cache.Cache))
+	PrintlnLog(p)
 	return err
 }
 
 type snapshot struct {
 	data []byte
+	addr string
+	id   string
 }
 
 var _ raft.FSMSnapshot = &snapshot{} // check snapshot struct if implements raft.FSMSnapshot interface
@@ -105,7 +126,8 @@ func (s *snapshot) Persist(sink raft.SnapshotSink) error {
 		sink.Cancel()
 		return fmt.Errorf("sink.Write(): %v", err)
 	}
-	fmt.Println("Snap short persist to ", sink.ID())
+	p := fmt.Sprintf("[%s=%s]Snap short persist to=%s", s.id, s.addr, sink.ID())
+	PrintlnLog(p)
 	return sink.Close()
 }
 
@@ -133,7 +155,9 @@ func (q *CacheSvrInterface) Put(c context.Context, req *proto.PutRequest) (*prot
 		return &proto.PutResponse{Error: res.Error().Error()}, nil
 	}
 
-	return &proto.PutResponse{Size: int32(len(q.wt.cache.Cache))}, nil
+	fmt.Println(res.Index(), res.Response())
+	v := res.Response().(int)
+	return &proto.PutResponse{Size: int32(v)}, nil
 }
 
 func (q *CacheSvrInterface) Get(c context.Context, req *proto.GetRequest) (*proto.GetResponse, error) {
@@ -176,10 +200,14 @@ func (q *CacheSvrInterface) Clear(c context.Context, req *proto.ClearRequest) (*
 
 }
 
-func PrintlnLog(m ...any) {
-	fmt.Println("------------------------------------------------------------------")
-	fmt.Println(m...)
-	fmt.Println("------------------------------------------------------------------")
+func (q *CacheSvrInterface) Query(ctx context.Context, in *proto.QueryRequest) (*proto.QueryResponse, error) {
+	ret := &proto.QueryResponse{}
+	ret.Cache = maputil.Clone(q.wt.cache.Cache)
+	return ret, nil
+}
+
+func PrintlnLog(p string) {
+	entryLog.Log(p)
 }
 
 func PrintKeys(mp map[string][]byte) {
