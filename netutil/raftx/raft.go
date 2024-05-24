@@ -163,7 +163,7 @@ func (r *RaftX) AddPeer(node *Node) error {
 	return nil
 }
 
-func (r *RaftX) AddPeers(nodes []*Node) error {
+func (r *RaftX) AddPeers(nodes ...*Node) error {
 	for _, node := range nodes {
 		err := r.AddPeer(node)
 		if err != nil {
@@ -209,8 +209,8 @@ func (r *RaftX) Start(s *grpc.Server, fn func(*raft.Raft)) error {
 	os.MkdirAll(baseDir, os.ModeDir)
 
 	// 使用 boltdb进行wal日志存储
-	// 1 存储 配置信息 rafe.Configuration 包含集群信息 LogType=LogConfiguration
-	//
+	// 1 存储 配置信息 rafe.Configuration 包含集群信息 LogType=LogConfiguration。包含集群的配置信息。 在启动时用于加载集群信息，进configuration.latest字段
+	// 2 存储 wal日志信息 LogType=LogCommand 包含命令， 状态机执行结果
 	wal, err := boltdb.NewBoltStore(filepath.Join(baseDir, Logs_File))
 	if err != nil {
 		return fmt.Errorf(`boltdb.NewBoltStore(%q): %v`, filepath.Join(baseDir, Logs_File), err)

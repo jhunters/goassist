@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/jhunters/goassist/base"
 	"github.com/jhunters/goassist/maputil"
 	"github.com/jhunters/goassist/netutil/raftx/example/proto"
 
@@ -43,8 +44,13 @@ func (f *cacheTracker) processLog(l *raft.Log) interface{} {
 	data := l.Data
 	action := string(l.Extensions)
 
-	if l.Extensions == nil {
-		cfg := raft.DecodeConfiguration(data)
+	if l.Extensions == nil { //server config append entry log
+
+		cfg := base.SafetyFunc(data, func(b []byte) raft.Configuration {
+			cfg := raft.DecodeConfiguration(data)
+			return cfg
+		})
+
 		for _, s := range cfg.Servers {
 			p := fmt.Sprintf("[%s=%s] server sync log. address=%s, id=%s, suffrage=%d ", f.id, f.addr, s.Address, s.ID, s.Suffrage)
 			PrintlnLog(p)
@@ -52,14 +58,12 @@ func (f *cacheTracker) processLog(l *raft.Log) interface{} {
 		return nil
 	}
 
-	// println log
-	p := fmt.Sprintf("[%s=%s] action=%s, data=%v, index=%d, term=%d", f.id, f.addr, action, data, l.Index, l.Term)
-	PrintlnLog(p)
-
+	sdata := ""
 	if strings.EqualFold(action, PUT_C) {
 		req := &proto.PutRequest{}
 		pb.Unmarshal(data, req)
 		f.cache.Cache[string(req.Key)] = req.Value
+		sdata = fmt.Sprintf("key=%s, value=%v", req.Key, string(req.Value))
 	} else if strings.EqualFold(action, DEL_C) {
 		req := &proto.GetRequest{}
 		pb.Unmarshal(data, req)
@@ -67,11 +71,19 @@ func (f *cacheTracker) processLog(l *raft.Log) interface{} {
 		if exist {
 			delete(f.cache.Cache, string(req.Key))
 		}
+		sdata = fmt.Sprintf("key=%s", req.Key)
+		// println log
+		p := fmt.Sprintf("[%s=%s] action=%s, data=%v, index=%d, term=%d", f.id, f.addr, action, sdata, l.Index, l.Term)
+		PrintlnLog(p)
 		return value
 
 	} else if strings.EqualFold(action, CLR_C) {
 		f.cache.Cache = make(map[string][]byte)
 	}
+
+	// println log
+	p := fmt.Sprintf("[%s=%s] action=%s, data=%v, index=%d, term=%d", f.id, f.addr, action, sdata, l.Index, l.Term)
+	PrintlnLog(p)
 
 	return len(f.cache.Cache)
 }
@@ -163,7 +175,6 @@ func (q *CacheSvrInterface) Put(c context.Context, req *proto.PutRequest) (*prot
 func (q *CacheSvrInterface) Get(c context.Context, req *proto.GetRequest) (*proto.GetResponse, error) {
 
 	key := req.Key
-	PrintKeys(q.wt.cache.Cache)
 	value, exist := q.wt.cache.Cache[string(key)]
 	if exist {
 		return &proto.GetResponse{Value: value}, nil

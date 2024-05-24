@@ -56,7 +56,7 @@ func StartRaft(raftId, raftAddress, raftDir string, raftBootstrap bool, peers []
 	rfx.SetHealthService("CacheManager")
 
 	// add peers
-	rfx.AddPeers(peers)
+	rfx.AddPeers(peers...)
 
 	// 创建grpc服务
 	s := grpc.NewServer()
