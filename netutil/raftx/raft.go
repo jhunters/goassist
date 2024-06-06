@@ -14,6 +14,7 @@ import (
 	"github.com/Jille/raftadmin"
 	"github.com/hashicorp/raft"
 	boltdb "github.com/hashicorp/raft-boltdb"
+	"github.com/jhunters/goassist/stringutil"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
@@ -116,7 +117,7 @@ func NewRaftXWithConfig(c *raft.Config, node *Node, raftBootstrap bool, fsm raft
 		return nil, fmt.Errorf("raft fsm is nil")
 	}
 
-	r := &RaftX{}
+	r := &RaftX{} // 创建RaftX实例
 	r.config = c
 	r.fsm = fsm
 	r.raftBootstrap = raftBootstrap
@@ -127,17 +128,19 @@ func NewRaftXWithConfig(c *raft.Config, node *Node, raftBootstrap bool, fsm raft
 		return nil, err
 	}
 
-	if host == "" || host == LOCAL_HOST {
+	if stringutil.IsBlank(host) || host == LOCAL_HOST {
 		host, err = os.Hostname()
 		if err != nil {
 			return nil, err
 		}
 	}
 
+	// set local address
 	r.localip = host
 	r.localport = port
 	r.dataDir = RAFT_DATA_DIR
 
+	// default set peers to empty
 	r.peers = make([]*Node, 0)
 
 	return r, nil

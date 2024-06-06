@@ -25,10 +25,11 @@ const (
 
 // to implement raft.FSM 接口
 type cacheTracker struct {
-	mtx   sync.RWMutex
-	cache *proto.CacheMgr
-	addr  string
-	id    string
+	mtx     sync.RWMutex
+	cache   *proto.CacheMgr
+	addr    string
+	id      string
+	changed chan int
 }
 
 var _ raft.BatchingFSM = &cacheTracker{} // check cacheTracker struct if implements raft.BatchingFSM interface
@@ -64,6 +65,8 @@ func (f *cacheTracker) processLog(l *raft.Log) interface{} {
 		pb.Unmarshal(data, req)
 		f.cache.Cache[string(req.Key)] = req.Value
 		sdata = fmt.Sprintf("key=%s, value=%v", req.Key, string(req.Value))
+
+		f.changeCallback()
 	} else if strings.EqualFold(action, DEL_C) {
 		req := &proto.GetRequest{}
 		pb.Unmarshal(data, req)
@@ -75,10 +78,13 @@ func (f *cacheTracker) processLog(l *raft.Log) interface{} {
 		// println log
 		p := fmt.Sprintf("[%s=%s] action=%s, data=%v, index=%d, term=%d", f.id, f.addr, action, sdata, l.Index, l.Term)
 		PrintlnLog(p)
+
+		f.changeCallback()
 		return value
 
 	} else if strings.EqualFold(action, CLR_C) {
 		f.cache.Cache = make(map[string][]byte)
+		f.changeCallback()
 	}
 
 	// println log
@@ -86,6 +92,12 @@ func (f *cacheTracker) processLog(l *raft.Log) interface{} {
 	PrintlnLog(p)
 
 	return len(f.cache.Cache)
+}
+
+func (f *cacheTracker) changeCallback() {
+	go func() {
+		f.changed <- len(f.cache.Cache)
+	}()
 }
 
 func (f *cacheTracker) ApplyBatch(logs []*raft.Log) []interface{} {
@@ -121,6 +133,7 @@ func (f *cacheTracker) Restore(r io.ReadCloser) error {
 
 	p := fmt.Sprintf("[%s=%s] Restore cache from snapshot, size=%d", f.id, f.addr, len(f.cache.Cache))
 	PrintlnLog(p)
+	f.changeCallback()
 	return err
 }
 
@@ -135,12 +148,11 @@ var _ raft.FSMSnapshot = &snapshot{} // check snapshot struct if implements raft
 func (s *snapshot) Persist(sink raft.SnapshotSink) error {
 	_, err := sink.Write(s.data)
 	if err != nil {
-		sink.Cancel()
 		return fmt.Errorf("sink.Write(): %v", err)
 	}
 	p := fmt.Sprintf("[%s=%s]Snap short persist to=%s", s.id, s.addr, sink.ID())
 	PrintlnLog(p)
-	return sink.Close()
+	return nil
 }
 
 func (s *snapshot) Release() {
