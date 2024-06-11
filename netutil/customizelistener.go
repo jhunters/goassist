@@ -36,7 +36,8 @@ func (l *CustomListener) Accept() (net.Conn, error) {
 
 // Close close listener proxy
 func (l *CustomListener) Close() error {
-	return l.listenerProxy.Close()
+	//  should do nothing and do close action by CustomListenerSelector
+	return nil
 }
 
 // Addr return net.Addr from listener proxy
@@ -153,7 +154,13 @@ func (server *CustomListenerSelector) Serve() error {
 
 // Close do close all listeners
 func (server *CustomListenerSelector) Close() error {
+
 	var errRet error
+	errRet = server.listenerProxy.Close()
+	if errRet != nil {
+		return errRet
+	}
+
 	for _, server := range server.listeners {
 		err := server.Close()
 		if err != nil {
