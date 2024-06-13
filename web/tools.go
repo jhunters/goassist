@@ -1,7 +1,6 @@
 package web
 
 import (
-	"fmt"
 	"net/http"
 	"os/exec"
 	"runtime"
@@ -24,7 +23,7 @@ func OpenBrowser(url string) bool {
 	return cmd.Start() == nil
 }
 
-func EventStreamHandler(onEvent func(*http.Request, chan<- string)) func(http.ResponseWriter, *http.Request) {
+func EventStreamHandler(onEvent func(*http.Request, chan<- []byte)) func(http.ResponseWriter, *http.Request) {
 	f := func(w http.ResponseWriter, r *http.Request) {
 		// 判断响应是否支持流
 		flusher, ok := w.(http.Flusher)
@@ -40,7 +39,7 @@ func EventStreamHandler(onEvent func(*http.Request, chan<- string)) func(http.Re
 		w.Header().Set(HTTP_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN, "*")
 
 		// 创建字符串通道
-		ch := make(chan string)
+		ch := make(chan []byte)
 		// 启动事件处理协程
 		go onEvent(r, ch)
 
@@ -54,7 +53,7 @@ func EventStreamHandler(onEvent func(*http.Request, chan<- string)) func(http.Re
 			}
 
 			// 将接收到的事件输出到响应中
-			fmt.Fprintf(w, "%v", v)
+			w.Write(v)
 
 			// 刷新缓冲区，将数据立即发送给客户端
 			flusher.Flush()

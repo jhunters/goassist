@@ -48,10 +48,10 @@ func waitServer(url string) bool {
 // ExampleEventStreamHandler 是一个演示函数，用于展示如何使用 web.EventStreamHandler 来处理 Server-Sent Events（服务器发送事件）
 func ExampleEventStreamHandler() {
 	// 定义一个事件流回调函数， 使用流的方式向客户端发送数据
-	eventStream := func(r *http.Request, ch chan<- string) {
+	eventStream := func(r *http.Request, ch chan<- []byte) {
 		// write data
 		for i := 0; i < 10; i++ {
-			ch <- fmt.Sprintf("data: %s\n", time.Now().String())
+			ch <- []byte(fmt.Sprintf("data: %s\n", time.Now().String()))
 			time.Sleep(time.Second)
 		}
 		close(ch)
@@ -62,10 +62,10 @@ func ExampleEventStreamHandler() {
 }
 
 func TestStreamClientRequest(t *testing.T) {
-	eventStream := func(r *http.Request, ch chan<- string) {
+	eventStream := func(r *http.Request, ch chan<- []byte) {
 		// write data
 		for i := 0; i < 10; i++ {
-			ch <- fmt.Sprintf("data: %s\n", time.Now().String())
+			ch <- []byte(fmt.Sprintf("data: %s\n", time.Now().String()))
 			time.Sleep(time.Second)
 		}
 		close(ch)
