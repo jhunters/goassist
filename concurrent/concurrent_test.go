@@ -184,3 +184,38 @@ func TestAsyncCallWithPanic(t *testing.T) {
 		So(err, ShouldNotBeNil)
 	})
 }
+
+func TestAsyncGoWithEvent(t *testing.T) {
+	Convey("TestAsyncGoWithEvent by cancel event", t, func() {
+		cancel := make(chan bool)
+		go func() { // do cancel event in another go routine
+			time.Sleep(time.Second)
+			cancel <- true
+		}()
+
+		b, err := concurrent.AsyncGoWithEvent(func() {
+			timedFunc(10*time.Second, var_s)
+		}, cancel)
+		So(err, ShouldBeNil)
+		So(b, ShouldBeFalse)
+	})
+
+}
+
+func ExampleAsyncGoWithEvent() {
+	cancel := make(chan bool)
+	go func() { // do cancel event in another go routine
+		time.Sleep(time.Second)
+		cancel <- true
+	}()
+
+	b, _ := concurrent.AsyncGoWithEvent(func() {
+		timedFunc(10*time.Second, var_s)
+	}, cancel)
+
+	fmt.Println(b)
+
+	//Output:
+	//false
+
+}
