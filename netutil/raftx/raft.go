@@ -265,7 +265,7 @@ func (r *RaftX) Start(s *grpc.Server, fn func(*raft.Raft)) error {
 
 	// 判断是否作为集群bootstrap节点启动，  配置 Servers 添加 ID和Address
 	if r.raftBootstrap {
-		err = r.startWithBootstrapIfNeed(wal)
+		err = r.startWithBootstrapIfNeed(wal, sdb, fss)
 		if err != nil {
 			return err
 		}
@@ -306,9 +306,15 @@ func (r *RaftX) GetAddress() string {
 // 返回值：
 //
 //	error：可能出现的错误，如果引导启动成功，则返回 nil
-func (r *RaftX) startWithBootstrapIfNeed(wal *boltdb.BoltStore) error {
+func (r *RaftX) startWithBootstrapIfNeed(logs raft.LogStore, stable raft.StableStore, snaps raft.SnapshotStore) error {
+
 	// check if log already exist, cuz we can't bootstrap twice
-	if id, err := wal.LastIndex(); id > 0 && err == nil {
+	exist, err := raft.HasExistingState(logs, stable, snaps)
+	if err != nil {
+		return err
+	}
+	if exist {
+		// 已经存在日志，则直接返回
 		return nil
 	}
 
