@@ -34,6 +34,12 @@ const (
 type Node struct {
 	Id   string // 节点id
 	Addr string // 节点地址
+	Desc string // 描述说明
+}
+
+type RaftWrapper struct {
+	Raft          *raft.Raft
+	LocalNodeInfo Node
 }
 
 // RaftX 实例
@@ -46,6 +52,8 @@ type RaftX struct {
 
 	// 本地端口号
 	localport string
+
+	node *Node
 
 	// 数据保存目录, 包括wal日志， snap快照， raft配置文件
 	dataDir string
@@ -122,6 +130,7 @@ func NewRaftXWithConfig(c *raft.Config, node *Node, raftBootstrap bool, fsm raft
 	r.fsm = fsm
 	r.raftBootstrap = raftBootstrap
 	c.LocalID = raft.ServerID(node.Id)
+	r.node = node
 
 	host, port, err := net.SplitHostPort(node.Addr)
 	if err != nil {
@@ -194,7 +203,7 @@ func (r *RaftX) EnableRefelctionService() {
 }
 
 // Start 启动 RaftX 实例，并返回一个 raft.Raft 实例
-func (r *RaftX) Start(s *grpc.Server, fn func(*raft.Raft)) error {
+func (r *RaftX) Start(s *grpc.Server, fn func(*RaftWrapper)) error {
 	if r == nil || r.config == nil {
 		return fmt.Errorf("raftx is nil or config is nil")
 	}
@@ -272,7 +281,7 @@ func (r *RaftX) Start(s *grpc.Server, fn func(*raft.Raft)) error {
 	}
 
 	// call back FSM 接口
-	fn(r.r)
+	fn(&RaftWrapper{r.r, *r.node})
 
 	// 启动网络服务监听
 	sock, err := net.Listen("tcp", fmt.Sprintf(":%s", r.localport) /* r.getAddress() */)

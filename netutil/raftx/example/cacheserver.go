@@ -72,15 +72,15 @@ func StartRaft(raftId, raftAddress, raftDir string, raftBootstrap bool, peers []
 	// 创建一个 CacheStatus 实例
 	status := &CacheStatus{}
 
-	rfx.Start(s, func(r *raft.Raft) {
+	rfx.Start(s, func(r *raftx.RaftWrapper) {
 		// 注册 CacheManagerServer 到 gRPC 服务，并启动一个 goroutine 来监听状态变化
 		// 业务功能实现，实现业务CacheManager的接口实现， 也是用grpc来注册服务
 		proto.RegisterCacheManagerServer(s, &CacheSvrInterface{
 			wt:   wt,
-			raft: r,
+			raft: r.Raft,
 		})
 
-		go watchStatus(r, wt, status)
+		go watchStatus(r.Raft, wt, status)
 	})
 
 }

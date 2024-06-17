@@ -122,12 +122,12 @@ func (f *cacheTracker) Snapshot() (raft.FSMSnapshot, error) {
 }
 
 func (f *cacheTracker) Restore(r io.ReadCloser) error {
+	f.mtx.Lock()
+	defer f.mtx.Unlock()
 	b, err := io.ReadAll(r)
 	if err != nil {
 		return err
 	}
-	f.mtx.Lock()
-	defer f.mtx.Unlock()
 
 	err = pb.Unmarshal(b, f.cache)
 
